@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WEAPON — 무기 주조소</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1a1520; --surface:#221b2a; --surface2:#2a2235; --surface3:#322840;
+    --border:#3a2e48; --border-strong:#4a3a5a;
+    --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
+    --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
+    --tool-color:#CCAA88;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{min-height:100vh;}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:'Noto Sans KR',sans-serif;
+    min-height:100vh;
+  }
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+  body::after{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(187,102,136,0.18),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
+  }
+
+  /* ── 헤더 ── */
+  .header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(26,21,32,0.88);
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    padding:11px 18px;display:flex;align-items:center;gap:10px;height:54px;
+  }
+  .back-link{
+    background:none;border:1px solid var(--border);color:var(--muted);
+    padding:5px 11px;border-radius:7px;cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;font-size:11px;
+    transition:all 0.2s;white-space:nowrap;text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .back-link:hover{border-color:var(--tool-color);color:var(--tool-color);}
+  .sibling-link{
+    background:rgba(136,137,205,0.08);
+    border:1px solid rgba(136,137,205,0.3);
+    color:var(--accent);
+    padding:5px 11px;border-radius:7px;cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;font-size:11px;
+    text-decoration:none;
+    display:inline-flex;align-items:center;gap:5px;
+    transition:all 0.2s;
+  }
+  .sibling-link:hover{
+    background:rgba(136,137,205,0.18);
+    border-color:var(--accent);
+    transform:translateY(-1px);
+  }
+  .header-logo{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:18px;letter-spacing:4px;line-height:1;
+    background:linear-gradient(135deg,var(--accent2),var(--accent3));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-left:4px;
+  }
+  .header-sub{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;color:var(--muted);letter-spacing:2px;
+  }
+  .header-right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+  .btn{
+    padding:5px 11px;border-radius:7px;border:none;cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;
+    transition:all 0.2s;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .btn-sync{
+    background:linear-gradient(135deg,rgba(0,187,221,0.1),rgba(136,137,205,0.1));
+    border:1px solid rgba(0,187,221,0.35);color:#6AC8B0;
+  }
+  .btn-sync:hover{background:linear-gradient(135deg,rgba(0,187,221,0.2),rgba(136,137,205,0.2));transform:translateY(-1px);}
+  .btn-reset{
+    background:transparent;border:1px solid var(--border);color:var(--muted);
+  }
+  .btn-reset:hover{border-color:var(--accent2);color:var(--accent2);}
+  .sync-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--muted);
+    display:inline-block;transition:background 0.3s, box-shadow 0.3s;
+  }
+  .sync-dot.synced{background:#6AC8B0;box-shadow:0 0 8px rgba(106,200,176,0.6);}
+  .sync-dot.error{background:var(--accent2);box-shadow:0 0 8px rgba(187,102,136,0.6);}
+
+  /* ── 레이아웃 ── */
+  .app-body{
+    position:relative;z-index:1;
+    max-width:1280px;margin:0 auto;
+    padding:32px 24px 80px;
+    display:grid;grid-template-columns:1fr 380px;gap:32px;
+  }
+  .options-col{min-width:0;}
+  .preview-col{min-width:0;position:sticky;top:80px;align-self:start;max-height:calc(100vh - 100px);overflow-y:auto;padding-right:4px;}
+
+  /* ── 히어로 ── */
+  .hero{margin-bottom:36px;}
+  .hero-tag{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:3px;color:var(--accent3);
+    background:rgba(187,102,136,0.08);
+    border:1px solid rgba(187,102,136,0.25);
+    padding:5px 12px;border-radius:99px;
+    margin-bottom:14px;text-transform:uppercase;
+  }
+  .hero-tag::before{
+    content:'';width:5px;height:5px;border-radius:50%;
+    background:var(--tool-color);box-shadow:0 0 8px var(--tool-color);
+  }
+  .hero-title{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:500;font-style:italic;
+    font-size:clamp(40px,6vw,68px);
+    line-height:0.98;letter-spacing:-0.02em;
+    margin-bottom:14px;
+  }
+  .hero-title .accent{
+    font-style:italic;font-weight:600;
+    background:linear-gradient(135deg,var(--tool-color),var(--accent3));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .hero-desc{font-size:13px;color:var(--text-dim);line-height:1.6;max-width:520px;}
+
+  /* ── 디바이더 ── */
+  .ornament{
+    position:relative;height:1px;margin:0 0 32px;
+    background:linear-gradient(90deg,transparent,rgba(187,102,136,0.3) 50%,transparent);
+  }
+  .ornament::before{
+    content:'✦';position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);background:var(--bg);
+    padding:0 14px;color:var(--tool-color);font-size:11px;
+  }
+
+  /* ── 섹션 ── */
+  .section{margin-bottom:26px;}
+  .section-head{
+    display:flex;align-items:baseline;gap:10px;margin-bottom:6px;
+  }
+  .section-num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--muted2);
+  }
+  .section-title{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;font-style:italic;
+    font-size:22px;color:var(--text);letter-spacing:-0.01em;
+  }
+  .section-sub{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.5;}
+
+  /* ── 그룹 라벨 (베이스 모티프용) ── */
+  .group-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;letter-spacing:2px;color:var(--muted2);
+    text-transform:uppercase;
+    margin:8px 0 6px;
+  }
+  .group-label:first-child{margin-top:0;}
+
+  /* ── 칩 ── */
+  .chip-group{display:flex;flex-wrap:wrap;gap:5px;}
+  .chip{
+    padding:5px 11px;border-radius:99px;
+    border:1px solid var(--border);
+    background:transparent;color:var(--muted);
+    font-size:11px;font-family:'Noto Sans KR',sans-serif;
+    cursor:pointer;transition:all 0.15s;user-select:none;
+    display:inline-flex;align-items:center;gap:5px;
+    position:relative;
+  }
+  .chip:hover{border-color:var(--chip-accent,var(--tool-color));color:var(--text);}
+  .chip.active{
+    background:color-mix(in srgb,var(--chip-accent,var(--tool-color)) 18%,transparent);
+    border-color:var(--chip-accent,var(--tool-color));
+    color:var(--text);
+  }
+  .chip-custom-del{
+    margin-left:2px;opacity:0.5;cursor:pointer;font-size:11px;line-height:1;
+  }
+  .chip-custom-del:hover{opacity:1;color:var(--accent2);}
+  .chip-add{
+    border-style:dashed!important;
+    color:var(--tool-color)!important;
+    border-color:rgba(187,102,136,0.4)!important;
+    min-width:28px;justify-content:center;
+  }
+  .chip-add:hover{background:rgba(187,102,136,0.1)!important;}
+
+  /* ── 직접 입력 ── */
+  .text-input{
+    width:100%;background:var(--surface);
+    border:1px solid var(--border);border-radius:8px;
+    color:var(--text);font-family:'Noto Sans KR',sans-serif;
+    font-size:12px;padding:8px 11px;outline:none;
+    transition:border-color 0.2s, box-shadow 0.2s;
+    margin-top:10px;
+  }
+  .text-input:focus{
+    border-color:var(--tool-color);
+    box-shadow:0 0 0 3px rgba(187,102,136,0.12);
+  }
+  .input-hint{
+    font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;
+    margin-top:6px;opacity:0.7;
+  }
+
+  /* ── 색상 ── */
+  .color-row{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;background:var(--surface);
+    border:1px solid var(--border);border-radius:9px;
+    margin-bottom:8px;
+  }
+  .color-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;letter-spacing:1px;color:var(--muted);
+    width:36px;flex-shrink:0;text-transform:uppercase;
+  }
+  .color-pick{
+    width:34px;height:34px;border-radius:7px;
+    border:2px solid var(--border);cursor:pointer;
+    flex-shrink:0;padding:0;background:none;
+    overflow:hidden;
+  }
+  .color-pick input{
+    width:200%;height:200%;margin:-50% 0 0 -50%;
+    border:none;padding:0;cursor:pointer;
+  }
+  .color-hex-input{
+    background:transparent;border:none;border-bottom:1px solid var(--border);
+    color:var(--text);font-family:'JetBrains Mono',monospace;
+    font-size:11px;padding:3px 0;width:80px;outline:none;flex-shrink:0;
+    transition:border-color 0.2s;
+  }
+  .color-hex-input:focus{border-bottom-color:var(--tool-color);}
+  .color-info{flex:1;min-width:0;}
+  .color-info .kr{font-size:12px;color:var(--text);}
+  .color-info .en{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;opacity:0.7;}
+  .color-remove{
+    background:none;border:none;color:var(--muted);cursor:pointer;
+    font-size:14px;padding:4px;flex-shrink:0;line-height:1;
+    transition:color 0.2s;
+  }
+  .color-remove:hover{color:var(--accent2);}
+  .color-add-btn{
+    width:100%;padding:9px;text-align:center;
+    background:transparent;border:1px dashed var(--border);
+    border-radius:9px;color:var(--muted);font-size:11px;cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;
+    margin-top:4px;
+  }
+  .color-add-btn:hover{border-color:var(--tool-color);color:var(--tool-color);}
+
+  /* ── 빠른 팔레트 ── */
+  .quick-palette{
+    display:flex;gap:6px;flex-wrap:wrap;
+    padding-top:10px;margin-top:10px;
+    border-top:1px solid var(--border);
+  }
+  .quick-color{
+    width:24px;height:24px;border-radius:6px;
+    cursor:pointer;border:2px solid transparent;
+    transition:transform 0.15s, border-color 0.15s;
+  }
+  .quick-color:hover{transform:scale(1.12);}
+  .quick-color.active{border-color:var(--text);}
+
+  /* ── 프롬프트 박스 ── */
+  .prompt-section-label{
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:3px;color:var(--tool-color);
+    text-transform:uppercase;
+  }
+  .prompt-section-label::after{
+    content:'';flex:1;height:1px;background:color-mix(in srgb,var(--tool-color) 30%,transparent);
+  }
+  .prompt-box{
+    background:linear-gradient(155deg,var(--surface) 0%,var(--surface2) 100%);
+    border:1px solid color-mix(in srgb,var(--prompt-accent,var(--tool-color)) 40%,var(--border));
+    border-radius:11px;margin-bottom:12px;overflow:hidden;
+  }
+  .prompt-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 14px;border-bottom:1px solid var(--border);
+    background:rgba(0,0,0,0.15);
+  }
+  .prompt-lang{
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    letter-spacing:2px;text-transform:uppercase;
+    color:var(--prompt-accent,var(--tool-color));
+  }
+  .prompt-copy-btn{
+    padding:5px 10px;border-radius:6px;border:none;cursor:pointer;
+    background:transparent;color:var(--muted);
+    font-family:'JetBrains Mono',monospace;font-size:10px;
+    transition:all 0.2s;display:inline-flex;align-items:center;gap:4px;
+  }
+  .prompt-copy-btn:hover{background:color-mix(in srgb,var(--prompt-accent,var(--tool-color)) 15%,transparent);color:var(--text);}
+  .prompt-copy-btn.copied{color:#6AC8B0;}
+  .prompt-text{
+    padding:13px 14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;line-height:1.7;color:var(--text-dim);
+    white-space:pre-wrap;word-break:break-word;
+    max-height:240px;overflow-y:auto;
+  }
+
+  /* ── 모달 ── */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,0.75);
+    z-index:1000;display:none;align-items:center;justify-content:center;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:20px;
+  }
+  .modal-overlay.show{display:flex;animation:fadeIn 0.2s ease;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{
+    background:linear-gradient(155deg,var(--surface) 0%,var(--surface2) 100%);
+    border:1px solid var(--border-strong);
+    border-radius:14px;padding:24px;
+    width:100%;max-width:420px;
+    display:flex;flex-direction:column;gap:14px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    animation:slideUp 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+  .modal-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;letter-spacing:4px;color:var(--accent2);
+  }
+  .modal-input{
+    width:100%;background:var(--bg);
+    border:1px solid var(--border);border-radius:8px;
+    color:var(--text);font-family:'Noto Sans KR',sans-serif;
+    font-size:13px;padding:9px 12px;outline:none;
+    transition:border-color 0.2s, box-shadow 0.2s;
+  }
+  .modal-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(187,102,136,0.12);}
+  .modal-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:2px;color:var(--muted);
+    text-transform:uppercase;
+  }
+  .modal-hint{font-size:10px;color:var(--muted);font-style:italic;line-height:1.5;}
+  .modal-section{display:flex;flex-direction:column;gap:6px;}
+  .modal-id-row{display:flex;gap:6px;}
+  .modal-id-row .modal-input{flex:1;}
+  .modal-copy-btn{
+    padding:8px 11px;background:var(--surface3);
+    border:1px solid var(--border);border-radius:8px;
+    color:var(--muted);cursor:pointer;font-size:11px;
+    transition:all 0.2s;
+  }
+  .modal-copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+  .modal-status{
+    font-size:11px;padding:9px 12px;border-radius:7px;
+    font-family:'JetBrains Mono',monospace;display:none;line-height:1.5;
+  }
+  .modal-status.ok{background:rgba(106,200,176,0.1);border:1px solid rgba(106,200,176,0.3);color:#6AC8B0;display:block;}
+  .modal-status.err{background:rgba(187,102,136,0.1);border:1px solid rgba(187,102,136,0.3);color:var(--accent2);display:block;}
+  .modal-status.loading{background:rgba(136,137,205,0.1);border:1px solid rgba(136,137,205,0.3);color:var(--accent);display:block;}
+  .modal-btns{display:flex;gap:7px;flex-wrap:wrap;}
+  .modal-btn{
+    flex:1;min-width:100px;
+    padding:9px 12px;border-radius:8px;border:none;cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:600;
+    transition:all 0.2s;
+  }
+  .modal-btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:white;}
+  .modal-btn-primary:hover{opacity:0.9;transform:translateY(-1px);}
+  .modal-btn-download{background:linear-gradient(135deg,rgba(106,200,176,0.2),rgba(106,136,200,0.2));border:1px solid rgba(106,200,176,0.4);color:#6AC8B0;}
+  .modal-btn-download:hover{background:linear-gradient(135deg,rgba(106,200,176,0.3),rgba(106,136,200,0.3));transform:translateY(-1px);}
+  .modal-btn-cancel{background:transparent;border:1px solid var(--border);color:var(--muted);}
+  .modal-btn-cancel:hover{border-color:var(--accent2);color:var(--accent2);}
+  .modal-btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+  .modal-btn-ghost:hover{border-color:var(--accent2);color:var(--accent2);}
+
+  /* ── 토스트 ── */
+  .toast{
+    position:fixed;bottom:24px;right:24px;
+    background:var(--surface2);border:1px solid var(--accent2);color:var(--accent2);
+    padding:9px 16px;border-radius:9px;
+    font-size:12px;z-index:9999;font-family:'Noto Sans KR',sans-serif;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    animation:slideIn 0.3s ease;
+  }
+  @keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+
+  /* ── 스크롤바 ── */
+  ::-webkit-scrollbar{width:6px;height:6px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--border-strong);}
+
+  /* ── 모바일 ── */
+  @media(max-width:900px){
+    .app-body{grid-template-columns:1fr;padding:24px 16px 80px;gap:24px;}
+    .preview-col{position:static;max-height:none;overflow:visible;}
+    .header{padding:9px 12px;gap:6px;}
+    .header-logo{font-size:16px;letter-spacing:3px;}
+    .header-sub{display:none;}
+    .btn .btn-label{display:none;}
+    .toast{bottom:16px;right:16px;left:16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     헤더
+     ═══════════════════════════════════════════════════ -->
+<header class="header">
+  <a href="forge.html" class="back-link">← <span class="btn-label">메인</span></a>
+  <a href="sigil.html" class="sibling-link">✦ <span class="btn-label">문양</span></a>
+  <div>
+    <div class="header-logo">WEAPON</div>
+    <div class="header-sub">ARMAMENT · FORGE</div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-reset" onclick="resetAll()" title="설정 초기화">↺ <span class="btn-label">초기화</span></button>
+    <button class="btn btn-sync" onclick="openGistModal()" title="GitHub Gist 동기화">
+      ☁️ <span class="btn-label">동기화</span>
+      <span class="sync-dot" id="sync-dot"></span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════
+     본문
+     ═══════════════════════════════════════════════════ -->
+<div class="app-body">
+
+  <div class="options-col">
+
+    <section class="hero">
+      <div class="hero-tag">NOBLE · CREST · FORGE</div>
+      <h1 class="hero-title">가문의 무기를<br><span class="accent">주조</span>하다</h1>
+      <p class="hero-desc">
+        무기 종류·모티프·재질·격을 골라 가문 무기의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내.
+      </p>
+    </section>
+
+    <div class="ornament"></div>
+
+    <div id="sections-root"></div>
+  </div>
+
+  <div class="preview-col">
+    <div class="prompt-section-label">
+      <span>Forged Sigil</span>
+    </div>
+    <div class="prompt-box" style="--prompt-accent:#BB6688">
+      <div class="prompt-head">
+        <span class="prompt-lang">EN · for GPT / DALL·E</span>
+        <button class="prompt-copy-btn" id="copy-en-btn" onclick="copyPrompt('en',this)">📋 복사</button>
+      </div>
+      <div class="prompt-text" id="prompt-en"></div>
+    </div>
+    <div class="prompt-box" style="--prompt-accent:#8889CD">
+      <div class="prompt-head">
+        <span class="prompt-lang">KR · for Gemini / Imagen</span>
+        <button class="prompt-copy-btn" id="copy-kr-btn" onclick="copyPrompt('kr',this)">📋 복사</button>
+      </div>
+      <div class="prompt-text" id="prompt-kr"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 칩 추가 모달 -->
+<div class="modal-overlay" id="chip-modal">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-title">＋ 항목 추가</div>
+    <div class="modal-section">
+      <div class="modal-label" id="chip-modal-cat-label">CATEGORY</div>
+      <input class="modal-input" type="text" id="chip-modal-input" placeholder="추가할 항목 이름 (한글/영문)">
+      <div class="modal-hint">💡 한글로 입력해도 돼. 프롬프트엔 그대로 들어가.</div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-ghost" onclick="closeChipModal()">취소</button>
+      <button class="modal-btn modal-btn-primary" onclick="confirmChipAdd()">추가</button>
+    </div>
+  </div>
+</div>
+
+<!-- Gist 동기화 모달 -->
+<div class="modal-overlay" id="gist-modal">
+  <div class="modal">
+    <div class="modal-title">☁️ SYNC</div>
+    <div class="modal-section">
+      <div class="modal-label">GITHUB PERSONAL ACCESS TOKEN</div>
+      <input class="modal-input" type="password" id="gist-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      <div class="modal-hint">⚠️ 이 기기 localStorage에만 저장돼. 절대 공유하지 마.</div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">GIST ID</div>
+      <div class="modal-id-row">
+        <input class="modal-input" type="text" id="gist-id" placeholder="비워두면 새로 만들어">
+        <button class="modal-copy-btn" onclick="copyGistId()">📋</button>
+      </div>
+      <div class="modal-hint">💡 다른 기기에서 불러오려면 이 ID 복사해서 옮겨.</div>
+    </div>
+    <div class="modal-status" id="gist-status"></div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-primary" onclick="gistUpload()">⬆️ 업로드</button>
+      <button class="modal-btn modal-btn-download" onclick="gistDownload()">⬇️ 다운로드</button>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeGistModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  COLOR_NAMES — HEX → 영문/한글 (기존 동일)
+// ═══════════════════════════════════════════════════════════════════
+const COLOR_NAMES = [
+  { hex:'#8889CD', en:'soft periwinkle indigo', kr:'은은한 인디고' },
+  { hex:'#DDAACC', en:'pastel mauve pink', kr:'파스텔 모브 핑크' },
+  { hex:'#CCAA88', en:'warm beige tan', kr:'따뜻한 베이지 탠' },
+  { hex:'#BB6688', en:'dusty wine rose', kr:'더스티 와인 로즈' },
+  { hex:'#884499', en:'deep royal purple', kr:'딥 로열 퍼플' },
+  { hex:'#EE1166', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
+  { hex:'#FF6699', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
+  { hex:'#00BBDD', en:'bright cyan blue', kr:'밝은 시안 블루' },
+  { hex:'#FF7722', en:'vivid tangerine orange', kr:'선명한 탠저린 오렌지' },
+  { hex:'#0077DD', en:'deep azure blue', kr:'딥 애저 블루' },
+  { hex:'#DC143C', en:'crimson red', kr:'크림슨 레드' },
+  { hex:'#8B0000', en:'dark blood red', kr:'다크 블러드 레드' },
+  { hex:'#722F37', en:'deep wine burgundy', kr:'딥 와인 버건디' },
+  { hex:'#FF0000', en:'pure red', kr:'순수한 빨강' },
+  { hex:'#B22222', en:'firebrick red', kr:'파이어브릭 레드' },
+  { hex:'#CD5C5C', en:'indian red', kr:'인디언 레드' },
+  { hex:'#800000', en:'maroon', kr:'마룬' },
+  { hex:'#FA8072', en:'salmon', kr:'살몬' },
+  { hex:'#FFB6C1', en:'light pink', kr:'라이트 핑크' },
+  { hex:'#FF69B4', en:'hot pink', kr:'핫 핑크' },
+  { hex:'#FF1493', en:'deep pink', kr:'딥 핑크' },
+  { hex:'#FFC0CB', en:'soft pink', kr:'소프트 핑크' },
+  { hex:'#DB7093', en:'pale violet red', kr:'팰 바이올렛 레드' },
+  { hex:'#C71585', en:'medium violet red', kr:'미디엄 바이올렛 레드' },
+  { hex:'#800080', en:'purple', kr:'퍼플' },
+  { hex:'#4B0082', en:'indigo', kr:'인디고' },
+  { hex:'#9370DB', en:'medium purple', kr:'미디엄 퍼플' },
+  { hex:'#8A2BE2', en:'blue violet', kr:'블루 바이올렛' },
+  { hex:'#9400D3', en:'dark violet', kr:'다크 바이올렛' },
+  { hex:'#BA55D3', en:'medium orchid', kr:'미디엄 오키드' },
+  { hex:'#DDA0DD', en:'plum', kr:'플럼' },
+  { hex:'#E6E6FA', en:'lavender', kr:'라벤더' },
+  { hex:'#D8BFD8', en:'thistle violet', kr:'씨슬 바이올렛' },
+  { hex:'#0000FF', en:'pure blue', kr:'순수한 블루' },
+  { hex:'#000080', en:'navy blue', kr:'네이비 블루' },
+  { hex:'#191970', en:'midnight blue', kr:'미드나잇 블루' },
+  { hex:'#4169E1', en:'royal blue', kr:'로열 블루' },
+  { hex:'#1E90FF', en:'dodger blue', kr:'다저 블루' },
+  { hex:'#87CEEB', en:'sky blue', kr:'스카이 블루' },
+  { hex:'#4682B4', en:'steel blue', kr:'스틸 블루' },
+  { hex:'#6495ED', en:'cornflower blue', kr:'콘플라워 블루' },
+  { hex:'#B0C4DE', en:'light steel blue', kr:'라이트 스틸 블루' },
+  { hex:'#00FFFF', en:'pure cyan', kr:'순수한 시안' },
+  { hex:'#008B8B', en:'dark cyan', kr:'다크 시안' },
+  { hex:'#008080', en:'teal', kr:'틸' },
+  { hex:'#20B2AA', en:'light sea green', kr:'라이트 시 그린' },
+  { hex:'#40E0D0', en:'turquoise', kr:'터쿼이즈' },
+  { hex:'#7FFFD4', en:'aquamarine', kr:'아쿠아마린' },
+  { hex:'#008000', en:'green', kr:'그린' },
+  { hex:'#006400', en:'dark forest green', kr:'다크 포레스트 그린' },
+  { hex:'#228B22', en:'forest green', kr:'포레스트 그린' },
+  { hex:'#2E8B57', en:'sea green', kr:'시 그린' },
+  { hex:'#00FF00', en:'lime green', kr:'라임 그린' },
+  { hex:'#9ACD32', en:'yellow green', kr:'옐로우 그린' },
+  { hex:'#808000', en:'olive', kr:'올리브' },
+  { hex:'#556B2F', en:'dark olive green', kr:'다크 올리브 그린' },
+  { hex:'#8FBC8F', en:'dark sage green', kr:'다크 세이지 그린' },
+  { hex:'#98FB98', en:'pale mint green', kr:'팰 민트 그린' },
+  { hex:'#50C878', en:'emerald green', kr:'에메랄드 그린' },
+  { hex:'#FFFF00', en:'pure yellow', kr:'순수한 옐로우' },
+  { hex:'#FFD700', en:'golden yellow', kr:'골드 옐로우' },
+  { hex:'#FFA500', en:'orange', kr:'오렌지' },
+  { hex:'#FFDAB9', en:'peach', kr:'피치' },
+  { hex:'#F0E68C', en:'khaki yellow', kr:'카키 옐로우' },
+  { hex:'#FF8C00', en:'dark orange', kr:'다크 오렌지' },
+  { hex:'#FF4500', en:'red orange', kr:'레드 오렌지' },
+  { hex:'#FF7F50', en:'coral', kr:'코랄' },
+  { hex:'#FF6347', en:'tomato red', kr:'토마토 레드' },
+  { hex:'#E9967A', en:'dark salmon', kr:'다크 살몬' },
+  { hex:'#8B4513', en:'saddle brown', kr:'새들 브라운' },
+  { hex:'#A0522D', en:'sienna brown', kr:'시에나 브라운' },
+  { hex:'#D2691E', en:'chocolate brown', kr:'초콜릿 브라운' },
+  { hex:'#CD853F', en:'peru tan', kr:'페루 탠' },
+  { hex:'#DEB887', en:'burlywood tan', kr:'벌리우드 탠' },
+  { hex:'#F4A460', en:'sandy brown', kr:'샌디 브라운' },
+  { hex:'#D2B48C', en:'tan', kr:'탠' },
+  { hex:'#BC8F8F', en:'rosy brown', kr:'로지 브라운' },
+  { hex:'#F5DEB3', en:'wheat beige', kr:'위트 베이지' },
+  { hex:'#FFFFFF', en:'pure white', kr:'순수한 화이트' },
+  { hex:'#FFFAF0', en:'floral white', kr:'플로럴 화이트' },
+  { hex:'#FFF8DC', en:'cornsilk ivory', kr:'콘실크 아이보리' },
+  { hex:'#FAEBD7', en:'antique cream', kr:'앤티크 크림' },
+  { hex:'#F5F5DC', en:'beige', kr:'베이지' },
+  { hex:'#DCDCDC', en:'light gray', kr:'라이트 그레이' },
+  { hex:'#C0C0C0', en:'silver gray', kr:'실버 그레이' },
+  { hex:'#A9A9A9', en:'dark gray', kr:'다크 그레이' },
+  { hex:'#808080', en:'gray', kr:'그레이' },
+  { hex:'#696969', en:'dim gray', kr:'딤 그레이' },
+  { hex:'#2F4F4F', en:'dark slate gray', kr:'다크 슬레이트 그레이' },
+  { hex:'#0C0C0C', en:'onyx black', kr:'오닉스 블랙' },
+  { hex:'#000000', en:'jet black', kr:'제트 블랙' },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+//  가문 무기 데이터
+// ═══════════════════════════════════════════════════════════════════
+// 무기 종류 (베이스) — 그룹화
+const WEAPON_TYPE_GROUPS = [
+  { label:'검류', items:[
+    {en:'sword', kr:'검'}, {en:'longsword', kr:'롱소드'}, {en:'greatsword', kr:'대검'},
+    {en:'rapier', kr:'레이피어'}, {en:'dagger', kr:'단검'}, {en:'scimitar', kr:'시미터'},
+    {en:'katana', kr:'카타나'}, {en:'falchion', kr:'팔시온'}, {en:'saber', kr:'세이버'},
+    {en:'stiletto', kr:'스틸레토'}, {en:'estoc', kr:'에스톡'},
+  ]},
+  { label:'봉·지팡이', items:[
+    {en:'staff', kr:'지팡이'}, {en:'wand', kr:'완드'}, {en:'scepter', kr:'셉터'},
+    {en:'rod', kr:'로드'}, {en:'cane sword', kr:'지팡이 검'},
+  ]},
+  { label:'폴암', items:[
+    {en:'spear', kr:'창'}, {en:'pike', kr:'파이크'}, {en:'halberd', kr:'할버드'},
+    {en:'glaive', kr:'글레이브'}, {en:'scythe', kr:'낫'}, {en:'lance', kr:'랜스'},
+    {en:'trident', kr:'트라이던트'}, {en:'naginata', kr:'나기나타'},
+  ]},
+  { label:'활', items:[
+    {en:'bow', kr:'활'}, {en:'longbow', kr:'장궁'}, {en:'shortbow', kr:'단궁'},
+    {en:'crossbow', kr:'석궁'}, {en:'recurve bow', kr:'리커브 보우'},
+  ]},
+  { label:'둔기', items:[
+    {en:'mace', kr:'메이스'}, {en:'warhammer', kr:'전쟁망치'}, {en:'flail', kr:'플레일'},
+    {en:'club', kr:'클럽'}, {en:'morningstar', kr:'모닝스타'},
+  ]},
+  { label:'도끼', items:[
+    {en:'axe', kr:'도끼'}, {en:'battleaxe', kr:'전투도끼'}, {en:'tomahawk', kr:'토마호크'},
+    {en:'bardiche', kr:'바르디슈'},
+  ]},
+  { label:'이국·특수', items:[
+    {en:'chakram', kr:'차크람'}, {en:'claws', kr:'클로'}, {en:'gauntlet', kr:'건틀릿'},
+    {en:'whip', kr:'채찍'}, {en:'kusarigama', kr:'쿠사리가마'}, {en:'war fan', kr:'전투 부채'},
+    {en:'sai', kr:'사이'},
+  ]},
+  { label:'마법·총포', items:[
+    {en:'orb', kr:'오브'}, {en:'tome weapon', kr:'마도서 무기'},
+    {en:'grimoire blade', kr:'그리모어 블레이드'}, {en:'arcane gun', kr:'아케인 건'},
+  ]},
+];
+const ALL_WEAPON_TYPES = WEAPON_TYPE_GROUPS.flatMap(g => g.items);
+
+// 가문 모티프 (sigil의 BASE_MOTIFS 재활용)
+const MOTIF_GROUPS = [
+  { label:'기본', items:[
+    {en:'heart', kr:'하트'}, {en:'sword', kr:'검'}, {en:'rose', kr:'장미'},
+    {en:'star', kr:'별'}, {en:'cross', kr:'십자가'}, {en:'moon', kr:'달'},
+  ]},
+  { label:'동물', items:[
+    {en:'wolf', kr:'늑대'}, {en:'dragon', kr:'용'}, {en:'serpent', kr:'뱀'},
+    {en:'raven', kr:'까마귀'}, {en:'lion', kr:'사자'}, {en:'eagle', kr:'독수리'},
+    {en:'bear', kr:'곰'}, {en:'tiger', kr:'호랑이'}, {en:'swan', kr:'백조'},
+    {en:'stag', kr:'사슴'}, {en:'fox', kr:'여우'}, {en:'owl', kr:'부엉이'},
+    {en:'octopus', kr:'문어'},
+  ]},
+  { label:'신화수', items:[
+    {en:'griffin', kr:'그리핀'}, {en:'pegasus', kr:'페가수스'}, {en:'chimera', kr:'키메라'},
+    {en:'phoenix', kr:'봉황'}, {en:'unicorn', kr:'유니콘'}, {en:'hydra', kr:'히드라'},
+    {en:'cerberus', kr:'케르베로스'},
+  ]},
+  { label:'식물', items:[
+    {en:'lily', kr:'백합'}, {en:'oak leaf', kr:'떡갈나무잎'}, {en:'thorn bush', kr:'가시덤불'},
+    {en:'ivy', kr:'담쟁이'}, {en:'mandrake', kr:'만드라고라'},
+  ]},
+  { label:'상징', items:[
+    {en:'anchor', kr:'닻'}, {en:'key', kr:'열쇠'}, {en:'hourglass', kr:'모래시계'},
+    {en:'feather', kr:'깃털'}, {en:'arrow', kr:'화살'}, {en:'torch', kr:'횃불'},
+    {en:'lantern', kr:'등불'}, {en:'eye symbol', kr:'눈(eye)'},
+  ]},
+  { label:'기하·룬', items:[
+    {en:'pentagram', kr:'펜타그램'}, {en:'hexagram', kr:'헥사그램'}, {en:'rune', kr:'룬 문자'},
+    {en:'constellation', kr:'별자리'}, {en:'triangle', kr:'삼각형'},
+  ]},
+  { label:'자연·원소', items:[
+    {en:'sun', kr:'태양'}, {en:'moon phases', kr:'달의 위상'}, {en:'mountain', kr:'산'},
+    {en:'wave', kr:'파도'}, {en:'lightning bolt', kr:'번개'}, {en:'flame', kr:'불꽃'},
+    {en:'snowflake', kr:'눈송이'}, {en:'storm cloud', kr:'폭풍'},
+  ]},
+];
+const ALL_MOTIFS = MOTIF_GROUPS.flatMap(g => g.items);
+
+// 보조 디테일 (sigil SUB_MOTIFS 재활용)
+const SUB_MOTIFS = [
+  {en:'thorns', kr:'가시'}, {en:'wings', kr:'날개'}, {en:'crown', kr:'왕관'},
+  {en:'chains', kr:'사슬'}, {en:'skull', kr:'해골'}, {en:'vines', kr:'덩굴'},
+  {en:'small feathers', kr:'깃털 장식'}, {en:'ribbon', kr:'리본'}, {en:'knot', kr:'매듭'},
+  {en:'halo', kr:'광배(halo)'}, {en:'bow ornament', kr:'활 장식'}, {en:'small arrow', kr:'화살(보조)'},
+  {en:'gears', kr:'톱니'}, {en:'tear drop', kr:'눈물'}, {en:'blood drop', kr:'핏방울'},
+  {en:'leaves', kr:'잎사귀'}, {en:'petals', kr:'꽃잎'}, {en:'star spikes', kr:'별가시'},
+  {en:'bone chain', kr:'사슬뼈'}, {en:'spider web', kr:'거미줄'},
+  {en:'blade etching', kr:'날 각인'}, {en:'pommel ornament', kr:'자루끝 장식'},
+  {en:'hilt wrapping', kr:'손잡이 감개'}, {en:'tassel', kr:'술 장식'},
+];
+
+// 무기 양식
+const STYLES = [
+  {en:'gothic ornate', kr:'고딕 장식'}, {en:'elven flowing curves', kr:'엘프 곡선'},
+  {en:'dwarven heavy', kr:'드워프 중후'}, {en:'japanese katana style', kr:'일본도풍'},
+  {en:'tribal primitive', kr:'원시 트라이벌'}, {en:'art deco geometric', kr:'아르데코'},
+  {en:'baroque ornamental', kr:'바로크 장식'}, {en:'minimal sleek', kr:'미니멀'},
+  {en:'runic engraved', kr:'룬 각인'}, {en:'ceremonial regal', kr:'의식용 위엄'},
+  {en:'barbarian crude', kr:'야만적'}, {en:'ancient ruined', kr:'고대 유적풍'},
+];
+
+// 손잡이 재질
+const HANDLES = [
+  {en:'black iron', kr:'흑철'}, {en:'ivory', kr:'상아'}, {en:'silver', kr:'은'},
+  {en:'dark wood', kr:'흑단'}, {en:'crystal', kr:'수정'}, {en:'bone-like white metal', kr:'백골금속'},
+  {en:'golden brass', kr:'황동'}, {en:'leather wrap', kr:'가죽감개'}, {en:'silk wrap', kr:'비단감개'},
+];
+
+// 날·머리 형태
+const BLADES = [
+  {en:'crescent-shaped', kr:'초승달형'}, {en:'long narrow', kr:'가늘고 긴'},
+  {en:'split', kr:'분지형'}, {en:'thorn-like', kr:'가시형'},
+  {en:'wave-shaped', kr:'파도형'}, {en:'flame-shaped', kr:'화염형'},
+  {en:'curved', kr:'곡선'}, {en:'double-edged', kr:'양날'},
+  {en:'serrated', kr:'톱니'}, {en:'straight', kr:'직선'},
+];
+
+// 보석
+const GEMSTONES = [
+  {en:'sapphire', kr:'사파이어'}, {en:'ruby', kr:'루비'}, {en:'amethyst', kr:'자수정'},
+  {en:'moonstone', kr:'문스톤'}, {en:'emerald', kr:'에메랄드'}, {en:'black opal', kr:'블랙 오팔'},
+  {en:'diamond', kr:'다이아'}, {en:'topaz', kr:'토파즈'}, {en:'garnet', kr:'가넷'},
+  {en:'pearl', kr:'진주'},
+];
+
+const MOODS = [
+  {en:'ominous', kr:'위협적인'}, {en:'regal', kr:'위엄있는'}, {en:'holy', kr:'신성한'},
+  {en:'cursed', kr:'저주받은'}, {en:'melancholic', kr:'우울한'}, {en:'savage', kr:'야만적인'},
+  {en:'mysterious', kr:'신비로운'}, {en:'tragic', kr:'비극적인'}, {en:'radiant', kr:'광휘로운'},
+  {en:'elegant', kr:'우아한'}, {en:'cold', kr:'차가운'}, {en:'feral', kr:'야성적인'},
+  {en:'celestial', kr:'천상의'}, {en:'infernal', kr:'지옥의'}, {en:'maddening', kr:'광기 어린'},
+  {en:'pure and chaste', kr:'청초한'}, {en:'gloomy', kr:'음울한'},
+];
+
+const BACKGROUNDS = [
+  {value:'white', en:'pure white background', kr:'순백 배경'},
+  {value:'black', en:'pure black background', kr:'검은 배경'},
+  {value:'parchment', en:'aged parchment background', kr:'오래된 양피지 배경'},
+  {value:'transparent', en:'transparent background, no background, alpha channel only', kr:'투명 배경 (배경 없음)'},
+];
+
+const EXTRAS = [
+  {en:'perfectly symmetrical composition', kr:'완벽한 좌우대칭'},
+  {en:'inverted negative space cutouts', kr:'음각(네거티브 스페이스) 컷아웃'},
+  {en:'subtle vintage texture', kr:'은은한 빈티지 텍스처'},
+  {en:'floating magical particles', kr:'마법 파편'},
+  {en:'glowing edges', kr:'가장자리 발광'},
+  {en:'engraved with unreadable runes', kr:'읽을 수 없는 룬 각인'},
+];
+
+const ELEMENTS = [
+  {en:'fire-aligned', kr:'불'}, {en:'water-aligned', kr:'물'}, {en:'wind-aligned', kr:'바람'},
+  {en:'earth-aligned', kr:'땅'}, {en:'light-aligned', kr:'빛'}, {en:'dark-aligned', kr:'어둠'},
+  {en:'star-aligned', kr:'별'}, {en:'shadow-aligned', kr:'그림자'},
+];
+
+// RPG식 무기 등급
+const RANKS = [
+  {en:'mythic divine weapon with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
+  {en:'legendary heroic weapon with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
+  {en:'epic high-grade enchanted weapon with elegant detailing', kr:'영웅급 (우아한 디테일)'},
+  {en:'rare enchanted weapon with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
+  {en:'uncommon refined weapon with subtle detailing', kr:'고급 (절제된 디테일)'},
+  {en:'common standard quality weapon with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
+];
+
+// 유래·성격
+const PURPOSES = [
+  {en:'ceremonial ritual weapon', kr:'의식용'},
+  {en:'battle-worn weapon', kr:'실전용'},
+  {en:'sealed forbidden weapon', kr:'봉인 무기'},
+  {en:'ancient relic weapon', kr:'고대 유물'},
+  {en:'inherited heirloom weapon', kr:'계승 무기'},
+];
+
+// 오라·광휘
+const AURAS = [
+  {en:'powerful glowing aura', kr:'강한 광휘'},
+  {en:'subtle ethereal glow', kr:'은은한 빛'},
+  {en:'no aura', kr:'광휘 없음'},
+];
+
+const THEMES = [
+  {en:'love', kr:'사랑'}, {en:'vengeance', kr:'복수'}, {en:'honor', kr:'명예'},
+  {en:'betrayal', kr:'배신'}, {en:'freedom', kr:'자유'}, {en:'madness', kr:'광기'},
+  {en:'faith', kr:'신앙'}, {en:'desire', kr:'욕망'},
+];
+
+const FACTIONS = [
+  {en:'human noble', kr:'인간'}, {en:'elven high-house', kr:'엘프'}, {en:'demonic', kr:'데몬'},
+  {en:'angelic', kr:'천사'}, {en:'vampiric', kr:'뱀파이어'}, {en:'werewolf clan', kr:'늑대인간'},
+  {en:'undead', kr:'언데드'},
+];
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  STORAGE
+// ═══════════════════════════════════════════════════════════════════
+const STORAGE_PREFIX = 'forge_';
+const STATE_KEY = STORAGE_PREFIX + 'weapon';
+const CUSTOM_KEY = STORAGE_PREFIX + 'weapon_custom';
+const K = {
+  token:  STORAGE_PREFIX + 'gist_token',
+  gistId: STORAGE_PREFIX + 'gist_id',
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+const DEFAULT_STATE = {
+  weaponType: ['sword'],
+  customWeaponType: '',
+  motifs: ['rose'],
+  customMotif: '',
+  subMotifs: [],
+  customSubMotif: '',
+  style: [],
+  handle: [],
+  blade: [],
+  gemstone: [],
+  moods: ['regal'],
+  primaryColor: '#CCAA88',
+  secondaryColors: [],
+  background: ['white'],
+  extras: ['perfectly symmetrical composition'],
+  element: [],
+  rank: [],
+  purpose: [],
+  aura: [],
+  themes: [],
+  faction: [],
+};
+
+let state = {...DEFAULT_STATE};
+let customChips = {
+  weaponType:[], motifs:[], subMotifs:[], style:[], handle:[], blade:[],
+  gemstone:[], moods:[], background:[], extras:[], element:[], rank:[],
+  purpose:[], aura:[], themes:[], faction:[],
+};
+
+// SUB_MOTIFS 최대 4개 (기존 동작 유지)
+const SUB_MOTIF_MAX = 4;
+
+// ═══════════════════════════════════════════════════════════════════
+//  섹션 정의
+// ═══════════════════════════════════════════════════════════════════
+const SECTIONS = [
+  // 01 무기 종류 (베이스) — 별도 그룹화 렌더링
+  // 02 가문 모티프 — 별도 그룹화 렌더링
+  { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
+  { num:'04', key:'style', title:'양식', sub:'무기의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:STYLES, mode:'multi', accent:'#DDAACC' },
+  { num:'05', key:'handle', title:'손잡이 재질', sub:'단일 권장 · 복수 선택 가능 · 선택 사항 (지팡이·완드는 자루로 해석)', items:HANDLES, mode:'multi', accent:'#CCAA88' },
+  { num:'06', key:'blade', title:'날·머리 형태', sub:'단일 권장 · 복수 선택 가능 · 선택 사항 (활·둔기·완드는 비워둬도 OK)', items:BLADES, mode:'multi', accent:'#BB6688' },
+  { num:'07', key:'gemstone', title:'보석', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:GEMSTONES, mode:'multi', accent:'#DDAACC' },
+  // 08 색상 별도
+  { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
+  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
+  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
+  { num:'13', key:'rank', title:'무기 격 (Rank)', sub:'무기의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
+  { num:'14', key:'purpose', title:'유래·성격', sub:'무기의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
+  { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8889CD' },
+  { num:'16', key:'themes', title:'테마 키워드', sub:'무기의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'17', key:'faction', title:'종족·진영', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FACTIONS, mode:'multi', accent:'#DDAACC' },
+];
+
+// ═══════════════════════════════════════════════════════════════════
+//  UTIL
+// ═══════════════════════════════════════════════════════════════════
+function esc(s){
+  return String(s ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function hexToRgb(hex){
+  const h = hex.replace('#','');
+  return { r:parseInt(h.substring(0,2),16), g:parseInt(h.substring(2,4),16), b:parseInt(h.substring(4,6),16) };
+}
+function colorDistance(c1,c2){
+  return Math.sqrt(Math.pow(c1.r-c2.r,2)+Math.pow(c1.g-c2.g,2)+Math.pow(c1.b-c2.b,2));
+}
+function findClosestColorName(hex){
+  const target = hexToRgb(hex);
+  let closest = COLOR_NAMES[0]; let minDist = Infinity;
+  for(const c of COLOR_NAMES){
+    const dist = colorDistance(target, hexToRgb(c.hex));
+    if(dist < minDist){ minDist = dist; closest = c; }
+  }
+  return closest;
+}
+function parseColorInput(input){
+  const trimmed = input.trim();
+  const hex6 = trimmed.match(/^#?([0-9a-fA-F]{6})$/);
+  if(hex6) return '#'+hex6[1].toUpperCase();
+  const hex3 = trimmed.match(/^#?([0-9a-fA-F]{3})$/);
+  if(hex3){
+    const [r,g,b] = hex3[1].split('');
+    return ('#'+r+r+g+g+b+b).toUpperCase();
+  }
+  const rgb = trimmed.match(/^(?:rgb\s*\()?\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*[, ]\s*(\d{1,3})\s*\)?$/);
+  if(rgb){
+    const r = Math.min(255,parseInt(rgb[1]));
+    const g = Math.min(255,parseInt(rgb[2]));
+    const b = Math.min(255,parseInt(rgb[3]));
+    return ('#'+r.toString(16).padStart(2,'0')+g.toString(16).padStart(2,'0')+b.toString(16).padStart(2,'0')).toUpperCase();
+  }
+  return null;
+}
+function joinWithAnd(arr){
+  if(arr.length === 0) return '';
+  if(arr.length === 1) return arr[0];
+  if(arr.length === 2) return arr[0]+' and '+arr[1];
+  return arr.slice(0,-1).join(', ')+', and '+arr[arr.length-1];
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  렌더링
+// ═══════════════════════════════════════════════════════════════════
+function renderSections(){
+  const root = document.getElementById('sections-root');
+  root.innerHTML = '';
+
+  // 01: 무기 종류 (그룹화)
+  const wtSec = document.createElement('section');
+  wtSec.className = 'section';
+  wtSec.innerHTML = renderWeaponTypeHTML();
+  root.appendChild(wtSec);
+
+  // 02: 가문 모티프 (그룹화)
+  const motifSec = document.createElement('section');
+  motifSec.className = 'section';
+  motifSec.innerHTML = renderMotifHTML();
+  root.appendChild(motifSec);
+
+  // 나머지 섹션
+  SECTIONS.forEach(sec => {
+    const div = document.createElement('section');
+    div.className = 'section';
+    div.id = 'sec-' + sec.key;
+    div.innerHTML = renderSectionHTML(sec);
+    root.appendChild(div);
+
+    // 07 보석 다음에 08 색상
+    if(sec.num === '07'){
+      const colorSec = document.createElement('section');
+      colorSec.className = 'section';
+      colorSec.id = 'sec-color';
+      colorSec.innerHTML = renderColorSectionHTML();
+      root.appendChild(colorSec);
+    }
+  });
+
+  attachChipListeners();
+  attachColorListeners();
+  attachInputListeners();
+}
+
+function renderWeaponTypeHTML(){
+  const customItems = (customChips.weaponType || []).map(label => ({
+    en:label, kr:label, _custom:true,
+  }));
+  return `
+    <div class="section-head">
+      <span class="section-num">/ 01</span>
+      <h2 class="section-title">무기 종류</h2>
+    </div>
+    <div class="section-sub">단일 권장 · 복수 선택 가능 · 직접 입력은 콤마로 구분 (둘 다 합쳐짐)</div>
+    <div class="chip-group-wrap">
+      ${WEAPON_TYPE_GROUPS.map(group => `
+        <div class="group-label">${esc(group.label)}</div>
+        <div class="chip-group" data-section="weaponType" data-mode="multi" style="margin-bottom:8px">
+          ${group.items.map(item => {
+            const active = (state.weaponType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="weaponType" data-value="${esc(item.en)}" style="--chip-accent:#CCAA88">${esc(item.kr)}</div>`;
+          }).join('')}
+        </div>
+      `).join('')}
+      ${customItems.length ? `
+        <div class="group-label">커스텀</div>
+        <div class="chip-group" data-section="weaponType" data-mode="multi" style="margin-bottom:8px">
+          ${customItems.map(item => {
+            const active = (state.weaponType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="weaponType" data-value="${esc(item.en)}" style="--chip-accent:#CCAA88">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="weaponType" data-value="${esc(item.en)}">×</span></div>`;
+          }).join('')}
+        </div>
+      ` : ''}
+      <div class="chip-group" data-section="weaponType" data-mode="multi">
+        <div class="chip chip-add" data-action="add-chip" data-section="weaponType" style="--chip-accent:#CCAA88">＋</div>
+      </div>
+    </div>
+    <input type="text" class="text-input" id="custom-weaponType" placeholder="직접 입력 (콤마로 여러 개, 예: glaive, 글레이브)" value="${esc(state.customWeaponType || '')}">
+    <div class="input-hint" id="custom-weaponType-hint"></div>
+  `;
+}
+
+function renderMotifHTML(){
+  const customItems = (customChips.motifs || []).map(label => ({
+    en:label, kr:label, _custom:true,
+  }));
+  return `
+    <div class="section-head">
+      <span class="section-num">/ 02</span>
+      <h2 class="section-title">가문 모티프</h2>
+    </div>
+    <div class="section-sub">무기에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
+    <div class="chip-group-wrap">
+      ${MOTIF_GROUPS.map(group => `
+        <div class="group-label">${esc(group.label)}</div>
+        <div class="chip-group" data-section="motifs" data-mode="multi" style="margin-bottom:8px">
+          ${group.items.map(item => {
+            const active = (state.motifs||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="motifs" data-value="${esc(item.en)}" style="--chip-accent:#BB6688">${esc(item.kr)}</div>`;
+          }).join('')}
+        </div>
+      `).join('')}
+      ${customItems.length ? `
+        <div class="group-label">커스텀</div>
+        <div class="chip-group" data-section="motifs" data-mode="multi" style="margin-bottom:8px">
+          ${customItems.map(item => {
+            const active = (state.motifs||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="motifs" data-value="${esc(item.en)}" style="--chip-accent:#BB6688">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="motifs" data-value="${esc(item.en)}">×</span></div>`;
+          }).join('')}
+        </div>
+      ` : ''}
+      <div class="chip-group" data-section="motifs" data-mode="multi">
+        <div class="chip chip-add" data-action="add-chip" data-section="motifs" style="--chip-accent:#BB6688">＋</div>
+      </div>
+    </div>
+    <input type="text" class="text-input" id="custom-motifs" placeholder="직접 입력 (콤마로 여러 개, 예: phoenix, 봉황)" value="${esc(state.customMotif || '')}">
+    <div class="input-hint" id="custom-motifs-hint"></div>
+  `;
+}
+
+function renderSectionHTML(sec){
+  return `
+    <div class="section-head">
+      <span class="section-num">/ ${sec.num}</span>
+      <h2 class="section-title">${esc(sec.title)}</h2>
+    </div>
+    <div class="section-sub">${esc(sec.sub)}${sec.mode==='multi'&&sec.max?` <span style="color:var(--tool-color);font-family:'JetBrains Mono',monospace;">(${(state[sec.key]||[]).length}/${sec.max})</span>`:''}</div>
+    <div class="chip-group" data-section="${sec.key}" data-mode="${sec.mode}" ${sec.optional?'data-optional="1"':''} ${sec.max?'data-max="'+sec.max+'"':''} ${sec.valueKey?'data-value-key="'+sec.valueKey+'"':''}>
+      ${renderChipsHTML(sec)}
+    </div>
+    ${sec.hasCustomInput ? `
+      <input type="text" class="text-input" id="custom-${sec.key}" placeholder="직접 입력 (콤마로 여러 개)" value="${esc(state[sec.customField] || '')}">
+      <div class="input-hint" id="custom-${sec.key}-hint"></div>
+    ` : ''}
+  `;
+}
+
+function renderChipsHTML(sec){
+  const items = sec.items;
+  const customItems = (customChips[sec.key] || []).map(label => ({
+    en:label, kr:label, value:label, _custom:true,
+  }));
+  const all = [...items, ...customItems];
+
+  let html = all.map(item => {
+    const value = sec.valueKey ? item[sec.valueKey] : item.en;
+    const label = item.kr || item.en || item.value;
+    const isActive = isChipActive(sec, value);
+    const customDel = item._custom
+      ? `<span class="chip-custom-del" data-action="del-custom" data-section="${esc(sec.key)}" data-value="${esc(value)}">×</span>`
+      : '';
+    return `<div class="chip${isActive?' active':''}" data-section="${esc(sec.key)}" data-value="${esc(value)}" style="--chip-accent:${sec.accent}">${esc(label)}${customDel}</div>`;
+  }).join('');
+
+  html += `<div class="chip chip-add" data-action="add-chip" data-section="${esc(sec.key)}" style="--chip-accent:${sec.accent}">＋</div>`;
+  return html;
+}
+
+function isChipActive(sec, value){
+  const cur = state[sec.key];
+  if(sec.mode === 'multi') return Array.isArray(cur) && cur.includes(value);
+  return cur === value;
+}
+
+function renderColorSectionHTML(){
+  const primary = state.primaryColor || '#CCAA88';
+  const primaryInfo = findClosestColorName(primary);
+
+  let html = `
+    <div class="section-head">
+      <span class="section-num">/ 08</span>
+      <h2 class="section-title">색상 팔레트</h2>
+    </div>
+    <div class="section-sub">HEX(#BB6688, BB6688, #B68) 또는 RGB(187,102,136) 직접 입력 가능</div>
+    <div id="color-rows">
+      ${colorRowHTML('primary', primary, primaryInfo)}
+      ${(state.secondaryColors || []).map((hex, idx) => {
+        const info = findClosestColorName(hex);
+        return colorRowHTML('secondary-'+idx, hex, info, idx);
+      }).join('')}
+    </div>
+  `;
+  if((state.secondaryColors||[]).length < 2){
+    html += `<button class="color-add-btn" id="add-secondary">＋ 보조 색상 추가 (${(state.secondaryColors||[]).length}/2)</button>`;
+  }
+  html += `<div class="quick-palette">`;
+  COLOR_NAMES.slice(0,10).forEach(c => {
+    const active = primary === c.hex;
+    html += `<button class="quick-color${active?' active':''}" style="background:${c.hex}" data-hex="${c.hex}" title="${esc(c.kr)} (${c.hex})"></button>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function colorRowHTML(id, hex, info, idx){
+  const label = id === 'primary' ? '주' : ('보조'+((idx ?? 0)+1));
+  const removable = id !== 'primary';
+  return `
+    <div class="color-row" data-color-id="${id}">
+      <div class="color-label">${esc(label)}</div>
+      <label class="color-pick" style="background:${esc(hex)}">
+        <input type="color" value="${esc(hex)}" data-color-target="${id}">
+      </label>
+      <input type="text" class="color-hex-input" value="${esc(hex)}" data-color-hex-target="${id}" placeholder="HEX/RGB">
+      <div class="color-info">
+        <div class="kr">${esc(info.kr)}</div>
+        <div class="en">${esc(info.en)} · ${esc(hex)}</div>
+      </div>
+      ${removable ? `<button class="color-remove" data-remove-color="${id}">×</button>` : ''}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  이벤트
+// ═══════════════════════════════════════════════════════════════════
+function attachChipListeners(){
+  document.querySelectorAll('.chip-group').forEach(group => {
+    group.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-action], .chip');
+      if(!target) return;
+
+      const action = target.dataset.action;
+      if(action === 'add-chip'){
+        openChipModal(target.dataset.section);
+        return;
+      }
+      if(action === 'del-custom'){
+        e.stopPropagation();
+        const sec = target.dataset.section;
+        const val = target.dataset.value;
+        if(!confirm(`"${val}" 항목을 삭제할까?`)) return;
+        customChips[sec] = (customChips[sec]||[]).filter(v => v !== val);
+        if(Array.isArray(state[sec])){
+          state[sec] = state[sec].filter(v => v !== val);
+        } else if(state[sec] === val){
+          state[sec] = null;
+        }
+        saveAll();
+        renderSections();
+        updatePreview();
+        return;
+      }
+
+      if(target.classList.contains('chip') && target.dataset.value !== undefined){
+        const sec = target.dataset.section;
+        const value = target.dataset.value;
+        const mode = group.dataset.mode;
+        const optional = group.dataset.optional === '1';
+        const max = group.dataset.max ? parseInt(group.dataset.max) : null;
+
+        if(mode === 'multi'){
+          const arr = state[sec] || [];
+          if(arr.includes(value)){
+            state[sec] = arr.filter(v => v !== value);
+          } else {
+            if(max && arr.length >= max){
+              showToast(`⚠️ 최대 ${max}개까지만 가능해`);
+              return;
+            }
+            state[sec] = [...arr, value];
+          }
+        } else {
+          if(optional && state[sec] === value){
+            state[sec] = null;
+          } else {
+            state[sec] = value;
+          }
+        }
+        saveAll();
+        renderSections();
+        updatePreview();
+      }
+    });
+  });
+}
+
+function attachInputListeners(){
+  const customWt = document.getElementById('custom-weaponType');
+  if(customWt){
+    customWt.addEventListener('input', (e) => {
+      state.customWeaponType = e.target.value;
+      saveAll();
+      updatePreview();
+      updateWeaponTypeHint();
+    });
+    updateWeaponTypeHint();
+  }
+  const customMotif = document.getElementById('custom-motifs');
+  if(customMotif){
+    customMotif.addEventListener('input', (e) => {
+      state.customMotif = e.target.value;
+      saveAll();
+      updatePreview();
+      updateMotifHint();
+    });
+    updateMotifHint();
+  }
+  const customSub = document.getElementById('custom-subMotifs');
+  if(customSub){
+    customSub.addEventListener('input', (e) => {
+      state.customSubMotif = e.target.value;
+      saveAll();
+      updatePreview();
+      updateSubHint();
+    });
+    updateSubHint();
+  }
+}
+
+function updateWeaponTypeHint(){
+  const hint = document.getElementById('custom-weaponType-hint');
+  if(!hint) return;
+  const fromChips = (state.weaponType||[]).map(en => {
+    const found = ALL_WEAPON_TYPES.find(m => m.en === en);
+    return found ? found.kr : en;
+  });
+  const customs = (state.customWeaponType||'').split(',').map(s => s.trim()).filter(Boolean);
+  const all = [...fromChips, ...customs];
+  hint.textContent = all.length ? '선택됨: ' + all.join(' + ') : '';
+}
+function updateMotifHint(){
+  const hint = document.getElementById('custom-motifs-hint');
+  if(!hint) return;
+  const fromChips = (state.motifs||[]).map(en => {
+    const found = ALL_MOTIFS.find(m => m.en === en);
+    return found ? found.kr : en;
+  });
+  const customs = (state.customMotif||'').split(',').map(s => s.trim()).filter(Boolean);
+  const all = [...fromChips, ...customs];
+  hint.textContent = all.length ? '선택됨: ' + all.join(' + ') : '';
+}
+function updateSubHint(){
+  const hint = document.getElementById('custom-subMotifs-hint');
+  if(!hint) return;
+  const fromChips = (state.subMotifs||[]).map(en => {
+    const found = SUB_MOTIFS.find(m => m.en === en);
+    return found ? found.kr : en;
+  });
+  const customs = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean);
+  const all = [...fromChips, ...customs];
+  hint.textContent = all.length ? '결합: ' + all.join(' + ') : '';
+}
+
+function attachColorListeners(){
+  document.querySelectorAll('input[type="color"][data-color-target]').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      applyColorChange(inp.dataset.colorTarget, e.target.value.toUpperCase());
+    });
+  });
+  document.querySelectorAll('input[type="text"][data-color-hex-target]').forEach(inp => {
+    inp.addEventListener('blur', () => {
+      const parsed = parseColorInput(inp.value);
+      if(parsed){
+        applyColorChange(inp.dataset.colorHexTarget, parsed);
+      } else {
+        const id = inp.dataset.colorHexTarget;
+        const cur = id === 'primary' ? state.primaryColor : state.secondaryColors[parseInt(id.split('-')[1])];
+        inp.value = cur;
+      }
+    });
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ inp.blur(); }
+      if(e.key === 'Escape'){
+        const id = inp.dataset.colorHexTarget;
+        const cur = id === 'primary' ? state.primaryColor : state.secondaryColors[parseInt(id.split('-')[1])];
+        inp.value = cur;
+        inp.blur();
+      }
+    });
+  });
+  document.querySelectorAll('[data-remove-color]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.removeColor;
+      const idx = parseInt(id.split('-')[1]);
+      state.secondaryColors.splice(idx, 1);
+      saveAll();
+      renderSections();
+      updatePreview();
+    });
+  });
+  const addBtn = document.getElementById('add-secondary');
+  if(addBtn){
+    addBtn.addEventListener('click', () => {
+      state.secondaryColors = state.secondaryColors || [];
+      state.secondaryColors.push('#8889CD');
+      saveAll();
+      renderSections();
+      updatePreview();
+    });
+  }
+  document.querySelectorAll('.quick-color').forEach(btn => {
+    btn.addEventListener('click', () => {
+      applyColorChange('primary', btn.dataset.hex);
+    });
+  });
+}
+
+function applyColorChange(id, hex){
+  if(id === 'primary'){
+    state.primaryColor = hex;
+  } else {
+    const idx = parseInt(id.split('-')[1]);
+    state.secondaryColors[idx] = hex;
+  }
+  saveAll();
+  renderSections();
+  updatePreview();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  칩 추가 모달
+// ═══════════════════════════════════════════════════════════════════
+let currentChipModalSection = null;
+function openChipModal(sectionKey){
+  currentChipModalSection = sectionKey;
+  const specialTitles = { weaponType:'무기 종류', motifs:'가문 모티프' };
+  const sec = specialTitles[sectionKey]
+    ? {title:specialTitles[sectionKey]}
+    : SECTIONS.find(s => s.key === sectionKey);
+  document.getElementById('chip-modal-cat-label').textContent = (sec?.title || sectionKey).toUpperCase();
+  document.getElementById('chip-modal-input').value = '';
+  document.getElementById('chip-modal').classList.add('show');
+  setTimeout(() => document.getElementById('chip-modal-input').focus(), 100);
+}
+function closeChipModal(){
+  document.getElementById('chip-modal').classList.remove('show');
+  currentChipModalSection = null;
+}
+function confirmChipAdd(){
+  if(!currentChipModalSection) return;
+  const val = document.getElementById('chip-modal-input').value.trim();
+  if(!val){ closeChipModal(); return; }
+  customChips[currentChipModalSection] = customChips[currentChipModalSection] || [];
+  if(customChips[currentChipModalSection].includes(val)){
+    showToast('⚠️ 이미 있는 항목이야');
+    return;
+  }
+  customChips[currentChipModalSection].push(val);
+  saveAll();
+  closeChipModal();
+  renderSections();
+  updatePreview();
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('chip-modal-input');
+  if(inp){
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') confirmChipAdd();
+      if(e.key === 'Escape') closeChipModal();
+    });
+  }
+});
+document.getElementById('chip-modal').addEventListener('click', (e) => {
+  if(e.target.id === 'chip-modal') closeChipModal();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  프롬프트 생성 (기존 로직 보존)
+// ═══════════════════════════════════════════════════════════════════
+function buildPrompts(){
+  // 무기 종류 (필수)
+  const wtFromChips = (state.weaponType||[]).map(en => {
+    const found = ALL_WEAPON_TYPES.find(m => m.en === en);
+    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+  });
+  const wtCustoms = (state.customWeaponType||'').split(',').map(s => s.trim()).filter(Boolean)
+    .map(c => ({en:c, kr:c}));
+  const wtList = [...wtFromChips, ...wtCustoms];
+  const weaponEn = wtList.length ? joinWithAnd(wtList.map(m => m.en)) : 'weapon';
+  const weaponKr = wtList.length ? wtList.map(m => m.kr).join(', ') : '무기';
+
+  // 가문 모티프 (필수)
+  const motifFromChips = (state.motifs||[]).map(en => {
+    const found = ALL_MOTIFS.find(m => m.en === en);
+    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+  });
+  const motifCustoms = (state.customMotif||'').split(',').map(s => s.trim()).filter(Boolean)
+    .map(c => ({en:c, kr:c}));
+  const motifList = [...motifFromChips, ...motifCustoms];
+  const motifEn = motifList.length ? joinWithAnd(motifList.map(m => m.en)) : 'rose';
+  const motifKr = motifList.length ? motifList.map(m => m.kr).join(', ') : '장미';
+
+  // 보조 디테일 (옵션)
+  const subFromChips = state.subMotifs || [];
+  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean);
+  const subListEn = [...subFromChips, ...subCustoms];
+  const subListKr = [
+    ...subFromChips.map(s => (SUB_MOTIFS.find(x => x.en === s) || {kr:s}).kr),
+    ...subCustoms,
+  ];
+  const subEn = subListEn.length ? `, integrated with ${joinWithAnd(subListEn)}` : '';
+  const subKr = subListKr.length ? `, ${subListKr.join(', ')} 디테일이 결합됨` : '';
+
+  // 분위기 (필수)
+  const moodList = state.moods || [];
+  const moodEn = moodList.length ? moodList.join(', ') : 'atmospheric';
+  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || {kr:m}).kr).join(', ') : '분위기 있는';
+
+  // 양식 (옵션, multi)
+  const styleList = state.style || [];
+  const styleResolved = styleList.map(s => STYLES.find(x => x.en === s) || {en:s, kr:s});
+  const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
+  const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
+
+  // 손잡이 (옵션, multi)
+  const handleList = state.handle || [];
+  const handleResolved = handleList.map(s => HANDLES.find(x => x.en === s) || {en:s, kr:s});
+  const handleEn = handleResolved.length ? `, ${joinWithAnd(handleResolved.map(h => h.en))} grip` : '';
+  const handleKr = handleResolved.length ? `, ${handleResolved.map(h => h.kr).join('·')} 손잡이` : '';
+
+  // 날·머리 (옵션, multi)
+  const bladeList = state.blade || [];
+  const bladeResolved = bladeList.map(s => BLADES.find(x => x.en === s) || {en:s, kr:s});
+  const bladeEn = bladeResolved.length ? `, ${joinWithAnd(bladeResolved.map(b => b.en))} blade` : '';
+  const bladeKr = bladeResolved.length ? `, ${bladeResolved.map(b => b.kr).join('·')} 날` : '';
+
+  // 보석 (옵션, multi)
+  const gemList = state.gemstone || [];
+  const gemResolved = gemList.map(s => GEMSTONES.find(x => x.en === s) || {en:s, kr:s});
+  const gemEn = gemResolved.length ? `, embedded with ${joinWithAnd(gemResolved.map(g => g.en))} jewel core` : '';
+  const gemKr = gemResolved.length ? `, ${gemResolved.map(g => g.kr).join('·')} 보석이 박힘` : '';
+
+  // 배경 (필수, multi)
+  const bgList = state.background || [];
+  const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || {en:v, kr:v});
+  const bgEn = bgResolved.length ? bgResolved.map(b => b.en).join(', ') : 'pure white background';
+  const bgKr = bgResolved.length ? bgResolved.map(b => b.kr).join(', ') : '순백 배경';
+  const hasTransparent = bgList.includes('transparent');
+
+  // 색상
+  const primaryInfo = findClosestColorName(state.primaryColor);
+  const secondaryInfos = (state.secondaryColors||[]).map(hex => ({hex, ...findClosestColorName(hex)}));
+  const colorPhraseEn = (() => {
+    const main = `${primaryInfo.en} (${state.primaryColor})`;
+    if(!secondaryInfos.length) return `single-color flat silhouette in ${main}`;
+    return `flat color design featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+  })();
+  const colorPhraseKr = (() => {
+    const main = `${primaryInfo.kr} (${state.primaryColor})`;
+    if(!secondaryInfos.length) return `${main} 단색 평면 실루엣`;
+    return `${main} 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+  })();
+
+  // extras (옵션)
+  const extraList = state.extras || [];
+  const extraEn = extraList.length ? `, ${extraList.join(', ')}` : '';
+  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || {kr:e}).kr).join(', ')}` : '';
+
+  // 원소 (옵션, multi)
+  const elementList = state.element || [];
+  const elementResolved = elementList.map(s => ELEMENTS.find(x => x.en === s) || {en:s, kr:s});
+  const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
+  const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
+
+  // 무기 격 (옵션, multi)
+  const rankList = state.rank || [];
+  const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
+  const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
+  const rankKr = rankResolved.length ? `, ${rankResolved.map(r => r.kr).join('·')}` : '';
+
+  // 유래 (옵션, multi)
+  const purposeList = state.purpose || [];
+  const purposeResolved = purposeList.map(s => PURPOSES.find(x => x.en === s) || {en:s, kr:s});
+  const purposeEn = purposeResolved.length ? `, ${joinWithAnd(purposeResolved.map(p => p.en))}` : '';
+  const purposeKr = purposeResolved.length ? `, ${purposeResolved.map(p => p.kr).join('·')}` : '';
+
+  // 오라 (옵션, multi)
+  const auraList = state.aura || [];
+  const auraResolved = auraList.map(s => AURAS.find(x => x.en === s) || {en:s, kr:s});
+  const auraEn = auraResolved.length ? `, ${joinWithAnd(auraResolved.map(a => a.en))}` : '';
+  const auraKr = auraResolved.length ? `, ${auraResolved.map(a => a.kr).join('·')}` : '';
+
+  // 테마 (옵션)
+  const themeList = state.themes || [];
+  const themeEn = themeList.length ? `, evoking themes of ${joinWithAnd(themeList)}` : '';
+  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || {kr:t}).kr).join('·')}의 테마를 환기시킴` : '';
+
+  // 종족 (옵션, multi)
+  const factionList = state.faction || [];
+  const factionResolved = factionList.map(s => FACTIONS.find(x => x.en === s) || {en:s, kr:s});
+  const factionEn = factionResolved.length ? `, ${joinWithAnd(factionResolved.map(f => f.en))} house` : '';
+  const factionKr = factionResolved.length ? `, ${factionResolved.map(f => f.kr).join('·')} 가문` : '';
+
+  // 네거티브
+  const negEn = hasTransparent
+    ? 'no text, no letters, no readable runes, no shading, no gradient, no 3d, no realistic details, no white background, no human, no hand, no character, no border'
+    : 'no text, no letters, no readable runes, no shading, no gradient, no 3d, no realistic details, no human, no hand, no character, no border';
+  const negKr = hasTransparent
+    ? '글자 없음, 읽을 수 있는 룬 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 흰 배경 없음, 사람·손·캐릭터 없음, 테두리 없음'
+    : '글자 없음, 읽을 수 있는 룬 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 사람·손·캐릭터 없음, 테두리 없음';
+
+  const promptEn = `a ${moodEn} fantasy noble house ${weaponEn}${factionEn}${rankEn}${purposeEn}${styleEn}, ornate magical armament, abstract design based on ${motifEn} motif${subEn}${handleEn}${bladeEn}${gemEn}, engraved with unreadable arcane runes${elementEn}${auraEn}, ${colorPhraseEn}, ${bgEn}${themeEn}, single object centered, clean flat silhouette, high contrast, elegant pointed curves, strong negative space cutouts${extraEn}, ${negEn}`;
+  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${weaponKr}${factionKr}${rankKr}${purposeKr}${styleKr}. ${motifKr}을(를) 모티프로 한 추상 마법 무장${subKr}${handleKr}${bladeKr}${gemKr}. 읽을 수 없는 룬 각인${elementKr}${auraKr}. ${colorPhraseKr}. ${bgKr}${themeKr}. 단일 오브젝트 중심 구도, 깔끔한 평면 실루엣, 강한 명도 대비, 우아한 뾰족 곡선, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+
+  return { en:promptEn, kr:promptKr };
+}
+
+function updatePreview(){
+  const { en, kr } = buildPrompts();
+  document.getElementById('prompt-en').textContent = en;
+  document.getElementById('prompt-kr').textContent = kr;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  COPY
+// ═══════════════════════════════════════════════════════════════════
+async function copyText(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta);
+    ta.focus();ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){return false;}
+}
+async function copyPrompt(lang, btn){
+  const { en, kr } = buildPrompts();
+  const ok = await copyText(lang === 'en' ? en : kr);
+  if(ok){
+    btn.textContent = '✅ 복사됨';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 복사';
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+}
+
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transition = 'opacity 0.3s';
+    setTimeout(() => t.remove(), 300);
+  }, 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  SAVE / LOAD
+// ═══════════════════════════════════════════════════════════════════
+function saveAll(){
+  try{
+    localStorage.setItem(STATE_KEY, JSON.stringify(state));
+    localStorage.setItem(CUSTOM_KEY, JSON.stringify(customChips));
+  }catch(e){}
+}
+function loadAll(){
+  try{
+    const s = localStorage.getItem(STATE_KEY);
+    if(s){
+      const parsed = JSON.parse(s);
+      state = {...DEFAULT_STATE, ...parsed};
+    }
+    const c = localStorage.getItem(CUSTOM_KEY);
+    if(c){
+      const parsed = JSON.parse(c);
+      customChips = {...customChips, ...parsed};
+    }
+  }catch(e){}
+}
+function resetAll(){
+  if(!confirm('무기 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
+  state = {...DEFAULT_STATE};
+  saveAll();
+  renderSections();
+  updatePreview();
+  showToast('↺ 초기화 완료');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  GIST 동기화
+// ═══════════════════════════════════════════════════════════════════
+const GIST_FILE_NAME = 'forge_data.json';
+const GIST_DESCRIPTION = 'FORGE — Tool Workshop Data';
+
+function openGistModal(){
+  document.getElementById('gist-token').value = localStorage.getItem(K.token) || '';
+  document.getElementById('gist-id').value = localStorage.getItem(K.gistId) || '';
+  document.getElementById('gist-status').className = 'modal-status';
+  document.getElementById('gist-status').textContent = '';
+  document.getElementById('gist-modal').classList.add('show');
+}
+function closeGistModal(){
+  document.getElementById('gist-modal').classList.remove('show');
+}
+document.getElementById('gist-modal').addEventListener('click', (e) => {
+  if(e.target.id === 'gist-modal') closeGistModal();
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape'){
+    closeGistModal();
+    closeChipModal();
+  }
+});
+
+function setGistStatus(msg, type){
+  const el = document.getElementById('gist-status');
+  el.textContent = msg;
+  el.className = 'modal-status ' + (type || '');
+}
+function setSyncDot(state){
+  const el = document.getElementById('sync-dot');
+  if(el) el.className = 'sync-dot' + (state === 'ok' ? ' synced' : state === 'err' ? ' error' : '');
+}
+function copyGistId(){
+  const id = document.getElementById('gist-id').value.trim();
+  if(!id){setGistStatus('Gist ID가 없어. 먼저 업로드해.', 'err');return;}
+  copyText(id).then(ok => {
+    setGistStatus(ok ? 'Gist ID 복사됨.' : '복사 실패.', ok ? 'ok' : 'err');
+  });
+}
+function collectAllForgeData(){
+  const data = {};
+  for(let i = 0; i < localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith(STORAGE_PREFIX) && key !== K.token){
+      data[key] = localStorage.getItem(key);
+    }
+  }
+  return data;
+}
+function restoreAllForgeData(data){
+  if(!data || typeof data !== 'object') return 0;
+  let count = 0;
+  Object.entries(data).forEach(([key, value]) => {
+    if(key.startsWith(STORAGE_PREFIX) && key !== K.token){
+      localStorage.setItem(key, value);
+      count++;
+    }
+  });
+  return count;
+}
+function detectDevice(){
+  const ua = navigator.userAgent;
+  if(/iPad|iPhone|iPod/.test(ua)) return 'iOS';
+  if(/Android/.test(ua)) return 'Android';
+  if(/Win/.test(ua)) return 'Windows';
+  if(/Mac/.test(ua)) return 'Mac';
+  if(/Linux/.test(ua)) return 'Linux';
+  return 'Web';
+}
+
+async function gistUpload(){
+  const token = document.getElementById('gist-token').value.trim();
+  const gistId = document.getElementById('gist-id').value.trim();
+  if(!token){setGistStatus('토큰을 입력해.', 'err');return;}
+  setGistStatus('업로드 중...', 'loading');
+
+  let slots = [];
+  if(gistId){
+    try{
+      const r = await fetch('https://api.github.com/gists/' + gistId, {
+        headers:{'Authorization':'token ' + token, 'Accept':'application/vnd.github.v3+json'},
+      });
+      if(r.ok){
+        const d = await r.json();
+        const fc = d.files && d.files[GIST_FILE_NAME] && d.files[GIST_FILE_NAME].content;
+        if(fc){
+          try{slots = (JSON.parse(fc).slots) || [];}catch(e){}
+        }
+      }
+    }catch(e){}
+  }
+
+  const currentData = collectAllForgeData();
+  const keyCount = Object.keys(currentData).length;
+
+  slots.unshift({
+    savedAt: new Date().toISOString(),
+    device: detectDevice(),
+    keyCount,
+    data: currentData,
+  });
+  if(slots.length > 5) slots = slots.slice(0, 5);
+
+  const body = {
+    description: GIST_DESCRIPTION,
+    public: false,
+    files: {[GIST_FILE_NAME]: {content: JSON.stringify({version:1, slots}, null, 2)}},
+  };
+
+  try{
+    let url = 'https://api.github.com/gists', method = 'POST';
+    if(gistId){url = 'https://api.github.com/gists/' + gistId; method = 'PATCH';}
+    const res = await fetch(url, {
+      method,
+      headers:{
+        'Authorization':'token ' + token,
+        'Content-Type':'application/json',
+        'Accept':'application/vnd.github.v3+json',
+      },
+      body: JSON.stringify(body),
+    });
+    if(!res.ok){
+      const err = await res.json().catch(() => ({}));
+      setGistStatus('오류: ' + (err.message || res.status), 'err');
+      setSyncDot('err');
+      return;
+    }
+    const data = await res.json();
+    localStorage.setItem(K.token, token);
+    localStorage.setItem(K.gistId, data.id);
+    document.getElementById('gist-id').value = data.id;
+    setGistStatus(`업로드 완료. ${keyCount}개 항목 저장됨.`, 'ok');
+    setSyncDot('ok');
+    showToast('☁️ Gist 업로드 완료!');
+  }catch(e){
+    setGistStatus('네트워크 오류: ' + e.message, 'err');
+    setSyncDot('err');
+  }
+}
+
+async function gistDownload(){
+  const token = document.getElementById('gist-token').value.trim();
+  const gistId = document.getElementById('gist-id').value.trim();
+  if(!token){setGistStatus('토큰을 입력해.', 'err');return;}
+  if(!gistId){setGistStatus('Gist ID를 입력해.', 'err');return;}
+  setGistStatus('슬롯 목록 가져오는 중...', 'loading');
+  try{
+    const res = await fetch('https://api.github.com/gists/' + gistId, {
+      headers:{'Authorization':'token ' + token, 'Accept':'application/vnd.github.v3+json'},
+    });
+    if(!res.ok){
+      const err = await res.json().catch(() => ({}));
+      setGistStatus('오류: ' + (err.message || res.status), 'err');
+      setSyncDot('err');
+      return;
+    }
+    const data = await res.json();
+    const fileContent = data.files && data.files[GIST_FILE_NAME] && data.files[GIST_FILE_NAME].content;
+    if(!fileContent){
+      setGistStatus(GIST_FILE_NAME + ' 파일을 못 찾았어.', 'err');
+      setSyncDot('err');return;
+    }
+    const parsed = JSON.parse(fileContent);
+    const slots = parsed.slots || [];
+    if(!slots.length){
+      setGistStatus('불러올 슬롯이 없어.', 'err');return;
+    }
+    localStorage.setItem(K.token, token);
+    localStorage.setItem(K.gistId, gistId);
+    setGistStatus('', '');
+    showSlotPicker(slots);
+  }catch(e){
+    setGistStatus('오류: ' + e.message, 'err');
+    setSyncDot('err');
+  }
+}
+
+function showSlotPicker(slots){
+  const existing = document.getElementById('slot-picker-overlay');
+  if(existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'slot-picker-overlay';
+  overlay.className = 'modal-overlay show';
+  overlay.style.zIndex = '2000';
+
+  const box = document.createElement('div');
+  box.className = 'modal';
+  box.style.maxWidth = '380px';
+  box.innerHTML = `
+    <div class="modal-title" style="font-size:18px;letter-spacing:3px;">버전 선택</div>
+    <div class="modal-hint" style="margin-bottom:4px;">불러올 슬롯을 선택해. 현재 로컬 데이터는 덮어써져!</div>
+    <div id="slot-list" style="display:flex;flex-direction:column;gap:7px;max-height:50vh;overflow-y:auto;"></div>
+    <button class="modal-btn modal-btn-cancel" id="slot-cancel">취소</button>
+  `;
+
+  const list = box.querySelector('#slot-list');
+  slots.forEach((slot, i) => {
+    const t = slot.savedAt
+      ? new Date(slot.savedAt).toLocaleString('ko-KR', {
+          timeZone:'Asia/Seoul', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit',
+        })
+      : '알 수 없음';
+    const keyCount = slot.keyCount || (slot.data ? Object.keys(slot.data).length : 0);
+    const btn = document.createElement('button');
+    btn.style.cssText = `
+      padding:11px 14px;background:var(--surface3);
+      border:1px solid var(--border);border-radius:9px;
+      color:var(--text);cursor:pointer;text-align:left;
+      font-family:'Noto Sans KR',sans-serif;font-size:12px;
+      transition:all 0.15s;
+      display:flex;justify-content:space-between;align-items:center;gap:8px;
+    `;
+    btn.innerHTML = `
+      <div>
+        <div style="font-weight:700;color:var(--accent2);margin-bottom:3px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;">
+          ${i === 0 ? '◉ LATEST' : '◯ SLOT ' + (i + 1)}
+        </div>
+        <div style="color:var(--muted);font-size:10px;font-family:'JetBrains Mono',monospace;">
+          ${t} · ${esc(slot.device || '?')} · ${keyCount}개 항목
+        </div>
+      </div>
+      <span style="color:var(--muted);font-size:16px;">›</span>
+    `;
+    btn.onmouseover = () => {btn.style.borderColor = 'var(--accent2)';};
+    btn.onmouseout = () => {btn.style.borderColor = 'var(--border)';};
+    btn.onclick = () => {
+      if(!confirm('이 슬롯으로 현재 로컬을 덮어씌울게. 진행할까?')) return;
+      const keysToRemove = [];
+      for(let j = 0; j < localStorage.length; j++){
+        const key = localStorage.key(j);
+        if(key && key.startsWith(STORAGE_PREFIX) && key !== K.token && key !== K.gistId){
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+      const count = restoreAllForgeData(slot.data || {});
+      overlay.remove();
+      closeGistModal();
+      setSyncDot('ok');
+      loadAll();
+      renderSections();
+      updatePreview();
+      showToast(`☁️ 복원 완료 (${count}개 항목)`);
+    };
+    list.appendChild(btn);
+  });
+
+  box.querySelector('#slot-cancel').onclick = () => overlay.remove();
+  overlay.onclick = (e) => {if(e.target === overlay) overlay.remove();};
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  초기화
+// ═══════════════════════════════════════════════════════════════════
+function init(){
+  loadAll();
+  renderSections();
+  updatePreview();
+
+  const hasToken = !!localStorage.getItem(K.token);
+  const hasId = !!localStorage.getItem(K.gistId);
+  setSyncDot(hasToken && hasId ? 'ok' : null);
+}
+init();
+</script>
+
+</body>
+</html>
