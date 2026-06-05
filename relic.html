@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TOME — 마도서 제본소</title>
+<title>RELIC — 유물 공방</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -11,7 +11,7 @@
     --border:#3a2e48; --border-strong:#4a3a5a;
     --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
-    --tool-color:#DDAACC;
+    --tool-color:#884499;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{min-height:100vh;}
@@ -423,10 +423,10 @@
      ═══════════════════════════════════════════════════ -->
 <header class="header">
   <a href="forge.html" class="back-link">← <span class="btn-label">메인</span></a>
-  <a href="relic.html" class="sibling-link">💎 <span class="btn-label">유물</span></a>
+  <a href="magic_circle.html" class="sibling-link">◯ <span class="btn-label">마법진</span></a>
   <div>
-    <div class="header-logo">TOME</div>
-    <div class="header-sub">ARCANE · BINDERY</div>
+    <div class="header-logo">RELIC</div>
+    <div class="header-sub">ARTIFACT · CRAFT</div>
   </div>
   <div class="header-right">
     <button class="btn btn-reset" onclick="resetAll()" title="설정 초기화">↺ <span class="btn-label">초기화</span></button>
@@ -445,10 +445,10 @@
   <div class="options-col">
 
     <section class="hero">
-      <div class="hero-tag">NOBLE · CREST · BINDERY</div>
-      <h1 class="hero-title">가문의 마도서를<br><span class="accent">제본</span>하다</h1>
+      <div class="hero-tag">NOBLE · ARTIFACT · CRAFT</div>
+      <h1 class="hero-title">가문의 유물을<br><span class="accent">공예</span>하다</h1>
       <p class="hero-desc">
-        마도서 종류·모티프·표지·잠금·격을 골라 가문 마도서의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내.
+        유물 종류·모티프·금속 세공·격을 골라 가문 유물의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내.
       </p>
     </section>
 
@@ -459,9 +459,9 @@
 
   <div class="preview-col">
     <div class="prompt-section-label">
-      <span>Bound Tome</span>
+      <span>Crafted Relic</span>
     </div>
-    <div class="prompt-box" style="--prompt-accent:#DDAACC">
+    <div class="prompt-box" style="--prompt-accent:#BB6688">
       <div class="prompt-head">
         <span class="prompt-lang">EN · for GPT / DALL·E</span>
         <button class="prompt-copy-btn" id="copy-en-btn" onclick="copyPrompt('en',this)">📋 복사</button>
@@ -622,35 +622,51 @@ const COLOR_NAMES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════
-//  가문 마도서 데이터
+//  가문 무기 데이터
 // ═══════════════════════════════════════════════════════════════════
-// 마도서 종류 (베이스) — 그룹화
-const TOME_TYPE_GROUPS = [
-  { label:'마도서', items:[
-    {en:'grimoire', kr:'그리모어'}, {en:'codex', kr:'코덱스'}, {en:'spellbook', kr:'주문서'},
-    {en:'tome', kr:'마도서'}, {en:'arcane manual', kr:'비전 교본'}, {en:'primer', kr:'입문서'},
+// 무기 종류 (베이스) — 그룹화
+const RELIC_TYPE_GROUPS = [
+  { label:'반지·팔찌', items:[
+    {en:'ring', kr:'반지'}, {en:'signet ring', kr:'인장 반지'}, {en:'wedding band', kr:'결혼반지'},
+    {en:'bracelet', kr:'팔찌'}, {en:'bangle', kr:'뱅글'}, {en:'cuff bracelet', kr:'커프 팔찌'},
+    {en:'charm bracelet', kr:'참 팔찌'}, {en:'arm ring', kr:'팔링'},
   ]},
-  { label:'일기·기록', items:[
-    {en:'journal', kr:'저널'}, {en:'diary', kr:'다이어리'}, {en:'chronicle', kr:'연대기'},
-    {en:'ledger', kr:'장부'}, {en:'field notes', kr:'필드 노트'},
+  { label:'목걸이·펜던트', items:[
+    {en:'necklace', kr:'목걸이'}, {en:'locket', kr:'로켓'}, {en:'pendant', kr:'펜던트'},
+    {en:'chain pendant', kr:'체인 펜던트'}, {en:'medallion', kr:'메달리온'},
+    {en:'choker', kr:'초커'}, {en:'gorget', kr:'고짓'},
   ]},
-  { label:'두루마리', items:[
-    {en:'scroll', kr:'두루마리'}, {en:'rolled parchment', kr:'말린 양피지'},
-    {en:'scroll case', kr:'두루마리 케이스'},
+  { label:'왕관·관식', items:[
+    {en:'crown', kr:'왕관'}, {en:'tiara', kr:'티아라'}, {en:'diadem', kr:'다이아뎀'},
+    {en:'circlet', kr:'서클릿'}, {en:'coronet', kr:'코로넷'}, {en:'laurel wreath', kr:'월계관'},
   ]},
-  { label:'종교·의식', items:[
-    {en:'prayer book', kr:'기도서'}, {en:'hymnal', kr:'찬가집'},
-    {en:'ritual book', kr:'의식서'}, {en:'bible-like tome', kr:'성서풍'},
+  { label:'브로치·핀', items:[
+    {en:'brooch', kr:'브로치'}, {en:'cloak pin', kr:'망토 핀'},
+    {en:'lapel pin', kr:'라펠 핀'}, {en:'hair pin', kr:'머리 핀'},
+    {en:'cameo brooch', kr:'카메오 브로치'},
   ]},
-  { label:'특수', items:[
-    {en:'chained book', kr:'사슬 묶인 책'}, {en:'sealed tome', kr:'봉인된 마도서'},
-    {en:'floating book', kr:'부유하는 책'}, {en:'talisman book', kr:'부적 책'},
+  { label:'귀걸이', items:[
+    {en:'earrings', kr:'귀걸이'}, {en:'ear cuff', kr:'이어 커프'},
+    {en:'ear chain', kr:'이어 체인'}, {en:'drop earrings', kr:'드롭 귀걸이'},
+    {en:'chandelier earrings', kr:'샹들리에 귀걸이'},
   ]},
-  { label:'형태 변형', items:[
-    {en:'open spellbook', kr:'펼쳐진 주문서'}, {en:'half-opened tome', kr:'반쯤 펼쳐진 마도서'},
+  { label:'부적·수호물', items:[
+    {en:'amulet', kr:'아뮬렛'}, {en:'talisman', kr:'탈리스만'},
+    {en:'holy charm', kr:'성스러운 부적'}, {en:'protective ward', kr:'수호 부적'},
+    {en:'spirit charm', kr:'정령 부적'}, {en:'rune charm', kr:'룬 부적'},
+  ]},
+  { label:'의식용', items:[
+    {en:'ceremonial orb', kr:'의식 보주'}, {en:'orb of office', kr:'권능의 보주'},
+    {en:'relic chalice', kr:'성배 유물'}, {en:'reliquary box', kr:'성유물함'},
+    {en:'royal scepter ornament', kr:'왕홀 장식'}, {en:'oath token', kr:'서약 토큰'},
+  ]},
+  { label:'마법 도구', items:[
+    {en:'arcane focus', kr:'아케인 포커스'}, {en:'binding ring', kr:'결박 반지'},
+    {en:'seal stone', kr:'봉인 보석'}, {en:'runic pendant', kr:'룬 펜던트'},
+    {en:'sigil locket', kr:'문장 로켓'}, {en:'familiar bell', kr:'사역마 종'},
   ]},
 ];
-const ALL_TOME_TYPES = TOME_TYPE_GROUPS.flatMap(g => g.items);
+const ALL_RELIC_TYPES = RELIC_TYPE_GROUPS.flatMap(g => g.items);
 
 // 가문 모티프 (sigil의 BASE_MOTIFS 재활용)
 const MOTIF_GROUPS = [
@@ -691,7 +707,7 @@ const MOTIF_GROUPS = [
 ];
 const ALL_MOTIFS = MOTIF_GROUPS.flatMap(g => g.items);
 
-// 보조 디테일 (sigil SUB_MOTIFS + 마도서 전용)
+// 보조 디테일 (sigil SUB_MOTIFS 재활용 + 유물 디테일)
 const SUB_MOTIFS = [
   {en:'thorns', kr:'가시'}, {en:'wings', kr:'날개'}, {en:'crown', kr:'왕관'},
   {en:'chains', kr:'사슬'}, {en:'skull', kr:'해골'}, {en:'vines', kr:'덩굴'},
@@ -700,36 +716,42 @@ const SUB_MOTIFS = [
   {en:'gears', kr:'톱니'}, {en:'tear drop', kr:'눈물'}, {en:'blood drop', kr:'핏방울'},
   {en:'leaves', kr:'잎사귀'}, {en:'petals', kr:'꽃잎'}, {en:'star spikes', kr:'별가시'},
   {en:'bone chain', kr:'사슬뼈'}, {en:'spider web', kr:'거미줄'},
-  {en:'bookmark ribbon', kr:'책갈피 리본'}, {en:'gilded edges', kr:'금박 페이지 가장자리'},
-  {en:'quill pen', kr:'깃펜'}, {en:'wax seal stamp', kr:'밀랍 인장'},
+  // 유물용 디테일
+  {en:'engraved band', kr:'새김 띠'}, {en:'inset crest', kr:'인레이 문장'},
+  {en:'delicate filigree', kr:'섬세한 필리그리'}, {en:'pearl drop accent', kr:'진주 방울'},
+  {en:'crystal point', kr:'결정 끝'}, {en:'tassel', kr:'술 장식'},
 ];
 
-// 마도서 양식
+// 장신구 양식
 const STYLES = [
   {en:'gothic ornate', kr:'고딕 장식'}, {en:'elven flowing curves', kr:'엘프 곡선'},
-  {en:'dwarven heavy', kr:'드워프 중후'}, {en:'japanese katana style', kr:'일본도풍'},
-  {en:'tribal primitive', kr:'원시 트라이벌'}, {en:'art deco geometric', kr:'아르데코'},
-  {en:'baroque ornamental', kr:'바로크 장식'}, {en:'minimal sleek', kr:'미니멀'},
-  {en:'runic engraved', kr:'룬 각인'}, {en:'ceremonial regal', kr:'의식용 위엄'},
-  {en:'barbarian crude', kr:'야만적'}, {en:'ancient ruined', kr:'고대 유적풍'},
+  {en:'baroque ornamental', kr:'바로크 장식'}, {en:'celestial heavenly', kr:'천상의'},
+  {en:'art nouveau organic', kr:'아르누보 유기적'}, {en:'byzantine mosaic', kr:'비잔틴 모자이크'},
+  {en:'victorian intricate', kr:'빅토리안 정교'}, {en:'rococo lavish', kr:'로코코 사치'},
+  {en:'art deco geometric', kr:'아르데코 기하'}, {en:'tribal primitive', kr:'원시 트라이벌'},
+  {en:'runic engraved', kr:'룬 각인'}, {en:'minimal sleek', kr:'미니멀'},
+  {en:'ceremonial regal', kr:'의식용 위엄'}, {en:'ancient ruined', kr:'고대 유적풍'},
 ];
 
-// 표지 재질
-const COVERS = [
-  {en:'black leather', kr:'검은 가죽'}, {en:'brown leather', kr:'갈색 가죽'},
-  {en:'red leather', kr:'붉은 가죽'}, {en:'silk-bound', kr:'비단 장정'},
-  {en:'silver-plated', kr:'은판 외피'}, {en:'gold-plated', kr:'금판 외피'},
-  {en:'bronze-plated', kr:'청동판 외피'}, {en:'bone-bound', kr:'뼈 장정'},
-  {en:'wooden carved cover', kr:'목재 조각 표지'}, {en:'crystal cover', kr:'수정 표지'},
-  {en:'ancient parchment', kr:'고대 양피지'},
+// 금속 세공
+const METALWORKS = [
+  {en:'silver filigree', kr:'은 필리그리'}, {en:'gold inlay', kr:'금 인레이'},
+  {en:'platinum engraving', kr:'백금 음각'}, {en:'rose gold', kr:'로즈 골드'},
+  {en:'blackened steel', kr:'블랙 스틸'}, {en:'white gold tracery', kr:'화이트 골드 트레이서리'},
+  {en:'mithril fine wire', kr:'미스릴 세선'}, {en:'antique bronze', kr:'앤틱 브론즈'},
+  {en:'electrum two-tone', kr:'일렉트럼 투톤'}, {en:'oxidized silver', kr:'산화 은'},
+  {en:'hammered gold', kr:'해머드 골드'}, {en:'brushed silver', kr:'브러시드 실버'},
 ];
 
-// 잠금 장치
-const CLASPS = [
-  {en:'iron clasp', kr:'철 걸쇠'}, {en:'silver lock', kr:'은 자물쇠'},
-  {en:'golden ornate clasp', kr:'황금 장식 걸쇠'}, {en:'chain-bound', kr:'사슬 결박'},
-  {en:'wax seal', kr:'밀랍 봉인'}, {en:'magical sigil lock', kr:'마법진 잠금'},
-  {en:'arcane rune seal', kr:'룬 봉인'}, {en:'no clasp', kr:'잠금 없음'},
+// 부속 장식
+const ORNAMENTS = [
+  {en:'wing-like ornaments', kr:'날개형 장식'}, {en:'feather charms', kr:'깃털 참'},
+  {en:'vine wraps', kr:'덩굴 감개'}, {en:'chain drops', kr:'사슬 드롭'},
+  {en:'tassel pendants', kr:'술 펜던트'}, {en:'crescent crests', kr:'초승달 크레스트'},
+  {en:'spiked ridges', kr:'스파이크 능선'}, {en:'lace filigree', kr:'레이스 필리그리'},
+  {en:'leaf curls', kr:'잎 컬'}, {en:'star drops', kr:'별 드롭'},
+  {en:'floral clusters', kr:'꽃 클러스터'}, {en:'thorn accents', kr:'가시 액센트'},
+  {en:'teardrop dangles', kr:'눈물방울 댕글'},
 ];
 
 // 보석
@@ -737,7 +759,8 @@ const GEMSTONES = [
   {en:'sapphire', kr:'사파이어'}, {en:'ruby', kr:'루비'}, {en:'amethyst', kr:'자수정'},
   {en:'moonstone', kr:'문스톤'}, {en:'emerald', kr:'에메랄드'}, {en:'black opal', kr:'블랙 오팔'},
   {en:'diamond', kr:'다이아'}, {en:'topaz', kr:'토파즈'}, {en:'garnet', kr:'가넷'},
-  {en:'pearl', kr:'진주'},
+  {en:'pearl', kr:'진주'}, {en:'aquamarine', kr:'아쿠아마린'}, {en:'citrine', kr:'시트린'},
+  {en:'onyx', kr:'오닉스'}, {en:'turquoise', kr:'터키석'}, {en:'lapis lazuli', kr:'라피스 라줄리'},
 ];
 
 const MOODS = [
@@ -763,9 +786,6 @@ const EXTRAS = [
   {en:'floating magical particles', kr:'마법 파편'},
   {en:'glowing edges', kr:'가장자리 발광'},
   {en:'engraved with unreadable runes', kr:'읽을 수 없는 룬 각인'},
-  {en:'pocket-sized small tome', kr:'주머니 크기 (작은 책)'},
-  {en:'standard-sized book', kr:'표준 크기'},
-  {en:'massive heavy tome', kr:'거대한 두꺼운 책'},
 ];
 
 const ELEMENTS = [
@@ -774,24 +794,28 @@ const ELEMENTS = [
   {en:'star-aligned', kr:'별'}, {en:'shadow-aligned', kr:'그림자'},
 ];
 
-// RPG식 마도서 등급
+// RPG식 유물 등급
 const RANKS = [
-  {en:'mythic divine tome with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
-  {en:'legendary heroic tome with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
-  {en:'epic high-grade enchanted tome with elegant detailing', kr:'영웅급 (우아한 디테일)'},
-  {en:'rare enchanted tome with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
-  {en:'uncommon refined tome with subtle detailing', kr:'고급 (절제된 디테일)'},
-  {en:'common standard quality tome with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
+  {en:'mythic divine relic with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
+  {en:'legendary heroic relic with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
+  {en:'epic high-grade enchanted relic with elegant detailing', kr:'영웅급 (우아한 디테일)'},
+  {en:'rare enchanted relic with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
+  {en:'uncommon refined relic with subtle detailing', kr:'고급 (절제된 디테일)'},
+  {en:'common standard quality relic with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
 ];
 
 // 유래·성격
 const PURPOSES = [
-  {en:'ceremonial ritual tome', kr:'의식용'},
-  {en:'well-used and worn tome', kr:'실전용 (손때묻은)'},
-  {en:'sealed forbidden tome', kr:'봉인 마도서'},
-  {en:'ancient relic tome', kr:'고대 유물'},
-  {en:'inherited heirloom tome', kr:'계승 마도서'},
-  {en:'cursed forbidden book', kr:'금서 (저주받은)'},
+  {en:'blessed sacred relic', kr:'축성된 성유물'},
+  {en:'cursed forbidden relic', kr:'저주받은 금기 유물'},
+  {en:'inherited heirloom relic', kr:'계승 유물'},
+  {en:'sealed ancient relic', kr:'봉인된 고대 유물'},
+  {en:'awakened sentient relic', kr:'깨어난 의식 유물'},
+  {en:'lost legendary relic', kr:'잃어버린 전설 유물'},
+  {en:'divine consecrated relic', kr:'신성하게 봉헌된 유물'},
+  {en:'eldritch forbidden relic', kr:'이계의 금기 유물'},
+  {en:'ceremonial coronation relic', kr:'대관식 의식 유물'},
+  {en:'ritual binding relic', kr:'결박 의례 유물'},
 ];
 
 // 오라·광휘
@@ -818,8 +842,8 @@ const FACTIONS = [
 //  STORAGE
 // ═══════════════════════════════════════════════════════════════════
 const STORAGE_PREFIX = 'forge_';
-const STATE_KEY = STORAGE_PREFIX + 'tome';
-const CUSTOM_KEY = STORAGE_PREFIX + 'tome_custom';
+const STATE_KEY = STORAGE_PREFIX + 'relic';
+const CUSTOM_KEY = STORAGE_PREFIX + 'relic_custom';
 const K = {
   token:  STORAGE_PREFIX + 'gist_token',
   gistId: STORAGE_PREFIX + 'gist_id',
@@ -829,18 +853,18 @@ const K = {
 //  STATE
 // ═══════════════════════════════════════════════════════════════════
 const DEFAULT_STATE = {
-  tomeType: ['grimoire'],
-  customTomeType: '',
+  relicType: ['amulet'],
+  customRelicType: '',
   motifs: ['rose'],
   customMotif: '',
   subMotifs: [],
   customSubMotif: '',
   style: [],
-  cover: [],
-  clasp: [],
+  metalwork: [],
+  ornament: [],
   gemstone: [],
-  moods: ['mysterious'],
-  primaryColor: '#DDAACC',
+  moods: ['regal'],
+  primaryColor: '#884499',
   secondaryColors: [],
   background: ['white'],
   extras: ['perfectly symmetrical composition'],
@@ -854,7 +878,7 @@ const DEFAULT_STATE = {
 
 let state = {...DEFAULT_STATE};
 let customChips = {
-  tomeType:[], motifs:[], subMotifs:[], style:[], cover:[], clasp:[],
+  relicType:[], motifs:[], subMotifs:[], style:[], metalwork:[], ornament:[],
   gemstone:[], moods:[], background:[], extras:[], element:[], rank:[],
   purpose:[], aura:[], themes:[], faction:[],
 };
@@ -866,22 +890,22 @@ const SUB_MOTIF_MAX = 4;
 //  섹션 정의
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
-  // 01 마도서 종류 (베이스) — 별도 그룹화 렌더링
+  // 01 유물 종류 (베이스) — 별도 그룹화 렌더링
   // 02 가문 모티프 — 별도 그룹화 렌더링
   { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
-  { num:'04', key:'style', title:'양식', sub:'마도서의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:STYLES, mode:'multi', accent:'#DDAACC' },
-  { num:'05', key:'cover', title:'표지 재질', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:COVERS, mode:'multi', accent:'#CCAA88' },
-  { num:'06', key:'clasp', title:'잠금 장치', sub:'단일 권장 · 복수 선택 가능 · 선택 사항 (없으면 비워둬도 OK)', items:CLASPS, mode:'multi', accent:'#BB6688' },
-  { num:'07', key:'gemstone', title:'보석', sub:'표지에 박힌 보석 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:GEMSTONES, mode:'multi', accent:'#DDAACC' },
+  { num:'04', key:'style', title:'양식', sub:'장신구의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:STYLES, mode:'multi', accent:'#DDAACC' },
+  { num:'05', key:'metalwork', title:'금속 세공', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:METALWORKS, mode:'multi', accent:'#CCAA88' },
+  { num:'06', key:'ornament', title:'부속 장식', sub:'단일 권장 · 복수 선택 가능 · 선택 사항 (간결한 부적·인장 유물은 비워둬도 OK)', items:ORNAMENTS, mode:'multi', accent:'#BB6688' },
+  { num:'07', key:'gemstone', title:'보석', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:GEMSTONES, mode:'multi', accent:'#DDAACC' },
   // 08 색상 별도
   { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
   { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
-  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · 책 크기 포함', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8889CD' },
   { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
-  { num:'13', key:'rank', title:'마도서 격 (Rank)', sub:'마도서의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
-  { num:'14', key:'purpose', title:'유래·성격', sub:'마도서의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
+  { num:'13', key:'rank', title:'유물 격 (Rank)', sub:'유물의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
+  { num:'14', key:'purpose', title:'유래·성격', sub:'유물의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
   { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8889CD' },
-  { num:'16', key:'themes', title:'테마 키워드', sub:'마도서의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'16', key:'themes', title:'테마 키워드', sub:'유물의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
   { num:'17', key:'faction', title:'종족·진영', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FACTIONS, mode:'multi', accent:'#DDAACC' },
 ];
 
@@ -941,11 +965,11 @@ function renderSections(){
   const root = document.getElementById('sections-root');
   root.innerHTML = '';
 
-  // 01: 마도서 종류 (그룹화)
-  const ttSec = document.createElement('section');
-  ttSec.className = 'section';
-  ttSec.innerHTML = renderTomeTypeHTML();
-  root.appendChild(ttSec);
+  // 01: 유물 종류 (그룹화)
+  const rtSec = document.createElement('section');
+  rtSec.className = 'section';
+  rtSec.innerHTML = renderRelicTypeHTML();
+  root.appendChild(rtSec);
 
   // 02: 가문 모티프 (그룹화)
   const motifSec = document.createElement('section');
@@ -976,41 +1000,41 @@ function renderSections(){
   attachInputListeners();
 }
 
-function renderTomeTypeHTML(){
-  const customItems = (customChips.tomeType || []).map(label => ({
+function renderRelicTypeHTML(){
+  const customItems = (customChips.relicType || []).map(label => ({
     en:label, kr:label, _custom:true,
   }));
   return `
     <div class="section-head">
       <span class="section-num">/ 01</span>
-      <h2 class="section-title">마도서 종류</h2>
+      <h2 class="section-title">유물 종류</h2>
     </div>
     <div class="section-sub">단일 권장 · 복수 선택 가능 · 직접 입력은 콤마로 구분 (둘 다 합쳐짐)</div>
     <div class="chip-group-wrap">
-      ${TOME_TYPE_GROUPS.map(group => `
+      ${RELIC_TYPE_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
-        <div class="chip-group" data-section="tomeType" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="relicType" data-mode="multi" style="margin-bottom:8px">
           ${group.items.map(item => {
-            const active = (state.tomeType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="tomeType" data-value="${esc(item.en)}" style="--chip-accent:#DDAACC">${esc(item.kr)}</div>`;
+            const active = (state.relicType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="relicType" data-value="${esc(item.en)}" style="--chip-accent:#884499">${esc(item.kr)}</div>`;
           }).join('')}
         </div>
       `).join('')}
       ${customItems.length ? `
         <div class="group-label">커스텀</div>
-        <div class="chip-group" data-section="tomeType" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="relicType" data-mode="multi" style="margin-bottom:8px">
           ${customItems.map(item => {
-            const active = (state.tomeType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="tomeType" data-value="${esc(item.en)}" style="--chip-accent:#DDAACC">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="tomeType" data-value="${esc(item.en)}">×</span></div>`;
+            const active = (state.relicType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="relicType" data-value="${esc(item.en)}" style="--chip-accent:#884499">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="relicType" data-value="${esc(item.en)}">×</span></div>`;
           }).join('')}
         </div>
       ` : ''}
-      <div class="chip-group" data-section="tomeType" data-mode="multi">
-        <div class="chip chip-add" data-action="add-chip" data-section="tomeType" style="--chip-accent:#DDAACC">＋</div>
+      <div class="chip-group" data-section="relicType" data-mode="multi">
+        <div class="chip chip-add" data-action="add-chip" data-section="relicType" style="--chip-accent:#884499">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-tomeType" placeholder="직접 입력 (콤마로 여러 개, 예: bestiary, 마수도감)" value="${esc(state.customTomeType || '')}">
-    <div class="input-hint" id="custom-tomeType-hint"></div>
+    <input type="text" class="text-input" id="custom-relicType" placeholder="직접 입력 (콤마로 여러 개, 예: signet ring, 인장반지)" value="${esc(state.customRelicType || '')}">
+    <div class="input-hint" id="custom-relicType-hint"></div>
   `;
 }
 
@@ -1023,7 +1047,7 @@ function renderMotifHTML(){
       <span class="section-num">/ 02</span>
       <h2 class="section-title">가문 모티프</h2>
     </div>
-    <div class="section-sub">마도서에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
+    <div class="section-sub">유물에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
     <div class="chip-group-wrap">
       ${MOTIF_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
@@ -1210,15 +1234,15 @@ function attachChipListeners(){
 }
 
 function attachInputListeners(){
-  const customTt = document.getElementById('custom-tomeType');
-  if(customTt){
-    customTt.addEventListener('input', (e) => {
-      state.customTomeType = e.target.value;
+  const customRt = document.getElementById('custom-relicType');
+  if(customRt){
+    customRt.addEventListener('input', (e) => {
+      state.customRelicType = e.target.value;
       saveAll();
       updatePreview();
-      updateTomeTypeHint();
+      updateRelicTypeHint();
     });
-    updateTomeTypeHint();
+    updateRelicTypeHint();
   }
   const customMotif = document.getElementById('custom-motifs');
   if(customMotif){
@@ -1242,14 +1266,14 @@ function attachInputListeners(){
   }
 }
 
-function updateTomeTypeHint(){
-  const hint = document.getElementById('custom-tomeType-hint');
+function updateRelicTypeHint(){
+  const hint = document.getElementById('custom-relicType-hint');
   if(!hint) return;
-  const fromChips = (state.tomeType||[]).map(en => {
-    const found = ALL_TOME_TYPES.find(m => m.en === en);
+  const fromChips = (state.relicType||[]).map(en => {
+    const found = ALL_RELIC_TYPES.find(m => m.en === en);
     return found ? found.kr : en;
   });
-  const customs = (state.customTomeType||'').split(',').map(s => s.trim()).filter(Boolean);
+  const customs = (state.customRelicType||'').split(',').map(s => s.trim()).filter(Boolean);
   const all = [...fromChips, ...customs];
   hint.textContent = all.length ? '선택됨: ' + all.join(' + ') : '';
 }
@@ -1348,7 +1372,7 @@ function applyColorChange(id, hex){
 let currentChipModalSection = null;
 function openChipModal(sectionKey){
   currentChipModalSection = sectionKey;
-  const specialTitles = { tomeType:'마도서 종류', motifs:'가문 모티프' };
+  const specialTitles = { relicType:'유물 종류', motifs:'가문 모티프' };
   const sec = specialTitles[sectionKey]
     ? {title:specialTitles[sectionKey]}
     : SECTIONS.find(s => s.key === sectionKey);
@@ -1393,16 +1417,16 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 //  프롬프트 생성 (기존 로직 보존)
 // ═══════════════════════════════════════════════════════════════════
 function buildPrompts(){
-  // 마도서 종류 (필수)
-  const ttFromChips = (state.tomeType||[]).map(en => {
-    const found = ALL_TOME_TYPES.find(m => m.en === en);
+  // 유물 종류 (필수)
+  const rtFromChips = (state.relicType||[]).map(en => {
+    const found = ALL_RELIC_TYPES.find(m => m.en === en);
     return found ? {en:found.en, kr:found.kr} : {en, kr:en};
   });
-  const ttCustoms = (state.customTomeType||'').split(',').map(s => s.trim()).filter(Boolean)
+  const rtCustoms = (state.customRelicType||'').split(',').map(s => s.trim()).filter(Boolean)
     .map(c => ({en:c, kr:c}));
-  const ttList = [...ttFromChips, ...ttCustoms];
-  const tomeEn = ttList.length ? joinWithAnd(ttList.map(m => m.en)) : 'tome';
-  const tomeKr = ttList.length ? ttList.map(m => m.kr).join(', ') : '마도서';
+  const rtList = [...rtFromChips, ...rtCustoms];
+  const relicEn = rtList.length ? joinWithAnd(rtList.map(m => m.en)) : 'relic';
+  const relicKr = rtList.length ? rtList.map(m => m.kr).join(', ') : '유물';
 
   // 가문 모티프 (필수)
   const motifFromChips = (state.motifs||[]).map(en => {
@@ -1437,22 +1461,22 @@ function buildPrompts(){
   const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
   const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
 
-  // 표지 재질 (옵션, multi)
-  const coverList = state.cover || [];
-  const coverResolved = coverList.map(s => COVERS.find(x => x.en === s) || {en:s, kr:s});
-  const coverEn = coverResolved.length ? `, ${joinWithAnd(coverResolved.map(c => c.en))} cover` : '';
-  const coverKr = coverResolved.length ? `, ${coverResolved.map(c => c.kr).join('·')} 표지` : '';
+  // 금속 세공 (옵션, multi)
+  const metalList = state.metalwork || [];
+  const metalResolved = metalList.map(s => METALWORKS.find(x => x.en === s) || {en:s, kr:s});
+  const metalEn = metalResolved.length ? `, ${joinWithAnd(metalResolved.map(m => m.en))} metalwork` : '';
+  const metalKr = metalResolved.length ? `, ${metalResolved.map(m => m.kr).join('·')} 세공` : '';
 
-  // 잠금 장치 (옵션, multi)
-  const claspList = state.clasp || [];
-  const claspResolved = claspList.map(s => CLASPS.find(x => x.en === s) || {en:s, kr:s});
-  const claspEn = claspResolved.length ? `, sealed with ${joinWithAnd(claspResolved.map(c => c.en))}` : '';
-  const claspKr = claspResolved.length ? `, ${claspResolved.map(c => c.kr).join('·')}로 잠긴` : '';
+  // 부속 장식 (옵션, multi)
+  const ornList = state.ornament || [];
+  const ornResolved = ornList.map(s => ORNAMENTS.find(x => x.en === s) || {en:s, kr:s});
+  const ornEn = ornResolved.length ? `, decorated with ${joinWithAnd(ornResolved.map(o => o.en))}` : '';
+  const ornKr = ornResolved.length ? `, ${ornResolved.map(o => o.kr).join('·')} 장식` : '';
 
   // 보석 (옵션, multi)
   const gemList = state.gemstone || [];
   const gemResolved = gemList.map(s => GEMSTONES.find(x => x.en === s) || {en:s, kr:s});
-  const gemEn = gemResolved.length ? `, embedded with ${joinWithAnd(gemResolved.map(g => g.en))} jewel core` : '';
+  const gemEn = gemResolved.length ? `, embedded with ${joinWithAnd(gemResolved.map(g => g.en))} jewel` : '';
   const gemKr = gemResolved.length ? `, ${gemResolved.map(g => g.kr).join('·')} 보석이 박힘` : '';
 
   // 배경 (필수, multi)
@@ -1487,7 +1511,7 @@ function buildPrompts(){
   const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
   const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
 
-  // 마도서 격 (옵션, multi)
+  // 유물 격 (옵션, multi)
   const rankList = state.rank || [];
   const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
   const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
@@ -1524,8 +1548,8 @@ function buildPrompts(){
     ? '글자 없음, 읽을 수 있는 룬 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 흰 배경 없음, 사람·손·캐릭터 없음, 테두리 없음'
     : '글자 없음, 읽을 수 있는 룬 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 사람·손·캐릭터 없음, 테두리 없음';
 
-  const promptEn = `a ${moodEn} fantasy noble house ${tomeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, ornate magical tome, abstract design based on ${motifEn} motif${subEn}${coverEn}${claspEn}${gemEn}, engraved with unreadable arcane runes${elementEn}${auraEn}, ${colorPhraseEn}, ${bgEn}${themeEn}, single object centered, clean flat silhouette, high contrast, elegant pointed curves, strong negative space cutouts${extraEn}, ${negEn}`;
-  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${tomeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. ${motifKr}을(를) 모티프로 한 추상 마법 마도서${subKr}${coverKr}${claspKr}${gemKr}. 읽을 수 없는 룬 각인${elementKr}${auraKr}. ${colorPhraseKr}. ${bgKr}${themeKr}. 단일 오브젝트 중심 구도, 깔끔한 평면 실루엣, 강한 명도 대비, 우아한 뾰족 곡선, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+  const promptEn = `a ${moodEn} fantasy noble house ${relicEn}${factionEn}${rankEn}${purposeEn}${styleEn}, noble ceremonial artifact, abstract design based on ${motifEn} motif${subEn}${metalEn}${ornEn}${gemEn}, unreadable rune engravings${elementEn}${auraEn}, ${colorPhraseEn}, ${bgEn}${themeEn}, single object centered, clean flat silhouette, high contrast, delicate sacred craftsmanship, strong negative space cutouts${extraEn}, ${negEn}`;
+  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${relicKr}${factionKr}${rankKr}${purposeKr}${styleKr}. ${motifKr}을(를) 모티프로 한 추상 의례 유물${subKr}${metalKr}${ornKr}${gemKr}. 읽을 수 없는 룬 각인${elementKr}${auraKr}. ${colorPhraseKr}. ${bgKr}${themeKr}. 단일 오브젝트 중심 구도, 깔끔한 평면 실루엣, 강한 명도 대비, 섬세한 신성한 공예, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
 
   return { en:promptEn, kr:promptKr };
 }
@@ -1604,7 +1628,7 @@ function loadAll(){
   }catch(e){}
 }
 function resetAll(){
-  if(!confirm('마도서 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
+  if(!confirm('유물 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
   state = {...DEFAULT_STATE};
   saveAll();
   renderSections();
