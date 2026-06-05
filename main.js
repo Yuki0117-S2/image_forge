@@ -1,6 +1,11 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 
+// Windows 작업표시줄 아이콘 정확히 박히게 (이거 없으면 가끔 Electron 기본 아이콘 뜸)
+if (process.platform === 'win32') {
+  app.setAppUserModelId('com.kyeoul.forge');
+}
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
@@ -8,6 +13,8 @@ function createWindow() {
     minWidth: 600,
     minHeight: 500,
     backgroundColor: '#1a1520',
+    icon: path.join(__dirname, 'icon.png'),
+    title: 'FORGE',
     autoHideMenuBar: true, // 메뉴바 자동 숨김 (Alt 누르면 보임)
     webPreferences: {
       contextIsolation: true,
