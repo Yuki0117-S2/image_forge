@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BANNER — 깃발·배너 주조소</title>
+<title>POTION — 물약 주조소</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -11,7 +11,7 @@
     --border:#3a2e48; --border-strong:#4a3a5a;
     --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
-    --tool-color:#0077DD;
+    --tool-color:#FF7722;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{min-height:100vh;}
@@ -26,7 +26,7 @@
   }
   body::after{
     content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(187,102,136,0.18),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
+    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(255,119,34,0.16),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
   }
 
   /* ── 헤더 ── */
@@ -414,6 +414,43 @@
     .btn .btn-label{display:none;}
     .toast{bottom:16px;right:16px;left:16px;}
   }
+
+  /* 00번 모드 라디오 UI (POTION) */
+  .mode-radio-group{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;
+  }
+  .mode-radio{
+    flex:1;min-width:140px;
+    display:flex;align-items:center;gap:10px;
+    padding:12px 14px;
+    background:rgba(255,119,34,0.04);
+    border:1px solid var(--border);
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .mode-radio:hover{
+    background:rgba(255,119,34,0.10);
+    border-color:rgba(255,119,34,0.4);
+  }
+  .mode-radio.active{
+    background:rgba(255,119,34,0.18);
+    border-color:#FF7722;
+    box-shadow:0 0 0 1px rgba(255,119,34,0.4);
+  }
+  .mode-radio input[type="radio"]{
+    flex-shrink:0;width:16px;height:16px;
+    accent-color:#FF7722;cursor:pointer;
+  }
+  .mode-radio-content{flex:1;}
+  .mode-radio-title{
+    font-size:14px;font-weight:600;color:var(--text);
+    margin-bottom:2px;
+  }
+  .mode-radio-en{
+    font-size:11px;color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+  }
 </style>
 </head>
 <body>
@@ -423,10 +460,10 @@
      ═══════════════════════════════════════════════════ -->
 <header class="header">
   <a href="forge.html" class="back-link">← <span class="btn-label">메인</span></a>
-  <a href="architecture.html" class="sibling-link">🏛️ <span class="btn-label">건축물</span></a>
+  <a href="creature.html" class="sibling-link">🐺 <span class="btn-label">사역마</span></a>
   <div>
-    <div class="header-logo">BANNER</div>
-    <div class="header-sub">HERALDIC · CLOTH</div>
+    <div class="header-logo">POTION</div>
+    <div class="header-sub">ALCHEMY · ELIXIR</div>
   </div>
   <div class="header-right">
     <button class="btn btn-reset" onclick="resetAll()" title="설정 초기화">↺ <span class="btn-label">초기화</span></button>
@@ -445,10 +482,10 @@
   <div class="options-col">
 
     <section class="hero">
-      <div class="hero-tag">NOBLE · HERALDRY · BANNER</div>
-      <h1 class="hero-title">가문의 깃발을<br><span class="accent">주조</span>하다</h1>
+      <div class="hero-tag">NOBLE · POTION · ELIXIR</div>
+      <h1 class="hero-title">가문의 영약을<br><span class="accent">주조</span>하다</h1>
       <p class="hero-desc">
-        깃발 형태·모티프·천 재질·격을 골라 가문 깃발의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내.
+        물약 종류·모티프·병 형태·액체 상태·마개·효과를 골라 가문 영약의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내. 모드 선택으로 시길 톤 / 컨셉아트 결 분기.
       </p>
     </section>
 
@@ -537,7 +574,7 @@ const COLOR_NAMES = [
   { hex:'#FF6699', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
   { hex:'#00BBDD', en:'bright cyan blue', kr:'밝은 시안 블루' },
   { hex:'#FF7722', en:'vivid tangerine orange', kr:'선명한 탠저린 오렌지' },
-  { hex:'#0077DD', en:'deep azure blue', kr:'딥 애저 블루' },
+  { hex:'#00BBDD', en:'deep azure blue', kr:'딥 애저 블루' },
   { hex:'#DC143C', en:'crimson red', kr:'크림슨 레드' },
   { hex:'#8B0000', en:'dark blood red', kr:'다크 블러드 레드' },
   { hex:'#722F37', en:'deep wine burgundy', kr:'딥 와인 버건디' },
@@ -622,31 +659,30 @@ const COLOR_NAMES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════
-//  가문 깃발 데이터
+//  가문 물약 데이터
 // ═══════════════════════════════════════════════════════════════════
-// 깃발 형태 (베이스) — 그룹화
-const BANNER_SHAPE_GROUPS = [
-  { label:'수직 매달림형', items:[
-    {en:'long vertical banner', kr:'세로형 깃발'}, {en:'gonfalon', kr:'곤팔론'},
-    {en:'oriflamme', kr:'오리플람'},
+// 물약 종류 (베이스) — 그룹화
+const POTION_TYPE_GROUPS = [
+  { label:'치유·회복 계열', items:[
+    {en:'healing potion', kr:'회복 물약'},
+    {en:'mana potion', kr:'마나 물약'},
+    {en:'antidote vial', kr:'해독 물약'},
   ]},
-  { label:'횡단형', items:[
-    {en:'rectangular tapestry banner', kr:'직사각 태피스트리'},
-    {en:'heraldic standard', kr:'문장 스탠다드'},
+  { label:'연금·마법 계열', items:[
+    {en:'arcane elixir', kr:'비전 영약'},
+    {en:'alchemical brew', kr:'연금 양조'},
+    {en:'philtre of love', kr:'미약·연정 물약'},
   ]},
-  { label:'꼬리 갈라짐형', items:[
-    {en:'swallowtail banner', kr:'제비꼬리'}, {en:'forked banner', kr:'두갈래'},
-    {en:'tapered fly banner', kr:'테이퍼드'},
+  { label:'전투·금기 계열', items:[
+    {en:'poison vial', kr:'독병'},
+    {en:'battle draught', kr:'전투 음료'},
+    {en:'forbidden tincture', kr:'금단의 팅크처'},
   ]},
-  { label:'소형 페넌트', items:[
-    {en:'triangular pennant', kr:'삼각 페넌트'}, {en:'burgee pennant', kr:'버지 페넌트'},
-    {en:'lance pennon', kr:'랜스 페논'},
-  ]},
-  { label:'전쟁·풍화형', items:[
-    {en:'torn war banner', kr:'찢긴 전쟁 깃발'}, {en:'tattered battle flag', kr:'너덜한 전투기'},
+  { label:'신성·이세계 계열', items:[
+    {en:'sacred phial', kr:'성스러운 작은 병'},
   ]},
 ];
-const ALL_BANNER_SHAPES = BANNER_SHAPE_GROUPS.flatMap(g => g.items);
+const ALL_POTION_TYPES = POTION_TYPE_GROUPS.flatMap(g => g.items);
 
 // 가문 모티프 (sigil의 BASE_MOTIFS 재활용)
 const MOTIF_GROUPS = [
@@ -687,7 +723,7 @@ const MOTIF_GROUPS = [
 ];
 const ALL_MOTIFS = MOTIF_GROUPS.flatMap(g => g.items);
 
-// 보조 디테일 (깃발용 조정 — 무기 디테일 3개 제외, 깃발 디테일 6개 추가, 총 27개)
+// 보조 디테일 (물약 보강 — 건축 8개 제거 + POTION 8개 추가)
 const SUB_MOTIFS = [
   {en:'thorns', kr:'가시'}, {en:'wings', kr:'날개'}, {en:'crown', kr:'왕관'},
   {en:'chains', kr:'사슬'}, {en:'skull', kr:'해골'}, {en:'vines', kr:'덩굴'},
@@ -696,54 +732,71 @@ const SUB_MOTIFS = [
   {en:'gears', kr:'톱니'}, {en:'tear drop', kr:'눈물'}, {en:'blood drop', kr:'핏방울'},
   {en:'leaves', kr:'잎사귀'}, {en:'petals', kr:'꽃잎'}, {en:'star spikes', kr:'별가시'},
   {en:'bone chain', kr:'사슬뼈'}, {en:'spider web', kr:'거미줄'},
-  {en:'tassel', kr:'술 장식'},
-  // 깃발용 추가 6개
-  {en:'embroidered emblem', kr:'자수 엠블럼'},
-  {en:'woven pattern', kr:'직조 패턴'},
-  {en:'gold-thread accents', kr:'금사 강조'},
-  {en:'appliqué detail', kr:'아플리케 장식'},
-  {en:'fabric folds', kr:'천 주름'},
-  {en:'corner medallion', kr:'모서리 메달리온'},
+  // POTION 보강 8개
+  {en:'alchemical glyphs', kr:'연금 문양'},
+  {en:'zodiac etching', kr:'점성 새김'},
+  {en:'parchment label', kr:'양피지 라벨'},
+  {en:'wax drip seal', kr:'왁스 드립 봉인'},
+  {en:'suspended particles', kr:'부유 입자'},
+  {en:'inner luminous core', kr:'내부 발광 코어'},
+  {en:'prismatic refraction', kr:'프리즘 굴절'},
+  {en:'engraved measure lines', kr:'눈금 새김'},
 ];
 
-// 깃발 양식
-const STYLES = [
-  {en:'heraldic medieval', kr:'문장 중세'}, {en:'gothic ornate', kr:'고딕 장식'},
-  {en:'elven flowing', kr:'엘프 곡선'}, {en:'celestial heavenly', kr:'천상의'},
-  {en:'baroque ornamental', kr:'바로크 장식'}, {en:'byzantine mosaic', kr:'비잔틴 모자이크'},
-  {en:'dragon emblem warlord', kr:'드래곤 군단장'}, {en:'viking norse', kr:'바이킹'},
-  {en:'crusader ecclesiastical', kr:'십자군 성직자'}, {en:'royal regalia', kr:'왕가 의례'},
-  {en:'imperial standard', kr:'제국 표준'}, {en:'tribal primitive', kr:'원시 부족'},
-  {en:'runic engraved cloth', kr:'룬 자수'}, {en:'ancient faded', kr:'고대 풍화'},
+// 물약 양식 — 연금술·약제·의례·금기 등 결
+const POTION_STYLES = [
+  {en:'alchemical', kr:'연금술풍'},
+  {en:'apothecary', kr:'약제사풍'},
+  {en:'ritualistic', kr:'의례적'},
+  {en:'arcane', kr:'비전 마법풍'},
+  {en:'celestial', kr:'천상적'},
+  {en:'dark fantasy', kr:'다크 판타지'},
+  {en:'crystalline', kr:'크리스털린'},
+  {en:'forbidden', kr:'금단의'},
+  {en:'medicinal', kr:'약학적'},
+  {en:'baroque ornate', kr:'바로크 장식체'},
 ];
 
-// 천 재질 (← weapon의 HANDLES 자리)
-const FABRICS = [
-  {en:'linen weave', kr:'린넨 직조'}, {en:'silk satin', kr:'실크 새틴'},
-  {en:'velvet plush', kr:'벨벳'}, {en:'heavy canvas', kr:'캔버스'},
-  {en:'damask patterned', kr:'다마스크'}, {en:'gold-thread brocade', kr:'금사 브로케이드'},
-  {en:'felted wool', kr:'펠트 울'}, {en:'fine cotton', kr:'파인 코튼'},
-  {en:'leather strap reinforced', kr:'가죽 보강'}, {en:'chainmail-trimmed cloth', kr:'사슬 트림'},
-  {en:'translucent gauze', kr:'시스루 거즈'}, {en:'tartan woven', kr:'타탄 직조'},
+// 병 형태 (← architecture의 MATERIALS 자리)
+const VESSEL_SHAPES = [
+  {en:'round flask', kr:'둥근 플라스크'},
+  {en:'erlenmeyer flask', kr:'에를렌마이어 플라스크'},
+  {en:'spherical bottle', kr:'구형 병'},
+  {en:'heart-shaped vial', kr:'심장형 바이알'},
+  {en:'skull-shaped bottle', kr:'해골 모양 병'},
+  {en:'tear-drop vial', kr:'눈물방울 바이알'},
+  {en:'distillation alembic', kr:'증류기형'},
+  {en:'faceted crystal flask', kr:'다면체 크리스탈 플라스크'},
+  {en:'hourglass bottle', kr:'모래시계 병'},
+  {en:'ornate decanter', kr:'장식 디캔터'},
 ];
 
-// 가장자리 장식 (← weapon의 BLADES 자리)
-const EDGE_DECORATIONS = [
-  {en:'gold trim', kr:'금색 트림'}, {en:'silver edging', kr:'은색 엣징'},
-  {en:'tassel fringe', kr:'술 프린지'}, {en:'braided cord border', kr:'편조 코드'},
-  {en:'scalloped edge', kr:'스칼롭'}, {en:'pearl-beaded fringe', kr:'진주 비즈'},
-  {en:'embroidered border', kr:'자수 보더'}, {en:'chain-link border', kr:'체인링크'},
-  {en:'feather fringe', kr:'깃털 프린지'}, {en:'ribbon trim', kr:'리본 트림'},
-  {en:'frayed ragged edge', kr:'낡은 가장자리'}, {en:'corner tassels', kr:'모서리 술'},
-  {en:'torn battle edge', kr:'찢긴 전투 가장자리'},
+// 액체 상태 (← architecture의 SPIRE_TYPES 자리)
+const LIQUID_STATES = [
+  {en:'transparent crystal-clear liquid', kr:'투명·결정수처럼 맑은 액체'},
+  {en:'pearlescent shimmering liquid', kr:'진주광택 액체'},
+  {en:'viscous thick gel', kr:'점성 진한 젤'},
+  {en:'crystalline solid contents', kr:'결정질 고체상'},
+  {en:'swirling vapor mist', kr:'소용돌이 안개·기체'},
+  {en:'bi-phase layered liquid', kr:'이중 분리 액체'},
+  {en:'glowing nebula essence', kr:'발광 성운 정수'},
+  {en:'molten metallic liquid', kr:'녹은 금속 액체'},
+  {en:'glittering particulate suspension', kr:'반짝이 부유 입자'},
+  {en:'churning storm-like liquid', kr:'휘몰아치는 폭풍 액체'},
 ];
 
-// 보석
-const GEMSTONES = [
-  {en:'sapphire', kr:'사파이어'}, {en:'ruby', kr:'루비'}, {en:'amethyst', kr:'자수정'},
-  {en:'moonstone', kr:'문스톤'}, {en:'emerald', kr:'에메랄드'}, {en:'black opal', kr:'블랙 오팔'},
-  {en:'diamond', kr:'다이아'}, {en:'topaz', kr:'토파즈'}, {en:'garnet', kr:'가넷'},
-  {en:'pearl', kr:'진주'},
+// 마개 (← architecture의 GEMSTONES 자리, gemstone 슬롯 빠지고 stopper로 대체)
+const STOPPERS = [
+  {en:'natural cork stopper', kr:'천연 코르크 마개'},
+  {en:'wax-sealed cork', kr:'왁스 봉인 코르크'},
+  {en:'ornate metal cap', kr:'장식 금속 캡'},
+  {en:'crystal stopper', kr:'크리스탈 마개'},
+  {en:'rune-engraved seal', kr:'룬 새김 봉인'},
+  {en:'gilded screw cap', kr:'금박 나사 캡'},
+  {en:'pewter chain stopper', kr:'주석 체인 마개'},
+  {en:'gemstone-tipped cork', kr:'보석 끝 코르크'},
+  {en:'feather-tied parchment seal', kr:'깃털 양피지 봉인'},
+  {en:'spiral horn stopper', kr:'나선뿔 마개'},
 ];
 
 const MOODS = [
@@ -762,13 +815,17 @@ const BACKGROUNDS = [
   {value:'transparent', en:'transparent background, no background, alpha channel only', kr:'투명 배경 (배경 없음)'},
 ];
 
+// 추가 옵션 — flat silhouette icon (모드 A 전용, 모드 C에서 자동 제외)
 const EXTRAS = [
   {en:'perfectly symmetrical composition', kr:'완벽한 좌우대칭'},
   {en:'inverted negative space cutouts', kr:'음각(네거티브 스페이스) 컷아웃'},
   {en:'subtle vintage texture', kr:'은은한 빈티지 텍스처'},
   {en:'floating magical particles', kr:'마법 파편'},
   {en:'glowing edges', kr:'가장자리 발광'},
-  {en:'embroidered with unreadable runes', kr:'읽을 수 없는 룬 자수'},
+  {en:'translucent glass refraction', kr:'반투명 유리 굴절'},
+  {en:'placed on stone altar', kr:'돌 제단 위에 놓임'},
+  {en:'levitating mid-air', kr:'공중 부양'},
+  {en:'flat silhouette icon', kr:'평면 실루엣 아이콘'},
 ];
 
 const ELEMENTS = [
@@ -777,30 +834,30 @@ const ELEMENTS = [
   {en:'star-aligned', kr:'별'}, {en:'shadow-aligned', kr:'그림자'},
 ];
 
-// RPG식 깃발 등급
+// 물약 격 (banner 패턴 — "potion" 통일)
 const RANKS = [
-  {en:'mythic divine banner with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
-  {en:'legendary heroic banner with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
-  {en:'epic high-grade ceremonial banner with elegant detailing', kr:'영웅급 (우아한 디테일)'},
-  {en:'rare embroidered banner with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
-  {en:'uncommon refined banner with subtle detailing', kr:'고급 (절제된 디테일)'},
-  {en:'common standard banner with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
+  {en:'mythic divine potion with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
+  {en:'legendary heroic potion with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
+  {en:'epic high-grade ceremonial potion with elegant detailing', kr:'영웅급 (우아한 디테일)'},
+  {en:'rare embellished potion with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
+  {en:'uncommon refined potion with subtle detailing', kr:'고급 (절제된 디테일)'},
+  {en:'common standard potion with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
 ];
 
-// 유래·성격
+// 물약 유래·성격 (banner 패턴 미러링, POTION 결로 단어 변환)
 const PURPOSES = [
-  {en:'war battle banner', kr:'전쟁용'},
-  {en:'parade ceremonial banner', kr:'행렬 의식용'},
-  {en:'royal coronation banner', kr:'대관식'},
-  {en:'ancestral heirloom banner', kr:'계승'},
-  {en:'triumphal victory banner', kr:'전승 기념'},
-  {en:'funeral mourning banner', kr:'장례 추모'},
-  {en:'religious sacred banner', kr:'종교 의식'},
-  {en:'festival celebratory banner', kr:'축제용'},
-  {en:'militia rallying banner', kr:'민병 결집'},
-  {en:'diplomatic treaty banner', kr:'외교 조약'},
-  {en:'cursed forsaken banner', kr:'저주받은'},
-  {en:'legendary lost banner', kr:'전설의 잃어버린'},
+  {en:'royal court tincture', kr:'왕가의 약'},
+  {en:'military battle draught', kr:'군사 전투 음료'},
+  {en:'religious sacrament', kr:'종교 성례'},
+  {en:'arcane experiment', kr:'마법 실험'},
+  {en:'ancestral heirloom philtre', kr:'가문 전래 영약'},
+  {en:'ceremonial ritual elixir', kr:'의례용 영약'},
+  {en:'ancient relic potion', kr:'고대 유물 약'},
+  {en:'cursed forsaken brew', kr:'저주받은 양조'},
+  {en:'diplomatic gift vial', kr:'외교 선물병'},
+  {en:'scholarly research specimen', kr:'학자의 연구 표본'},
+  {en:'funerary embalming oil', kr:'장례 방부유'},
+  {en:'legendary lost panacea', kr:'전설의 잃어버린 만병통치약'},
 ];
 
 // 오라·광휘
@@ -822,14 +879,22 @@ const FACTIONS = [
   {en:'undead', kr:'언데드'},
 ];
 
-// 깃발 모션·드레이프 (BANNER 전용 신규 — 18번 섹션)
-const BANNER_DRAPE = [
-  {en:'flowing in wind', kr:'휘날리는'},
-  {en:'still hanging vertical', kr:'정적 수직'},
-  {en:'billowing dramatic', kr:'드라마틱 출렁'},
-  {en:'folded ceremonial', kr:'접힌 의례용'},
-  {en:'battle-tattered motion', kr:'전투 너덜'},
-  {en:'weighted regal still', kr:'무게감 정적'},
+// 효과·연출 — POTION 전용 18번 섹션 (병 주위 효과)
+const BUBBLE_EFFECTS = [
+  {en:'gentle steam wisps rising', kr:'은은한 김 모락'},
+  {en:'effervescent bubbles fizzing', kr:'활발한 거품·기포'},
+  {en:'glittering sparkles surrounding', kr:'주변에 반짝이는 빛가루'},
+  {en:'swirling smoke escaping', kr:'소용돌이 연기 새어나옴'},
+  {en:'radiant aura halo glow', kr:'광휘 오라 광배'},
+  {en:'dripping condensation beads', kr:'이슬 방울 응결'},
+  {en:'magical sigils orbiting', kr:'마법 문양이 공전'},
+  {en:'subtle inner luminescence', kr:'은은한 내부 발광'},
+];
+
+// 모드 선택 (00번) — 모드 A: 시길 톤 / 모드 C: 컨셉아트
+const MODES = [
+  {value:'A', en:'sigil-aligned vessel icon', kr:'시길 톤 (가문 의례 약병)'},
+  {value:'C', en:'concept art alchemy piece', kr:'컨셉아트 (떠다니는 마법약 일러스트)'},
 ];
 
 
@@ -837,8 +902,8 @@ const BANNER_DRAPE = [
 //  STORAGE
 // ═══════════════════════════════════════════════════════════════════
 const STORAGE_PREFIX = 'forge_';
-const STATE_KEY = STORAGE_PREFIX + 'banner';
-const CUSTOM_KEY = STORAGE_PREFIX + 'banner_custom';
+const STATE_KEY = STORAGE_PREFIX + 'potion';
+const CUSTOM_KEY = STORAGE_PREFIX + 'potion_custom';
 const K = {
   token:  STORAGE_PREFIX + 'gist_token',
   gistId: STORAGE_PREFIX + 'gist_id',
@@ -848,18 +913,19 @@ const K = {
 //  STATE
 // ═══════════════════════════════════════════════════════════════════
 const DEFAULT_STATE = {
-  bannerShape: ['swallowtail banner'],
-  customBannerShape: '',
+  mode: ['A'],  // 00번 — 모드 라디오 (A: 시길 톤 / C: 컨셉아트)
+  potionType: ['healing potion'],
+  customPotionType: '',
   motifs: ['rose'],
   customMotif: '',
   subMotifs: [],
   customSubMotif: '',
   style: [],
-  fabric: [],
-  edge: [],
-  gemstone: [],
-  moods: ['regal'],
-  primaryColor: '#0077DD',
+  vesselShape: [],
+  liquidState: [],
+  stopper: [],
+  moods: ['mysterious'],
+  primaryColor: '#FF7722',
   secondaryColors: [],
   background: ['white'],
   extras: ['perfectly symmetrical composition'],
@@ -869,14 +935,14 @@ const DEFAULT_STATE = {
   aura: [],
   themes: [],
   faction: [],
-  drape: [],
+  bubbleEffect: [],  // 18번 — POTION 전용 (효과·연출)
 };
 
 let state = {...DEFAULT_STATE};
 let customChips = {
-  bannerShape:[], motifs:[], subMotifs:[], style:[], fabric:[], edge:[],
-  gemstone:[], moods:[], background:[], extras:[], element:[], rank:[],
-  purpose:[], aura:[], themes:[], faction:[], drape:[],
+  mode:[], potionType:[], motifs:[], subMotifs:[], style:[], vesselShape:[], liquidState:[],
+  stopper:[], moods:[], background:[], extras:[], element:[], rank:[],
+  purpose:[], aura:[], themes:[], faction:[], bubbleEffect:[],
 };
 
 // SUB_MOTIFS 최대 4개 (기존 동작 유지)
@@ -886,24 +952,25 @@ const SUB_MOTIF_MAX = 4;
 //  섹션 정의
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
-  // 01 깃발 형태 (베이스) — 별도 그룹화 렌더링
+  // 00 모드 선택 — 별도 그룹화 렌더링 (라디오 UI)
+  // 01 물약 종류 — 별도 그룹화 렌더링
   // 02 가문 모티프 — 별도 그룹화 렌더링
   { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
-  { num:'04', key:'style', title:'깃발 양식', sub:'깃발의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:STYLES, mode:'multi', accent:'#DDAACC' },
-  { num:'05', key:'fabric', title:'천 재질', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FABRICS, mode:'multi', accent:'#CCAA88' },
-  { num:'06', key:'edge', title:'가장자리 장식', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:EDGE_DECORATIONS, mode:'multi', accent:'#BB6688' },
-  { num:'07', key:'gemstone', title:'보석 (브로치·핀)', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:GEMSTONES, mode:'multi', accent:'#DDAACC' },
-  // 08 색상 별도
+  { num:'04', key:'style', title:'양식', sub:'물약의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:POTION_STYLES, mode:'multi', accent:'#DDAACC' },
+  { num:'05', key:'vesselShape', title:'병 형태', sub:'물약병의 형태·실루엣 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:VESSEL_SHAPES, mode:'multi', accent:'#CCAA88' },
+  { num:'06', key:'liquidState', title:'액체 상태', sub:'담긴 내용물의 상태·질감 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:LIQUID_STATES, mode:'multi', accent:'#BB6688' },
+  { num:'07', key:'stopper', title:'마개·봉인', sub:'병 입구의 마감 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:STOPPERS, mode:'multi', accent:'#DDAACC' },
+  // 08 색상 별도 (액체 색)
   { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
-  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
-  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정 · 모드 C는 미선택 가능', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
+  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8889CD' },
   { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
-  { num:'13', key:'rank', title:'깃발 격 (Rank)', sub:'깃발의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
-  { num:'14', key:'purpose', title:'깃발 유래·성격', sub:'깃발의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
+  { num:'13', key:'rank', title:'물약 격 (Rank)', sub:'물약의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
+  { num:'14', key:'purpose', title:'물약 유래·성격', sub:'물약의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
   { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8889CD' },
-  { num:'16', key:'themes', title:'테마 키워드', sub:'깃발의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'16', key:'themes', title:'테마 키워드', sub:'물약의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
   { num:'17', key:'faction', title:'종족·진영', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FACTIONS, mode:'multi', accent:'#DDAACC' },
-  { num:'18', key:'drape', title:'천 모션·드레이프', sub:'깃발이 어떻게 걸려/휘날리는지 · 단일 권장 · 복수 선택 가능 · 선택 사항 · BANNER 전용', items:BANNER_DRAPE, mode:'multi', accent:'#0077DD' },
+  { num:'18', key:'bubbleEffect', title:'효과·연출', sub:'병 주위의 마법적 효과·연출 · 복수 선택 가능 · 선택 사항 · POTION 전용', items:BUBBLE_EFFECTS, mode:'multi', accent:'#FF7722' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -962,11 +1029,18 @@ function renderSections(){
   const root = document.getElementById('sections-root');
   root.innerHTML = '';
 
-  // 01: 깃발 형태 (그룹화)
-  const bsSec = document.createElement('section');
-  bsSec.className = 'section';
-  bsSec.innerHTML = renderBannerShapeHTML();
-  root.appendChild(bsSec);
+  // 00: 모드 선택 (라디오 UI, 신규)
+  const modeSec = document.createElement('section');
+  modeSec.className = 'section';
+  modeSec.id = 'sec-mode';
+  modeSec.innerHTML = renderModeHTML();
+  root.appendChild(modeSec);
+
+  // 01: 물약 종류 (그룹화)
+  const btSec = document.createElement('section');
+  btSec.className = 'section';
+  btSec.innerHTML = renderPotionTypeHTML();
+  root.appendChild(btSec);
 
   // 02: 가문 모티프 (그룹화)
   const motifSec = document.createElement('section');
@@ -995,43 +1069,68 @@ function renderSections(){
   attachChipListeners();
   attachColorListeners();
   attachInputListeners();
+  attachModeListeners();
 }
 
-function renderBannerShapeHTML(){
-  const customItems = (customChips.bannerShape || []).map(label => ({
+function renderPotionTypeHTML(){
+  const customItems = (customChips.potionType || []).map(label => ({
     en:label, kr:label, _custom:true,
   }));
   return `
     <div class="section-head">
       <span class="section-num">/ 01</span>
-      <h2 class="section-title">깃발 형태</h2>
+      <h2 class="section-title">물약 종류</h2>
     </div>
     <div class="section-sub">단일 권장 · 복수 선택 가능 · 직접 입력은 콤마로 구분 (둘 다 합쳐짐)</div>
     <div class="chip-group-wrap">
-      ${BANNER_SHAPE_GROUPS.map(group => `
+      ${POTION_TYPE_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
-        <div class="chip-group" data-section="bannerShape" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="potionType" data-mode="multi" style="margin-bottom:8px">
           ${group.items.map(item => {
-            const active = (state.bannerShape||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="bannerShape" data-value="${esc(item.en)}" style="--chip-accent:#0077DD">${esc(item.kr)}</div>`;
+            const active = (state.potionType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="potionType" data-value="${esc(item.en)}" style="--chip-accent:#FF7722">${esc(item.kr)}</div>`;
           }).join('')}
         </div>
       `).join('')}
       ${customItems.length ? `
         <div class="group-label">커스텀</div>
-        <div class="chip-group" data-section="bannerShape" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="potionType" data-mode="multi" style="margin-bottom:8px">
           ${customItems.map(item => {
-            const active = (state.bannerShape||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="bannerShape" data-value="${esc(item.en)}" style="--chip-accent:#0077DD">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="bannerShape" data-value="${esc(item.en)}">×</span></div>`;
+            const active = (state.potionType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="potionType" data-value="${esc(item.en)}" style="--chip-accent:#FF7722">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="potionType" data-value="${esc(item.en)}">×</span></div>`;
           }).join('')}
         </div>
       ` : ''}
-      <div class="chip-group" data-section="bannerShape" data-mode="multi">
-        <div class="chip chip-add" data-action="add-chip" data-section="bannerShape" style="--chip-accent:#0077DD">＋</div>
+      <div class="chip-group" data-section="potionType" data-mode="multi">
+        <div class="chip chip-add" data-action="add-chip" data-section="potionType" style="--chip-accent:#FF7722">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-bannerShape" placeholder="직접 입력 (콤마로 여러 개, 예: oriflamme, 오리플람)" value="${esc(state.customBannerShape || '')}">
-    <div class="input-hint" id="custom-bannerShape-hint"></div>
+    <input type="text" class="text-input" id="custom-potionType" placeholder="직접 입력 (콤마로 여러 개, 예: smoke bomb, 연막탄)" value="${esc(state.customPotionType || '')}">
+    <div class="input-hint" id="custom-potionType-hint"></div>
+  `;
+}
+
+function renderModeHTML(){
+  return `
+    <div class="section-head">
+      <span class="section-num">/ 00</span>
+      <h2 class="section-title">모드 선택</h2>
+    </div>
+    <div class="section-sub">결과물의 결을 결정 · 라디오 (단일 선택 강제)</div>
+    <div class="mode-radio-group">
+      ${MODES.map(m => {
+        const active = (state.mode||[])[0] === m.value;
+        return `
+          <label class="mode-radio${active?' active':''}" data-mode-value="${m.value}">
+            <input type="radio" name="potion-mode" value="${m.value}" ${active?'checked':''}>
+            <div class="mode-radio-content">
+              <div class="mode-radio-title">${esc(m.kr)}</div>
+              <div class="mode-radio-en">${esc(m.en)}</div>
+            </div>
+          </label>
+        `;
+      }).join('')}
+    </div>
   `;
 }
 
@@ -1044,7 +1143,7 @@ function renderMotifHTML(){
       <span class="section-num">/ 02</span>
       <h2 class="section-title">가문 모티프</h2>
     </div>
-    <div class="section-sub">깃발에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
+    <div class="section-sub">물약에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
     <div class="chip-group-wrap">
       ${MOTIF_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
@@ -1118,7 +1217,7 @@ function isChipActive(sec, value){
 }
 
 function renderColorSectionHTML(){
-  const primary = state.primaryColor || '#0077DD';
+  const primary = state.primaryColor || '#00BBDD';
   const primaryInfo = findClosestColorName(primary);
 
   let html = `
@@ -1231,15 +1330,15 @@ function attachChipListeners(){
 }
 
 function attachInputListeners(){
-  const customBs = document.getElementById('custom-bannerShape');
+  const customBs = document.getElementById('custom-potionType');
   if(customBs){
     customBs.addEventListener('input', (e) => {
-      state.customBannerShape = e.target.value;
+      state.customPotionType = e.target.value;
       saveAll();
       updatePreview();
-      updateBannerShapeHint();
+      updateBuildingTypeHint();
     });
-    updateBannerShapeHint();
+    updateBuildingTypeHint();
   }
   const customMotif = document.getElementById('custom-motifs');
   if(customMotif){
@@ -1263,14 +1362,14 @@ function attachInputListeners(){
   }
 }
 
-function updateBannerShapeHint(){
-  const hint = document.getElementById('custom-bannerShape-hint');
+function updateBuildingTypeHint(){
+  const hint = document.getElementById('custom-potionType-hint');
   if(!hint) return;
-  const fromChips = (state.bannerShape||[]).map(en => {
-    const found = ALL_BANNER_SHAPES.find(m => m.en === en);
+  const fromChips = (state.potionType||[]).map(en => {
+    const found = ALL_POTION_TYPES.find(m => m.en === en);
     return found ? found.kr : en;
   });
-  const customs = (state.customBannerShape||'').split(',').map(s => s.trim()).filter(Boolean);
+  const customs = (state.customPotionType||'').split(',').map(s => s.trim()).filter(Boolean);
   const all = [...fromChips, ...customs];
   hint.textContent = all.length ? '선택됨: ' + all.join(' + ') : '';
 }
@@ -1369,7 +1468,7 @@ function applyColorChange(id, hex){
 let currentChipModalSection = null;
 function openChipModal(sectionKey){
   currentChipModalSection = sectionKey;
-  const specialTitles = { bannerShape:'깃발 형태', motifs:'가문 모티프' };
+  const specialTitles = { potionType:'물약 종류', motifs:'가문 모티프' };
   const sec = specialTitles[sectionKey]
     ? {title:specialTitles[sectionKey]}
     : SECTIONS.find(s => s.key === sectionKey);
@@ -1411,19 +1510,21 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 });
 
 // ═══════════════════════════════════════════════════════════════════
-//  프롬프트 생성 (기존 로직 보존)
+//  프롬프트 생성 (POTION — ARCHITECTURE 모드 분기 패턴 재사용)
 // ═══════════════════════════════════════════════════════════════════
 function buildPrompts(){
-  // 깃발 형태 (필수)
-  const bsFromChips = (state.bannerShape||[]).map(en => {
-    const found = ALL_BANNER_SHAPES.find(m => m.en === en);
+  const mode = (state.mode || ['A'])[0] || 'A';  // 00번 모드
+
+  // 물약 종류 (필수)
+  const ptFromChips = (state.potionType||[]).map(en => {
+    const found = ALL_POTION_TYPES.find(m => m.en === en);
     return found ? {en:found.en, kr:found.kr} : {en, kr:en};
   });
-  const bsCustoms = (state.customBannerShape||'').split(',').map(s => s.trim()).filter(Boolean)
+  const ptCustoms = (state.customPotionType||'').split(',').map(s => s.trim()).filter(Boolean)
     .map(c => ({en:c, kr:c}));
-  const bsList = [...bsFromChips, ...bsCustoms];
-  const bannerEn = bsList.length ? joinWithAnd(bsList.map(m => m.en)) : 'banner';
-  const bannerKr = bsList.length ? bsList.map(m => m.kr).join(', ') : '깃발';
+  const ptList = [...ptFromChips, ...ptCustoms];
+  const potionTypeEn = ptList.length ? joinWithAnd(ptList.map(m => m.en)) : 'healing potion';
+  const potionTypeKr = ptList.length ? ptList.map(m => m.kr).join(', ') : '회복 물약';
 
   // 가문 모티프 (필수)
   const motifFromChips = (state.motifs||[]).map(en => {
@@ -1454,51 +1555,70 @@ function buildPrompts(){
 
   // 양식 (옵션, multi)
   const styleList = state.style || [];
-  const styleResolved = styleList.map(s => STYLES.find(x => x.en === s) || {en:s, kr:s});
+  const styleResolved = styleList.map(s => POTION_STYLES.find(x => x.en === s) || {en:s, kr:s});
   const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
   const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
 
-  // 천 재질 (옵션, multi) — weapon의 HANDLES 자리
-  const fabricList = state.fabric || [];
-  const fabricResolved = fabricList.map(s => FABRICS.find(x => x.en === s) || {en:s, kr:s});
-  const fabricEn = fabricResolved.length ? `, in ${joinWithAnd(fabricResolved.map(f => f.en))} main fabric` : '';
-  const fabricKr = fabricResolved.length ? `, ${fabricResolved.map(f => f.kr).join('·')} 메인 천` : '';
+  // 병 형태 (옵션, multi) — POTION 본질
+  const vesselList = state.vesselShape || [];
+  const vesselResolved = vesselList.map(s => VESSEL_SHAPES.find(x => x.en === s) || {en:s, kr:s});
+  const vesselEn = vesselResolved.length ? `, shaped as ${joinWithAnd(vesselResolved.map(v => v.en))}` : '';
+  const vesselKr = vesselResolved.length ? `, ${vesselResolved.map(v => v.kr).join('·')} 형태` : '';
 
-  // 가장자리 장식 (옵션, multi) — weapon의 BLADES 자리
-  const edgeList = state.edge || [];
-  const edgeResolved = edgeList.map(s => EDGE_DECORATIONS.find(x => x.en === s) || {en:s, kr:s});
-  const edgeEn = edgeResolved.length ? `, with ${joinWithAnd(edgeResolved.map(e => e.en))} edge` : '';
-  const edgeKr = edgeResolved.length ? `, ${edgeResolved.map(e => e.kr).join('·')} 가장자리` : '';
+  // 액체 상태 (옵션, multi) — POTION 본질
+  const liquidList = state.liquidState || [];
+  const liquidResolved = liquidList.map(s => LIQUID_STATES.find(x => x.en === s) || {en:s, kr:s});
+  const liquidEn = liquidResolved.length ? `, containing ${joinWithAnd(liquidResolved.map(l => l.en))}` : '';
+  const liquidKr = liquidResolved.length ? `, 내부에 ${liquidResolved.map(l => l.kr).join('·')}` : '';
 
-  // 보석 (옵션, multi) — 깃발은 브로치/핀 컨셉
-  const gemList = state.gemstone || [];
-  const gemResolved = gemList.map(s => GEMSTONES.find(x => x.en === s) || {en:s, kr:s});
-  const gemEn = gemResolved.length ? `, accented with ${joinWithAnd(gemResolved.map(g => g.en))} gemstone brooch` : '';
-  const gemKr = gemResolved.length ? `, ${gemResolved.map(g => g.kr).join('·')} 보석 브로치 강조` : '';
+  // 마개 (옵션, multi) — POTION 본질
+  const stopperList = state.stopper || [];
+  const stopperResolved = stopperList.map(s => STOPPERS.find(x => x.en === s) || {en:s, kr:s});
+  const stopperEn = stopperResolved.length ? `, sealed with ${joinWithAnd(stopperResolved.map(s => s.en))}` : '';
+  const stopperKr = stopperResolved.length ? `, ${stopperResolved.map(s => s.kr).join('·')}로 봉인됨` : '';
 
-  // 배경 (필수, multi)
+  // 배경 (모드별 분기)
+  // 모드 A 미선택 시: 'pure white background' 폴백 (시길 톤 본질)
+  // 모드 C 미선택 시: 빈 채로 (자율)
   const bgList = state.background || [];
   const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || {en:v, kr:v});
-  const bgEn = bgResolved.length ? bgResolved.map(b => b.en).join(', ') : 'pure white background';
-  const bgKr = bgResolved.length ? bgResolved.map(b => b.kr).join(', ') : '순백 배경';
+  const bgEn = bgResolved.length
+    ? bgResolved.map(b => b.en).join(', ')
+    : (mode === 'A' ? 'pure white background' : '');
+  const bgKr = bgResolved.length
+    ? bgResolved.map(b => b.kr).join(', ')
+    : (mode === 'A' ? '순백 배경' : '');
   const hasTransparent = bgList.includes('transparent');
 
-  // 색상
+  // 색상 (모드별 분기) — primaryColor = 액체 색
   const primaryInfo = findClosestColorName(state.primaryColor);
   const secondaryInfos = (state.secondaryColors||[]).map(hex => ({hex, ...findClosestColorName(hex)}));
   const colorPhraseEn = (() => {
     const main = `${primaryInfo.en} (${state.primaryColor})`;
-    if(!secondaryInfos.length) return `single-color flat silhouette in ${main}`;
-    return `flat color design featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    if(mode === 'A'){
+      if(!secondaryInfos.length) return `single-color flat silhouette in ${main} liquid tone`;
+      return `flat color design featuring ${main} liquid accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    } else {
+      if(!secondaryInfos.length) return `rich painterly liquid color emphasizing ${main}`;
+      return `cinematic liquid color tones featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    }
   })();
   const colorPhraseKr = (() => {
     const main = `${primaryInfo.kr} (${state.primaryColor})`;
-    if(!secondaryInfos.length) return `${main} 단색 평면 실루엣`;
-    return `${main} 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+    if(mode === 'A'){
+      if(!secondaryInfos.length) return `${main} 단색 평면 실루엣 액체 톤`;
+      return `${main} 액체 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+    } else {
+      if(!secondaryInfos.length) return `${main}을(를) 강조한 풍부한 페인털리 액체 색감`;
+      return `${main} 액체 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 시네마틱 색조`;
+    }
   })();
 
-  // extras (옵션)
-  const extraList = state.extras || [];
+  // extras (옵션) — 모드 C 선택 시 'flat silhouette icon' 칩 자동 제외
+  let extraList = state.extras || [];
+  if(mode === 'C'){
+    extraList = extraList.filter(e => e !== 'flat silhouette icon');
+  }
   const extraEn = extraList.length ? `, ${extraList.join(', ')}` : '';
   const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || {kr:e}).kr).join(', ')}` : '';
 
@@ -1508,7 +1628,7 @@ function buildPrompts(){
   const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
   const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
 
-  // 깃발 격 (옵션, multi)
+  // 물약 격 (옵션, multi)
   const rankList = state.rank || [];
   const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
   const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
@@ -1537,23 +1657,48 @@ function buildPrompts(){
   const factionEn = factionResolved.length ? `, ${joinWithAnd(factionResolved.map(f => f.en))} house` : '';
   const factionKr = factionResolved.length ? `, ${factionResolved.map(f => f.kr).join('·')} 가문` : '';
 
-  // 천 모션·드레이프 (옵션, multi) — BANNER 전용 18번
-  // 선택 시 공예 표현 자리(flowing cloth folds)를 해당 표현으로 교체
-  const drapeList = state.drape || [];
-  const drapeResolved = drapeList.map(s => BANNER_DRAPE.find(x => x.en === s) || {en:s, kr:s});
-  const drapePhraseEn = drapeResolved.length ? joinWithAnd(drapeResolved.map(d => d.en)) : 'flowing cloth folds';
-  const drapePhraseKr = drapeResolved.length ? drapeResolved.map(d => d.kr).join('·') : '휘날리는 천 주름';
+  // 효과·연출 (옵션, multi) — POTION 전용 18번 (병 주위 효과, prefix-comma 패턴)
+  const bubbleList = state.bubbleEffect || [];
+  const bubbleResolved = bubbleList.map(s => BUBBLE_EFFECTS.find(x => x.en === s) || {en:s, kr:s});
+  const bubbleEn = bubbleResolved.length ? `, surrounded by ${joinWithAnd(bubbleResolved.map(b => b.en))}` : '';
+  const bubbleKr = bubbleResolved.length ? `, ${bubbleResolved.map(b => b.kr).join('·')} 효과로 둘러싸임` : '';
 
-  // 네거티브 — 깃발 전용 (no shield, no character, no people 추가)
-  const negEn = hasTransparent
-    ? 'no text, no letters, no readable runes, no shield, no character, no people, no shading, no gradient, no 3d, no realistic details, no white background, no human, no hand, no border, no watermark, no photorealism'
-    : 'no text, no letters, no readable runes, no shield, no character, no people, no shading, no gradient, no 3d, no realistic details, no human, no hand, no border, no watermark, no photorealism';
-  const negKr = hasTransparent
-    ? '글자 없음, 읽을 수 있는 룬 없음, 방패 없음, 캐릭터 없음, 사람 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 흰 배경 없음, 손 없음, 테두리 없음, 워터마크 없음, 사진 사실주의 없음'
-    : '글자 없음, 읽을 수 있는 룬 없음, 방패 없음, 캐릭터 없음, 사람 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 손 없음, 테두리 없음, 워터마크 없음, 사진 사실주의 없음';
+  // ═══ 네거티브 (모드별 강도 분기 — POTION 결로) ═══
+  let negEn, negKr;
+  if(mode === 'A'){
+    // 모드 A — 강한 네거티브 (시길 톤 본질, POTION 결로)
+    negEn = hasTransparent
+      ? 'no readable text, no letters, no readable runes, no people, no characters, no human, no modern bottle, no plastic, no modern packaging, no chemistry lab, no broken glass, no shading, no gradient, no 3d, no realistic details, no photorealism, no white background, no watermark'
+      : 'no readable text, no letters, no readable runes, no people, no characters, no human, no modern bottle, no plastic, no modern packaging, no chemistry lab, no broken glass, no shading, no gradient, no 3d, no realistic details, no photorealism, no watermark';
+    negKr = hasTransparent
+      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인물 없음, 현대 병 없음, 플라스틱 없음, 현대 포장 없음, 화학 실험실 없음, 깨진 유리 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 흰 배경 없음, 워터마크 없음'
+      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인물 없음, 현대 병 없음, 플라스틱 없음, 현대 포장 없음, 화학 실험실 없음, 깨진 유리 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 워터마크 없음';
+  } else {
+    // 모드 C — 약한 네거티브 (실사·사람 허용, POTION 결)
+    negEn = hasTransparent
+      ? 'no readable text, no letters, no readable runes, no modern bottle, no plastic, no modern packaging, no chemistry lab, no broken glass, no white background, no watermark'
+      : 'no readable text, no letters, no readable runes, no modern bottle, no plastic, no modern packaging, no chemistry lab, no broken glass, no watermark';
+    negKr = hasTransparent
+      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 병 없음, 플라스틱 없음, 현대 포장 없음, 화학 실험실 없음, 깨진 유리 없음, 흰 배경 없음, 워터마크 없음'
+      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 병 없음, 플라스틱 없음, 현대 포장 없음, 화학 실험실 없음, 깨진 유리 없음, 워터마크 없음';
+  }
 
-  const promptEn = `a ${moodEn} fantasy noble house ${bannerEn}${factionEn}${rankEn}${purposeEn}${styleEn}, ceremonial heraldic cloth, abstract design based on ${motifEn} motif${subEn}${fabricEn}${edgeEn}${gemEn}, embroidered with unreadable arcane runes${elementEn}${auraEn}, ${colorPhraseEn}, ${bgEn}${themeEn}, single object centered, clean flat silhouette, high contrast, ${drapePhraseEn}, strong negative space cutouts${extraEn}, ${negEn}`;
-  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${bannerKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 의례용 문장 천. ${motifKr}을(를) 모티프로 한 추상 가문 깃발${subKr}${fabricKr}${edgeKr}${gemKr}. 읽을 수 없는 룬 자수${elementKr}${auraKr}. ${colorPhraseKr}. ${bgKr}${themeKr}. 단일 오브젝트 중심 구도, 깔끔한 평면 실루엣, 강한 명도 대비, ${drapePhraseKr}, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+  // ═══ 프롬프트 골격 (모드별 분기) ═══
+  let promptEn, promptKr;
+
+  if(mode === 'A'){
+    // 모드 A — 시길 톤 (가문 의례 약병 결)
+    const bgPhraseEn = bgEn ? `${bgEn}` : '';
+    const bgPhraseKr = bgKr ? `${bgKr}` : '';
+    promptEn = `a ${moodEn} fantasy noble house ${potionTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, ornate magical elixir vessel, abstract design based on ${motifEn} motif${subEn}${vesselEn}${liquidEn}${stopperEn}, etched with unreadable arcane glyphs${elementEn}${auraEn}${bubbleEn}, ${colorPhraseEn}, ${bgPhraseEn}${themeEn}, centered single vessel, symmetrical front view, clean high contrast fantasy design, strong negative space cutouts${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${potionTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 장식적인 마법 영약 약병. ${motifKr}을(를) 모티프로 한 추상 가문 약병${subKr}${vesselKr}${liquidKr}${stopperKr}. 읽을 수 없는 비전 글리프 새김${elementKr}${auraKr}${bubbleKr}. ${colorPhraseKr}. ${bgPhraseKr}${themeKr}. 중앙 단일 약병 구도, 좌우 대칭 정면 시점, 깔끔한 고대비 판타지 디자인, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+  } else {
+    // 모드 C — 컨셉아트 (떠다니는 마법약 일러스트 결)
+    const bgPhraseEn = bgEn ? `, ${bgEn}` : '';
+    const bgPhraseKr = bgKr ? `. ${bgKr}` : '';
+    promptEn = `a ${moodEn} fantasy noble house ${potionTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, epic fantasy alchemy concept art, featuring ${motifEn} motif accents${subEn}${vesselEn}${liquidEn}${stopperEn}, weathered with mystical alchemical glyphs${elementEn}${auraEn}${bubbleEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, dramatic front view, cinematic composition, painterly rendering, atmospheric lighting, environmental storytelling${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${potionTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 서사적 판타지 연금술 컨셉아트. ${motifKr} 모티프 디테일${subKr}${vesselKr}${liquidKr}${stopperKr}. 풍화된 신비로운 연금 글리프${elementKr}${auraKr}${bubbleKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. 드라마틱 정면 시점, 시네마틱 구도, 페인털리 렌더링, 분위기 있는 조명, 환경 스토리텔링${extraKr}. ${negKr}.`;
+  }
 
   return { en:promptEn, kr:promptKr };
 }
@@ -1632,7 +1777,7 @@ function loadAll(){
   }catch(e){}
 }
 function resetAll(){
-  if(!confirm('깃발 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
+  if(!confirm('물약 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
   state = {...DEFAULT_STATE};
   saveAll();
   renderSections();
@@ -1900,6 +2045,20 @@ function showSlotPicker(slots){
 // ═══════════════════════════════════════════════════════════════════
 //  초기화
 // ═══════════════════════════════════════════════════════════════════
+
+function attachModeListeners(){
+  document.querySelectorAll('.mode-radio').forEach(label => {
+    label.addEventListener('click', (e) => {
+      const value = label.dataset.modeValue;
+      if(!value) return;
+      state.mode = [value];
+      saveAll();
+      renderSections();
+      updatePreview();
+    });
+  });
+}
+
 function init(){
   loadAll();
   renderSections();
