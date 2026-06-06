@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CREATURE — 사역마 주조소</title>
+<title>TAROT — 타로 카드 주조소</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -11,7 +11,7 @@
     --border:#3a2e48; --border-strong:#4a3a5a;
     --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
-    --tool-color:#EE1166;
+    --tool-color:#FF6699;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{min-height:100vh;}
@@ -26,7 +26,7 @@
   }
   body::after{
     content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(238,17,102,0.16),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
+    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(255,102,153,0.16),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
   }
 
   /* ── 헤더 ── */
@@ -146,6 +146,19 @@
 
   /* ── 섹션 ── */
   .section{margin-bottom:26px;}
+  /* 모드 제한 섹션 비활성화 패턴 (TAROT 19번 cardSpread) */
+  .section.mode-disabled{opacity:0.42;pointer-events:none;transition:opacity 0.2s ease;}
+  .mode-restrict-notice{
+    display:none;
+    margin-bottom:10px;padding:8px 12px;
+    background:rgba(255,102,153,0.08);
+    border:1px dashed rgba(255,102,153,0.4);
+    border-radius:6px;
+    color:var(--tool-color);
+    font-size:11px;letter-spacing:0.5px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .section.mode-disabled .mode-restrict-notice{display:block;}
   .section-head{
     display:flex;align-items:baseline;gap:10px;margin-bottom:6px;
   }
@@ -423,24 +436,24 @@
     flex:1;min-width:140px;
     display:flex;align-items:center;gap:10px;
     padding:12px 14px;
-    background:rgba(238,17,102,0.04);
+    background:rgba(255,102,153,0.04);
     border:1px solid var(--border);
     border-radius:10px;
     cursor:pointer;
     transition:all 0.2s;
   }
   .mode-radio:hover{
-    background:rgba(238,17,102,0.10);
-    border-color:rgba(238,17,102,0.4);
+    background:rgba(255,102,153,0.10);
+    border-color:rgba(255,102,153,0.4);
   }
   .mode-radio.active{
-    background:rgba(238,17,102,0.18);
-    border-color:#EE1166;
-    box-shadow:0 0 0 1px rgba(238,17,102,0.4);
+    background:rgba(255,102,153,0.18);
+    border-color:#FF6699;
+    box-shadow:0 0 0 1px rgba(255,102,153,0.4);
   }
   .mode-radio input[type="radio"]{
     flex-shrink:0;width:16px;height:16px;
-    accent-color:#EE1166;cursor:pointer;
+    accent-color:#FF6699;cursor:pointer;
   }
   .mode-radio-content{flex:1;}
   .mode-radio-title{
@@ -460,9 +473,9 @@
      ═══════════════════════════════════════════════════ -->
 <header class="header">
   <a href="forge.html" class="back-link">← <span class="btn-label">메인</span></a>
-  <a href="tarot.html" class="sibling-link">🔮 <span class="btn-label">타로 카드</span></a>
+  <a href="map.html" class="sibling-link">🗺️ <span class="btn-label">지도</span></a>
   <div>
-    <div class="header-logo">CREATURE</div>
+    <div class="header-logo">TAROT</div>
     <div class="header-sub">ALCHEMY · ELIXIR</div>
   </div>
   <div class="header-right">
@@ -482,10 +495,10 @@
   <div class="options-col">
 
     <section class="hero">
-      <div class="hero-tag">NOBLE · CREATURE · FAMILIAR</div>
-      <h1 class="hero-title">가문의 사역마를<br><span class="accent">주조</span>하다</h1>
+      <div class="hero-tag">NOBLE · TAROT · CARD</div>
+      <h1 class="hero-title">가문의 타로 카드를<br><span class="accent">주조</span>하다</h1>
       <p class="hero-desc">
-        사역마 종류·모티프·몸 형태·특수 부위·외피·자세를 골라 가문 영물의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내. 모드 선택으로 시길 톤 / 컨셉아트 결 분기.
+        메이저 아르카나·모티프·몸 형태·특수 부위·외피·자세를 골라 가문 영물의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내. 모드 선택으로 시길 톤 / 컨셉아트 결 분기.
       </p>
     </section>
 
@@ -570,7 +583,7 @@ const COLOR_NAMES = [
   { hex:'#CCAA88', en:'warm beige tan', kr:'따뜻한 베이지 탠' },
   { hex:'#BB6688', en:'dusty wine rose', kr:'더스티 와인 로즈' },
   { hex:'#884499', en:'deep royal purple', kr:'딥 로열 퍼플' },
-  { hex:'#EE1166', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
+  { hex:'#FF6699', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
   { hex:'#FF6699', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
   { hex:'#00BBDD', en:'bright cyan blue', kr:'밝은 시안 블루' },
   { hex:'#FF7722', en:'vivid tangerine orange', kr:'선명한 탠저린 오렌지' },
@@ -659,33 +672,42 @@ const COLOR_NAMES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════
-//  가문 사역마 데이터
+//  가문 타로 카드 데이터
 // ═══════════════════════════════════════════════════════════════════
-// 사역마 종류 (베이스) — 그룹화
-const CREATURE_TYPE_GROUPS = [
-  { label:'길짐승·포유 계열', items:[
-    {en:'wolf familiar', kr:'늑대 사역마'},
-    {en:'great hound', kr:'사냥개·하운드'},
-    {en:'spirit fox', kr:'영물 여우'},
-    {en:'sacred cat', kr:'영묘(靈猫)'},
+// 메이저 아르카나 (베이스) — 그룹화
+const ARCANA_TYPE_GROUPS = [
+  { label:'시작·여정', items:[
+    {en:'The Fool', kr:'바보'},
+    {en:'The Magician', kr:'마법사'},
+    {en:'The High Priestess', kr:'여사제'},
+    {en:'The Empress', kr:'여황제'},
+    {en:'The Emperor', kr:'황제'},
+    {en:'The Hierophant', kr:'교황'},
   ]},
-  { label:'날짐승·새 계열', items:[
-    {en:'raven familiar', kr:'까마귀 사역마'},
-    {en:'spectral owl', kr:'유령 부엉이'},
-    {en:'phoenix hatchling', kr:'어린 봉황'},
+  { label:'시련·균형', items:[
+    {en:'The Lovers', kr:'연인'},
+    {en:'The Chariot', kr:'전차'},
+    {en:'Strength', kr:'힘'},
+    {en:'The Hermit', kr:'은둔자'},
+    {en:'Wheel of Fortune', kr:'운명의 수레바퀴'},
+    {en:'Justice', kr:'정의'},
   ]},
-  { label:'파충·신수 계열', items:[
-    {en:'crowned serpent', kr:'관모(冠帽) 뱀'},
-    {en:'dragonling', kr:'어린 용'},
-    {en:'lindwurm', kr:'린트부름'},
+  { label:'전환·신비', items:[
+    {en:'The Hanged Man', kr:'매달린 사람'},
+    {en:'Death', kr:'죽음'},
+    {en:'Temperance', kr:'절제'},
+    {en:'The Devil', kr:'악마'},
+    {en:'The Tower', kr:'탑'},
   ]},
-  { label:'신화·키메라 계열', items:[
-    {en:'noble griffin', kr:'고결한 그리핀'},
-    {en:'chimera familiar', kr:'키메라 사역마'},
-    {en:'celestial unicorn', kr:'천상 유니콘'},
+  { label:'천공·완성', items:[
+    {en:'The Star', kr:'별'},
+    {en:'The Moon', kr:'달'},
+    {en:'The Sun', kr:'태양'},
+    {en:'Judgement', kr:'심판'},
+    {en:'The World', kr:'세계'},
   ]},
 ];
-const ALL_CREATURE_TYPES = CREATURE_TYPE_GROUPS.flatMap(g => g.items);
+const ALL_ARCANA_TYPES = ARCANA_TYPE_GROUPS.flatMap(g => g.items);
 
 // 가문 모티프 (sigil의 BASE_MOTIFS 재활용 — 변경 없음)
 const MOTIF_GROUPS = [
@@ -726,7 +748,7 @@ const MOTIF_GROUPS = [
 ];
 const ALL_MOTIFS = MOTIF_GROUPS.flatMap(g => g.items);
 
-// 보조 디테일 (사역마 보강 — POTION 8개 제거 + CREATURE 8개 추가)
+// 보조 디테일 (타로 카드 보강 — POTION 8개 제거 + CREATURE 8개 추가)
 const SUB_MOTIFS = [
   {en:'thorns', kr:'가시'}, {en:'wings', kr:'날개'}, {en:'crown', kr:'왕관'},
   {en:'chains', kr:'사슬'}, {en:'skull', kr:'해골'}, {en:'vines', kr:'덩굴'},
@@ -735,71 +757,71 @@ const SUB_MOTIFS = [
   {en:'gears', kr:'톱니'}, {en:'tear drop', kr:'눈물'}, {en:'blood drop', kr:'핏방울'},
   {en:'leaves', kr:'잎사귀'}, {en:'petals', kr:'꽃잎'}, {en:'star spikes', kr:'별가시'},
   {en:'bone chain', kr:'사슬뼈'}, {en:'spider web', kr:'거미줄'},
-  // CREATURE 보강 8개
+  // TAROT 보강 8개
   {en:'glowing eyes', kr:'빛나는 눈'},
-  {en:'spectral aura outline', kr:'영체 윤곽선'},
-  {en:'territorial marking trail', kr:'영역 표시 흔적'},
-  {en:'ancestral fang markings', kr:'가문 송곳니 문양'},
-  {en:'bloodline crest on forehead', kr:'이마 혈통 문장'},
-  {en:'shadow appendage tendrils', kr:'그림자 부속 촉수'},
+  {en:'twin pillar columns', kr:'쌍둥이 기둥'},
+  {en:'cascading water flow', kr:'흐르는 물줄기'},
+  {en:'ancestral occult markings', kr:'고대 오컬트 문양'},
+  {en:'third eye on forehead', kr:'이마 제3의 눈'},
+  {en:'shadow veil tendrils', kr:'그림자 베일 촉수'},
   {en:'arcane vein patterns', kr:'마력 혈관 무늬'},
-  {en:'rune-etched claws', kr:'룬 새김 발톱'},
+  {en:'rune-etched borders', kr:'룬 새김 테두리'},
 ];
 
-// 사역마 양식 — 문장학·신화·다크·페어리 등 결
-const CREATURE_STYLES = [
-  {en:'heraldic', kr:'문장학적'},
-  {en:'chimeric', kr:'키메릭(혼종)'},
-  {en:'mythical', kr:'신화적'},
-  {en:'dark fantasy', kr:'다크 판타지'},
-  {en:'celestial', kr:'천상적'},
-  {en:'faerie', kr:'페어리·요정'},
-  {en:'arcane', kr:'비전 마법풍'},
-  {en:'ancient primal', kr:'고대 원시'},
-  {en:'corrupted', kr:'오염된'},
-  {en:'regal beast', kr:'위엄있는 영물'},
+// 타로 카드 양식 — 문장학·신화·다크·페어리 등 결
+const TAROT_STYLES = [
+  {en:'art nouveau', kr:'아르누보'},
+  {en:'occult mysticism', kr:'오컬트 신비주의'},
+  {en:'art deco', kr:'아르데코'},
+  {en:'byzantine iconography', kr:'비잔틴 도상'},
+  {en:'alchemical engraving', kr:'연금술 판화'},
+  {en:'gothic illumination', kr:'고딕 채식'},
+  {en:'pre-raphaelite', kr:'라파엘 전파'},
+  {en:'celestial cosmology', kr:'천문 도설'},
+  {en:'pagan folkloric', kr:'페이건 민속'},
+  {en:'ethereal dreamscape', kr:'몽환적 풍경'},
 ];
 
 // 몸 형태 (05번 본질 — ← POTION의 vesselShape 자리)
-const BODY_FORMS = [
-  {en:'noble quadruped form', kr:'고결한 4족 형태'},
-  {en:'upright biped form', kr:'직립 2족 형태'},
-  {en:'serpentine coiled form', kr:'뱀처럼 굽이치는 형태'},
-  {en:'winged quadruped form', kr:'날개 달린 4족'},
-  {en:'multi-limbed chimeric form', kr:'다지 키메라 형태'},
-  {en:'serpent-tailed feline form', kr:'뱀꼬리 고양잇과'},
-  {en:'hulking massive form', kr:'육중한 거구'},
-  {en:'slender elegant form', kr:'호리호리한 우아한'},
-  {en:'diminutive familiar form', kr:'소형 사역마'},
-  {en:'amorphous shifting form', kr:'정형 없는 변형체'},
+const CARD_FRAMES = [
+  {en:'ornate gothic arch frame', kr:'고딕 아치'},
+  {en:'flowing vine border frame', kr:'흐르는 덩굴'},
+  {en:'minimal clean line frame', kr:'미니멀 라인'},
+  {en:'radial halo border frame', kr:'방사 광배'},
+  {en:'baroque ornamental frame', kr:'바로크 장식'},
+  {en:'celtic knot border frame', kr:'켈틱 매듭'},
+  {en:'art nouveau filigree frame', kr:'아르누보 필리그리'},
+  {en:'alchemical seal border frame', kr:'연금술 인장'},
+  {en:'starlit cosmic frame', kr:'별빛 우주'},
+  {en:'weathered ancient border frame', kr:'풍화된 고대'},
 ];
 
 // 특수 부위 (06번 본질 — ← POTION의 liquidState 자리)
-const SPECIAL_FEATURES = [
-  {en:'crystal horns', kr:'크리스털 뿔'},
-  {en:'multiple braided tails', kr:'여러 갈래 꼬리'},
-  {en:'extra heads', kr:'다중 머리'},
-  {en:'spectral glowing wings', kr:'영적 발광 날개'},
-  {en:'gemstone embedded forehead', kr:'이마 보석'},
-  {en:'floating halo ring', kr:'떠있는 광배 고리'},
-  {en:'thorn-like antlers', kr:'가시 같은 뿔(앤틀러)'},
-  {en:'ethereal flowing mane', kr:'영적 흐르는 갈기'},
-  {en:'serpent-eye crest', kr:'뱀의 눈 문장'},
-  {en:'elongated curved fangs', kr:'길게 굽은 송곳니'},
+const CENTRAL_FIGURES = [
+  {en:'single allegorical figure', kr:'단일 우의적 인물'},
+  {en:'symbolic object alone', kr:'단일 상징물'},
+  {en:'abstract symbol composition', kr:'추상 상징 구성'},
+  {en:'mythical scene tableau', kr:'신화 장면'},
+  {en:'twin figures composition', kr:'쌍둥이 인물 구성'},
+  {en:'celestial body', kr:'천체'},
+  {en:'mystical creature', kr:'신비한 동물'},
+  {en:'arcane tool ensemble', kr:'마법 도구 모음'},
+  {en:'elemental embodiment', kr:'원소 화신'},
+  {en:'veiled silhouette figure', kr:'베일 쓴 실루엣'},
 ];
 
 // 외피 (07번 본질 — ← POTION의 stopper 자리, B안 채택: gemstone/stopper 자리 교체)
-const COATINGS = [
-  {en:'sleek noble fur', kr:'매끄러운 고귀한 모피'},
-  {en:'flowing iridescent feathers', kr:'흐르는 무지갯빛 깃털'},
-  {en:'gleaming dragon scales', kr:'빛나는 용 비늘'},
-  {en:'crystalline armor plates', kr:'결정질 갑주판'},
-  {en:'ethereal mist coating', kr:'영적 안개 외피'},
-  {en:'bone-like armored hide', kr:'뼈 같은 갑피'},
-  {en:'moss-grown ancient hide', kr:'이끼 자란 고대 가죽'},
-  {en:'shadow-veiled pelt', kr:'그림자 베일 털가죽'},
-  {en:'mirror-bright reflective skin', kr:'거울처럼 빛나는 피부'},
-  {en:'woven moonlight fibers', kr:'달빛 짠 섬유'},
+const SACRED_GEOMETRIES = [
+  {en:'pentagram inscription', kr:'펜타그램'},
+  {en:'hexagram alignment', kr:'헥사그램'},
+  {en:'mandala radial pattern', kr:'만다라 방사 패턴'},
+  {en:'vesica piscis overlap', kr:'두 원 겹침 (vesica piscis)'},
+  {en:'flower of life lattice', kr:'생명의 꽃 격자'},
+  {en:'enochian sigil grid', kr:'에녹어 시질 격자'},
+  {en:'platonic solid framework', kr:'플라톤 다면체 골격'},
+  {en:'fibonacci spiral structure', kr:'피보나치 나선'},
+  {en:'merkaba star configuration', kr:'메르카바 별 구조'},
+  {en:'tree of life sephirot', kr:'생명의 나무 세피로트'},
 ];
 
 const MOODS = [
@@ -825,9 +847,9 @@ const EXTRAS = [
   {en:'subtle vintage texture', kr:'은은한 빈티지 텍스처'},
   {en:'floating magical particles', kr:'마법 파편'},
   {en:'glowing edges', kr:'가장자리 발광'},
-  {en:'posed on heraldic shield mount', kr:'문장 방패 위에 자세잡음'},
+  {en:'framed by twin tarot pillars', kr:'쌍둥이 타로 기둥 사이'},
   {en:'emerging from arcane mist', kr:'마법 안개에서 출현'},
-  {en:'perched on noble house crest', kr:'가문 문장 위에 앉음'},
+  {en:'set against starry tarot night sky', kr:'별빛 밤하늘 배경'},
   {en:'flat silhouette icon', kr:'평면 실루엣 아이콘'},
 ];
 
@@ -837,30 +859,30 @@ const ELEMENTS = [
   {en:'star-aligned', kr:'별'}, {en:'shadow-aligned', kr:'그림자'},
 ];
 
-// 사역마 격 (banner 패턴 — "familiar" 통일)
+// 카드 격 (banner 패턴 — "familiar" 통일)
 const RANKS = [
-  {en:'mythic divine familiar with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
-  {en:'legendary heroic familiar with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
-  {en:'epic high-grade ceremonial familiar with elegant detailing', kr:'영웅급 (우아한 디테일)'},
-  {en:'rare embellished familiar with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
-  {en:'uncommon refined familiar with subtle detailing', kr:'고급 (절제된 디테일)'},
-  {en:'common standard familiar with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
+  {en:'mythic divine tarot card with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
+  {en:'legendary heroic tarot card with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
+  {en:'epic high-grade ceremonial tarot card with elegant detailing', kr:'영웅급 (우아한 디테일)'},
+  {en:'rare embellished tarot card with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
+  {en:'uncommon refined tarot card with subtle detailing', kr:'고급 (절제된 디테일)'},
+  {en:'common standard tarot card with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
 ];
 
-// 사역마 유래·성격 (banner 패턴 미러링, CREATURE 결로 단어 변환)
+// 카드 유래·계보 (banner 패턴 미러링, CREATURE 결로 단어 변환)
 const PURPOSES = [
-  {en:'royal court familiar', kr:'왕실 사역마'},
-  {en:'military war beast', kr:'군사 전투 짐승'},
-  {en:'religious sacred guardian', kr:'종교 성스러운 수호자'},
-  {en:'arcane experiment subject', kr:'마법 실험체'},
-  {en:'ancestral bound spirit', kr:'가문 결속 영체'},
-  {en:'ceremonial summoned beast', kr:'의례 소환수'},
-  {en:'ancient bound creature', kr:'고대 봉인수'},
-  {en:'cursed corrupted beast', kr:'저주받은 짐승'},
-  {en:'diplomatic envoy creature', kr:'외교 사자수'},
-  {en:'scholarly research specimen', kr:'학자의 연구 표본'},
-  {en:'funerary tomb watcher', kr:'장례 무덤 감시자'},
-  {en:'legendary mythic beast', kr:'전설의 신수'},
+  {en:'royal court divination card', kr:'왕실 점복 카드'},
+  {en:'occult ritual tarot', kr:'오컬트 의례 카드'},
+  {en:'religious mystical revelation', kr:'종교 신비 계시'},
+  {en:'arcane scholarly study', kr:'마법 학문 연구'},
+  {en:'ancestral fortune-telling deck', kr:'가문 점술 덱'},
+  {en:'ceremonial divination tool', kr:'의례 점복 도구'},
+  {en:'ancient prophetic vision', kr:'고대 예언 환상'},
+  {en:'cursed forbidden reading', kr:'금단의 점괘'},
+  {en:'diplomatic prophecy card', kr:'외교 예언 카드'},
+  {en:'scholarly esoteric reference', kr:'학자의 비전 자료'},
+  {en:'funerary mourning oracle', kr:'장례 애도 신탁'},
+  {en:'legendary divine omen', kr:'전설적 신탁'},
 ];
 
 // 오라·광휘
@@ -884,27 +906,29 @@ const FACTIONS = [
 
 // 자세 (Pose) — CREATURE 전용 18번 섹션
 // 모드 A: 문장학적 자세 6개 / 모드 C: 일러스트 자세 6개 (라벨에 [시길]/[컨셉] 표시)
-const POSES = [
-  // 모드 A — 문장학적 (heraldic) 자세
-  {en:'in rampant heraldic pose', kr:'람판트 자세 — 두 발 들고 으르렁 [시길]'},
-  {en:'in passant heraldic pose', kr:'파산트 자세 — 한 발 들고 걷기 [시길]'},
-  {en:'in sejant heraldic pose', kr:'세잔트 자세 — 앉기 [시길]'},
-  {en:'in couchant heraldic pose', kr:'쿠샹트 자세 — 누움 [시길]'},
-  {en:'in statant heraldic pose', kr:'스타탄트 자세 — 네 발 정면 응시 [시길]'},
-  {en:'in salient heraldic pose', kr:'살리엔트 자세 — 도약 [시길]'},
-  // 모드 C — 컨셉아트 일러스트 자세
-  {en:'stalking through mist', kr:'안개 속 잠행 [컨셉]'},
-  {en:'leaping mid-air', kr:'공중 도약 [컨셉]'},
-  {en:'coiled and ready to strike', kr:'똬리 틀고 경계 [컨셉]'},
-  {en:'curled in slumber', kr:'웅크리고 잠 [컨셉]'},
-  {en:'roaring defiant', kr:'포효 [컨셉]'},
-  {en:'gliding silently', kr:'활공 [컨셉]'},
+const ORIENTATIONS = [
+  {en:'in upright orientation', kr:'정방향 (upright)'},
+  {en:'in reversed orientation', kr:'역방향 (reversed)'},
+];
+
+// 카드 배치 (Card Spread) — TAROT 전용 19번 섹션 (모드 C 전용 — 모드 A 선택 시 UI 비활성화)
+const CARD_SPREADS = [
+  {en:'single card draw', kr:'단일 카드'},
+  {en:'three card past-present-future spread', kr:'3장 (과거-현재-미래)'},
+  {en:'three card mind-body-spirit spread', kr:'3장 (정신-육체-영혼)'},
+  {en:'celtic cross ten card spread', kr:'켈틱 크로스 (10장)'},
+  {en:'horseshoe seven card spread', kr:'호스슈 (7장)'},
+  {en:'relationship four card spread', kr:'관계 (4장)'},
+  {en:'pentagram five card spread', kr:'펜타그램 (5장)'},
+  {en:'star spread six card', kr:'별 (6장)'},
+  {en:'year wheel twelve card spread', kr:'1년 휠 (12장)'},
+  {en:'fan spread cascade', kr:'부채꼴 폼'},
 ];
 
 // 모드 선택 (00번) — 모드 A: 시길 톤 / 모드 C: 컨셉아트
 const MODES = [
-  {value:'A', en:'sigil-aligned familiar icon', kr:'시길 톤 (가문 문장 사역마)'},
-  {value:'C', en:'concept art creature illustration', kr:'컨셉아트 (사역마 일러스트)'},
+  {value:'A', en:'sigil-aligned tarot card emblem', kr:'시길 톤 (가문 문장 타로)'},
+  {value:'C', en:'concept art tarot illustration', kr:'컨셉아트 (타로 일러스트)'},
 ];
 
 
@@ -912,8 +936,8 @@ const MODES = [
 //  STORAGE
 // ═══════════════════════════════════════════════════════════════════
 const STORAGE_PREFIX = 'forge_';
-const STATE_KEY = STORAGE_PREFIX + 'creature';
-const CUSTOM_KEY = STORAGE_PREFIX + 'creature_custom';
+const STATE_KEY = STORAGE_PREFIX + 'tarot';
+const CUSTOM_KEY = STORAGE_PREFIX + 'tarot_custom';
 const K = {
   token:  STORAGE_PREFIX + 'gist_token',
   gistId: STORAGE_PREFIX + 'gist_id',
@@ -924,18 +948,18 @@ const K = {
 // ═══════════════════════════════════════════════════════════════════
 const DEFAULT_STATE = {
   mode: ['A'],  // 00번 — 모드 라디오 (A: 시길 톤 / C: 컨셉아트)
-  creatureType: ['wolf familiar'],
-  customCreatureType: '',
+  arcanaType: ['The Fool'],
+  customArcanaType: '',
   motifs: ['rose'],
   customMotif: '',
   subMotifs: [],
   customSubMotif: '',
   style: [],
-  bodyForm: [],
-  specialFeature: [],
-  coating: [],
+  cardFrame: [],
+  centralFigure: [],
+  sacredGeometry: [],
   moods: ['mysterious'],
-  primaryColor: '#EE1166',
+  primaryColor: '#FF6699',
   secondaryColors: [],
   background: ['white'],
   extras: ['perfectly symmetrical composition'],
@@ -945,14 +969,15 @@ const DEFAULT_STATE = {
   aura: [],
   themes: [],
   faction: [],
-  pose: [],  // 18번 — CREATURE 전용 (자세, 모드 A 문장학적 / 모드 C 일러스트)
+  cardOrientation: [],  // 18번 — TAROT 본질 (정/역방향)
+  cardSpread: [],       // 19번 — TAROT 본질 (카드 배치, 모드 C 전용) — CREATURE 전용 (자세, 모드 A 문장학적 / 모드 C 일러스트)
 };
 
 let state = {...DEFAULT_STATE};
 let customChips = {
-  mode:[], creatureType:[], motifs:[], subMotifs:[], style:[], bodyForm:[], specialFeature:[],
-  coating:[], moods:[], background:[], extras:[], element:[], rank:[],
-  purpose:[], aura:[], themes:[], faction:[], pose:[],
+  mode:[], arcanaType:[], motifs:[], subMotifs:[], style:[], cardFrame:[], centralFigure:[],
+  sacredGeometry:[], moods:[], background:[], extras:[], element:[], rank:[],
+  purpose:[], aura:[], themes:[], faction:[], cardOrientation:[], cardSpread:[],
 };
 
 // SUB_MOTIFS 최대 4개 (기존 동작 유지)
@@ -963,24 +988,25 @@ const SUB_MOTIF_MAX = 4;
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
   // 00 모드 선택 — 별도 그룹화 렌더링 (라디오 UI)
-  // 01 사역마 종류 — 별도 그룹화 렌더링
+  // 01 메이저 아르카나 — 별도 그룹화 렌더링
   // 02 가문 모티프 — 별도 그룹화 렌더링
   { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
-  { num:'04', key:'style', title:'양식', sub:'사역마의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:CREATURE_STYLES, mode:'multi', accent:'#DDAACC' },
-  { num:'05', key:'bodyForm', title:'몸 형태', sub:'사역마의 몸 구조·실루엣 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:BODY_FORMS, mode:'multi', accent:'#CCAA88' },
-  { num:'06', key:'specialFeature', title:'특수 부위', sub:'사역마의 특수 부위·돌출 디테일 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:SPECIAL_FEATURES, mode:'multi', accent:'#BB6688' },
-  { num:'07', key:'coating', title:'외피', sub:'가죽·털·비늘·껍질 등 외피 결 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:COATINGS, mode:'multi', accent:'#DDAACC' },
+  { num:'04', key:'style', title:'양식', sub:'타로 카드의 양식 결 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:TAROT_STYLES, mode:'multi', accent:'#DDAACC' },
+  { num:'05', key:'cardFrame', title:'카드 프레임', sub:'타로 카드의 프레임 형태 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:CARD_FRAMES, mode:'multi', accent:'#CCAA88' },
+  { num:'06', key:'centralFigure', title:'중심 도상', sub:'타로 카드의 중심 도상·구성 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:CENTRAL_FIGURES, mode:'multi', accent:'#BB6688' },
+  { num:'07', key:'sacredGeometry', title:'신성 기하', sub:'카드 내부 신성 기하 구조 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:SACRED_GEOMETRIES, mode:'multi', accent:'#DDAACC' },
   // 08 색상 별도 (액체 색)
   { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
   { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정 · 모드 C는 미선택 가능', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
   { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8889CD' },
   { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
-  { num:'13', key:'rank', title:'사역마 격 (Rank)', sub:'사역마의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
-  { num:'14', key:'purpose', title:'사역마 유래·성격', sub:'사역마의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
+  { num:'13', key:'rank', title:'카드 격 (Rank)', sub:'타로 카드 등급에 따른 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
+  { num:'14', key:'purpose', title:'카드 유래·계보', sub:'타로 카드의 쓰임과 계보 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
   { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8889CD' },
-  { num:'16', key:'themes', title:'테마 키워드', sub:'사역마의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'16', key:'themes', title:'테마 키워드', sub:'타로 카드의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
   { num:'17', key:'faction', title:'종족·진영', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FACTIONS, mode:'multi', accent:'#DDAACC' },
-  { num:'18', key:'pose', title:'자세 (Pose)', sub:'시길 톤(문장학적) 또는 컨셉아트(일러스트) 자세 · 단일 권장 · 복수 선택 가능 · 선택 사항 · CREATURE 전용', items:POSES, mode:'multi', accent:'#EE1166' },
+  { num:'18', key:'cardOrientation', title:'정·역방향 (Orientation)', sub:'정방향(upright) 또는 역방향(reversed) · 단일 권장 · 복수 선택 가능 · 선택 사항 · TAROT 전용', items:ORIENTATIONS, mode:'multi', accent:'#FF6699' },
+  { num:'19', key:'cardSpread', title:'카드 배치 (Spread)', sub:'단일 카드 또는 다중 카드 배치 (켈틱 크로스 등) · 단일 권장 · 복수 선택 가능 · 선택 사항 · TAROT 전용 · 모드 C에서만 활성', items:CARD_SPREADS, mode:'multi', accent:'#FF6699', modeRestrict:'C' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1046,7 +1072,7 @@ function renderSections(){
   modeSec.innerHTML = renderModeHTML();
   root.appendChild(modeSec);
 
-  // 01: 사역마 종류 (그룹화)
+  // 01: 메이저 아르카나 (그룹화)
   const btSec = document.createElement('section');
   btSec.className = 'section';
   btSec.innerHTML = renderPotionTypeHTML();
@@ -1059,9 +1085,15 @@ function renderSections(){
   root.appendChild(motifSec);
 
   // 나머지 섹션
+  const currentMode = (state.mode || ['A'])[0];
   SECTIONS.forEach(sec => {
     const div = document.createElement('section');
-    div.className = 'section';
+    // modeRestrict 패턴: cardSpread는 모드 C에서만 활성화 (모드 A 선택 시 UI 비활성화)
+    let secCls = 'section';
+    if(sec.modeRestrict && sec.modeRestrict !== currentMode){
+      secCls += ' mode-disabled';
+    }
+    div.className = secCls;
     div.id = 'sec-' + sec.key;
     div.innerHTML = renderSectionHTML(sec);
     root.appendChild(div);
@@ -1083,40 +1115,40 @@ function renderSections(){
 }
 
 function renderPotionTypeHTML(){
-  const customItems = (customChips.creatureType || []).map(label => ({
+  const customItems = (customChips.arcanaType || []).map(label => ({
     en:label, kr:label, _custom:true,
   }));
   return `
     <div class="section-head">
       <span class="section-num">/ 01</span>
-      <h2 class="section-title">사역마 종류</h2>
+      <h2 class="section-title">메이저 아르카나</h2>
     </div>
     <div class="section-sub">단일 권장 · 복수 선택 가능 · 직접 입력은 콤마로 구분 (둘 다 합쳐짐)</div>
     <div class="chip-group-wrap">
-      ${CREATURE_TYPE_GROUPS.map(group => `
+      ${ARCANA_TYPE_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
-        <div class="chip-group" data-section="creatureType" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="arcanaType" data-mode="multi" style="margin-bottom:8px">
           ${group.items.map(item => {
-            const active = (state.creatureType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="creatureType" data-value="${esc(item.en)}" style="--chip-accent:#EE1166">${esc(item.kr)}</div>`;
+            const active = (state.arcanaType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="arcanaType" data-value="${esc(item.en)}" style="--chip-accent:#FF6699">${esc(item.kr)}</div>`;
           }).join('')}
         </div>
       `).join('')}
       ${customItems.length ? `
         <div class="group-label">커스텀</div>
-        <div class="chip-group" data-section="creatureType" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="arcanaType" data-mode="multi" style="margin-bottom:8px">
           ${customItems.map(item => {
-            const active = (state.creatureType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="creatureType" data-value="${esc(item.en)}" style="--chip-accent:#EE1166">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="creatureType" data-value="${esc(item.en)}">×</span></div>`;
+            const active = (state.arcanaType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="arcanaType" data-value="${esc(item.en)}" style="--chip-accent:#FF6699">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="arcanaType" data-value="${esc(item.en)}">×</span></div>`;
           }).join('')}
         </div>
       ` : ''}
-      <div class="chip-group" data-section="creatureType" data-mode="multi">
-        <div class="chip chip-add" data-action="add-chip" data-section="creatureType" style="--chip-accent:#EE1166">＋</div>
+      <div class="chip-group" data-section="arcanaType" data-mode="multi">
+        <div class="chip chip-add" data-action="add-chip" data-section="arcanaType" style="--chip-accent:#FF6699">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-creatureType" placeholder="직접 입력 (콤마로 여러 개, 예: smoke bomb, 연막탄)" value="${esc(state.customCreatureType || '')}">
-    <div class="input-hint" id="custom-creatureType-hint"></div>
+    <input type="text" class="text-input" id="custom-arcanaType" placeholder="직접 입력 (콤마로 여러 개, 예: smoke bomb, 연막탄)" value="${esc(state.customArcanaType || '')}">
+    <div class="input-hint" id="custom-arcanaType-hint"></div>
   `;
 }
 
@@ -1132,7 +1164,7 @@ function renderModeHTML(){
         const active = (state.mode||[])[0] === m.value;
         return `
           <label class="mode-radio${active?' active':''}" data-mode-value="${m.value}">
-            <input type="radio" name="creature-mode" value="${m.value}" ${active?'checked':''}>
+            <input type="radio" name="tarot-mode" value="${m.value}" ${active?'checked':''}>
             <div class="mode-radio-content">
               <div class="mode-radio-title">${esc(m.kr)}</div>
               <div class="mode-radio-en">${esc(m.en)}</div>
@@ -1153,7 +1185,7 @@ function renderMotifHTML(){
       <span class="section-num">/ 02</span>
       <h2 class="section-title">가문 모티프</h2>
     </div>
-    <div class="section-sub">사역마에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
+    <div class="section-sub">타로 카드에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
     <div class="chip-group-wrap">
       ${MOTIF_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
@@ -1183,7 +1215,13 @@ function renderMotifHTML(){
 }
 
 function renderSectionHTML(sec){
+  // modeRestrict 안내 문구 (TAROT 19번 cardSpread 등 — 신규 패턴)
+  const modeKr = {A:'시길 톤', C:'컨셉아트'};
+  const restrictNotice = sec.modeRestrict
+    ? `<div class="mode-restrict-notice">⚠️ 모드 ${sec.modeRestrict}(${modeKr[sec.modeRestrict]||''}) 선택 시에만 활성화됨</div>`
+    : '';
   return `
+    ${restrictNotice}
     <div class="section-head">
       <span class="section-num">/ ${sec.num}</span>
       <h2 class="section-title">${esc(sec.title)}</h2>
@@ -1340,10 +1378,10 @@ function attachChipListeners(){
 }
 
 function attachInputListeners(){
-  const customBs = document.getElementById('custom-creatureType');
+  const customBs = document.getElementById('custom-arcanaType');
   if(customBs){
     customBs.addEventListener('input', (e) => {
-      state.customCreatureType = e.target.value;
+      state.customArcanaType = e.target.value;
       saveAll();
       updatePreview();
       updateBuildingTypeHint();
@@ -1373,13 +1411,13 @@ function attachInputListeners(){
 }
 
 function updateBuildingTypeHint(){
-  const hint = document.getElementById('custom-creatureType-hint');
+  const hint = document.getElementById('custom-arcanaType-hint');
   if(!hint) return;
-  const fromChips = (state.creatureType||[]).map(en => {
-    const found = ALL_CREATURE_TYPES.find(m => m.en === en);
+  const fromChips = (state.arcanaType||[]).map(en => {
+    const found = ALL_ARCANA_TYPES.find(m => m.en === en);
     return found ? found.kr : en;
   });
-  const customs = (state.customCreatureType||'').split(',').map(s => s.trim()).filter(Boolean);
+  const customs = (state.customArcanaType||'').split(',').map(s => s.trim()).filter(Boolean);
   const all = [...fromChips, ...customs];
   hint.textContent = all.length ? '선택됨: ' + all.join(' + ') : '';
 }
@@ -1478,7 +1516,7 @@ function applyColorChange(id, hex){
 let currentChipModalSection = null;
 function openChipModal(sectionKey){
   currentChipModalSection = sectionKey;
-  const specialTitles = { creatureType:'사역마 종류', motifs:'가문 모티프' };
+  const specialTitles = { arcanaType:'메이저 아르카나', motifs:'가문 모티프' };
   const sec = specialTitles[sectionKey]
     ? {title:specialTitles[sectionKey]}
     : SECTIONS.find(s => s.key === sectionKey);
@@ -1525,16 +1563,16 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 function buildPrompts(){
   const mode = (state.mode || ['A'])[0] || 'A';  // 00번 모드
 
-  // 사역마 종류 (필수)
-  const ptFromChips = (state.creatureType||[]).map(en => {
-    const found = ALL_CREATURE_TYPES.find(m => m.en === en);
+  // 메이저 아르카나 (필수)
+  const ptFromChips = (state.arcanaType||[]).map(en => {
+    const found = ALL_ARCANA_TYPES.find(m => m.en === en);
     return found ? {en:found.en, kr:found.kr} : {en, kr:en};
   });
-  const ptCustoms = (state.customCreatureType||'').split(',').map(s => s.trim()).filter(Boolean)
+  const ptCustoms = (state.customArcanaType||'').split(',').map(s => s.trim()).filter(Boolean)
     .map(c => ({en:c, kr:c}));
   const ptList = [...ptFromChips, ...ptCustoms];
-  const creatureTypeEn = ptList.length ? joinWithAnd(ptList.map(m => m.en)) : 'wolf familiar';
-  const creatureTypeKr = ptList.length ? ptList.map(m => m.kr).join(', ') : '늑대 사역마';
+  const arcanaTypeEn = ptList.length ? joinWithAnd(ptList.map(m => m.en)) : 'The Fool';
+  const arcanaTypeKr = ptList.length ? ptList.map(m => m.kr).join(', ') : '바보';
 
   // 가문 모티프 (필수)
   const motifFromChips = (state.motifs||[]).map(en => {
@@ -1565,27 +1603,27 @@ function buildPrompts(){
 
   // 양식 (옵션, multi)
   const styleList = state.style || [];
-  const styleResolved = styleList.map(s => CREATURE_STYLES.find(x => x.en === s) || {en:s, kr:s});
+  const styleResolved = styleList.map(s => TAROT_STYLES.find(x => x.en === s) || {en:s, kr:s});
   const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
   const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
 
   // 몸 형태 (옵션, multi) — CREATURE 본질
-  const bodyFormList = state.bodyForm || [];
-  const bodyFormResolved = bodyFormList.map(s => BODY_FORMS.find(x => x.en === s) || {en:s, kr:s});
-  const bodyFormEn = bodyFormResolved.length ? `, with ${joinWithAnd(bodyFormResolved.map(v => v.en))}` : '';
-  const bodyFormKr = bodyFormResolved.length ? `, ${bodyFormResolved.map(v => v.kr).join('·')}` : '';
+  const cardFrameList = state.cardFrame || [];
+  const cardFrameResolved = cardFrameList.map(s => CARD_FRAMES.find(x => x.en === s) || {en:s, kr:s});
+  const cardFrameEn = cardFrameResolved.length ? `, framed by ${joinWithAnd(cardFrameResolved.map(v => v.en))}` : '';
+  const cardFrameKr = cardFrameResolved.length ? `, ${cardFrameResolved.map(v => v.kr).join('·')} 프레임` : '';
 
   // 특수 부위 (옵션, multi) — CREATURE 본질
-  const specialFeatureList = state.specialFeature || [];
-  const specialFeatureResolved = specialFeatureList.map(s => SPECIAL_FEATURES.find(x => x.en === s) || {en:s, kr:s});
-  const specialFeatureEn = specialFeatureResolved.length ? `, featuring ${joinWithAnd(specialFeatureResolved.map(l => l.en))}` : '';
-  const specialFeatureKr = specialFeatureResolved.length ? `, ${specialFeatureResolved.map(l => l.kr).join('·')} 보유` : '';
+  const centralFigureList = state.centralFigure || [];
+  const centralFigureResolved = centralFigureList.map(s => CENTRAL_FIGURES.find(x => x.en === s) || {en:s, kr:s});
+  const centralFigureEn = centralFigureResolved.length ? `, centered on ${joinWithAnd(centralFigureResolved.map(l => l.en))}` : '';
+  const centralFigureKr = centralFigureResolved.length ? `, ${centralFigureResolved.map(l => l.kr).join('·')} 중심 도상` : '';
 
   // 외피 (옵션, multi) — CREATURE 본질
-  const coatingList = state.coating || [];
-  const coatingResolved = coatingList.map(s => COATINGS.find(x => x.en === s) || {en:s, kr:s});
-  const coatingEn = coatingResolved.length ? `, coated in ${joinWithAnd(coatingResolved.map(s => s.en))}` : '';
-  const coatingKr = coatingResolved.length ? `, ${coatingResolved.map(s => s.kr).join('·')}로 덮인 외피` : '';
+  const sacredGeometryList = state.sacredGeometry || [];
+  const sacredGeometryResolved = sacredGeometryList.map(s => SACRED_GEOMETRIES.find(x => x.en === s) || {en:s, kr:s});
+  const sacredGeometryEn = sacredGeometryResolved.length ? `, inscribed with ${joinWithAnd(sacredGeometryResolved.map(s => s.en))}` : '';
+  const sacredGeometryKr = sacredGeometryResolved.length ? `, ${sacredGeometryResolved.map(s => s.kr).join('·')} 신성 기하 새김` : '';
 
   // 배경 (모드별 분기)
   // 모드 A 미선택 시: 'pure white background' 폴백 (시길 톤 본질)
@@ -1606,21 +1644,21 @@ function buildPrompts(){
   const colorPhraseEn = (() => {
     const main = `${primaryInfo.en} (${state.primaryColor})`;
     if(mode === 'A'){
-      if(!secondaryInfos.length) return `single-color flat silhouette in ${main} creature tone`;
-      return `flat color design featuring ${main} pelt accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+      if(!secondaryInfos.length) return `single-color flat silhouette in ${main} tarot card tone`;
+      return `flat color design featuring ${main} card body accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
     } else {
-      if(!secondaryInfos.length) return `rich painterly creature color emphasizing ${main}`;
-      return `cinematic creature color tones featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+      if(!secondaryInfos.length) return `rich painterly tarot card color emphasizing ${main}`;
+      return `cinematic tarot card color tones featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
     }
   })();
   const colorPhraseKr = (() => {
     const main = `${primaryInfo.kr} (${state.primaryColor})`;
     if(mode === 'A'){
-      if(!secondaryInfos.length) return `${main} 단색 평면 실루엣 외피 톤`;
-      return `${main} 외피에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+      if(!secondaryInfos.length) return `${main} 단색 평면 실루엣 타로 카드 톤`;
+      return `${main} 카드 본체에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
     } else {
-      if(!secondaryInfos.length) return `${main}을(를) 강조한 풍부한 페인털리 외피 색감`;
-      return `${main} 외피에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 시네마틱 색조`;
+      if(!secondaryInfos.length) return `${main}을(를) 강조한 풍부한 페인털리 타로 카드 색감`;
+      return `${main} 카드 본체에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 시네마틱 색조`;
     }
   })();
 
@@ -1638,7 +1676,7 @@ function buildPrompts(){
   const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
   const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
 
-  // 사역마 격 (옵션, multi)
+  // 카드 격 (옵션, multi)
   const rankList = state.rank || [];
   const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
   const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
@@ -1668,49 +1706,57 @@ function buildPrompts(){
   const factionKr = factionResolved.length ? `, ${factionResolved.map(f => f.kr).join('·')} 가문` : '';
 
   // 자세 (옵션, multi) — CREATURE 전용 18번 (모드 A 문장학적 / 모드 C 일러스트, prefix-comma 패턴)
-  const poseList = state.pose || [];
-  const poseResolved = poseList.map(s => POSES.find(x => x.en === s) || {en:s, kr:s});
-  const poseEn = poseResolved.length ? `, depicted ${joinWithAnd(poseResolved.map(b => b.en))}` : '';
-  // 한글 라벨에서 ' [시길]' / ' [컨셉]' 표시자 제거 후 결구 적용
-  const poseKr = poseResolved.length
-    ? `, ${poseResolved.map(b => (b.kr || '').replace(/\s*\[(시길|컨셉)\]\s*$/, '').replace(/\s*—\s*/, ' ')).join('·')} 자세로 묘사됨`
+  const cardOrientationList = state.cardOrientation || [];
+  const cardOrientationResolved = cardOrientationList.map(s => ORIENTATIONS.find(x => x.en === s) || {en:s, kr:s});
+  const cardOrientationEn = cardOrientationResolved.length ? `, ${joinWithAnd(cardOrientationResolved.map(b => b.en))}` : '';
+  // 한글 라벨에서 ' (upright)' / ' (reversed)' 표시자 제거 후 결구 적용 (4-9 패턴 — TAROT 결로)
+  const cardOrientationKr = cardOrientationResolved.length
+    ? `, ${cardOrientationResolved.map(b => (b.kr || '').replace(/\s*\((upright|reversed)\)\s*$/, '')).join('·')}으로 배치됨`
     : '';
+
+  // 카드 배치 (옵션, multi) — TAROT 전용 19번 ⭐ 신규 패턴
+  // 모드 C 전용: 모드 A 선택 시 cardSpread 강제로 빈 배열 처리 (UI는 별도 비활성화)
+  const cardSpreadListRaw = state.cardSpread || [];
+  const cardSpreadList = (mode === 'A') ? [] : cardSpreadListRaw;
+  const cardSpreadResolved = cardSpreadList.map(s => CARD_SPREADS.find(x => x.en === s) || {en:s, kr:s});
+  const cardSpreadEn = cardSpreadResolved.length ? `, presented as ${joinWithAnd(cardSpreadResolved.map(s => s.en))}` : '';
+  const cardSpreadKr = cardSpreadResolved.length ? `, ${cardSpreadResolved.map(s => s.kr).join('·')} 배치로 펼쳐짐` : '';
 
   // ═══ 네거티브 (모드별 강도 분기 — CREATURE 결로) ═══
   let negEn, negKr;
   if(mode === 'A'){
     // 모드 A — 강한 네거티브 (시길 톤 본질, CREATURE 결로)
     negEn = hasTransparent
-      ? 'no readable text, no letters, no readable runes, no human, no humanoid figure, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no shading, no gradient, no 3d, no realistic details, no photorealism, no white background, no watermark'
-      : 'no readable text, no letters, no readable runes, no human, no humanoid figure, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no shading, no gradient, no 3d, no realistic details, no photorealism, no watermark';
+      ? 'no readable text, no letters, no readable runes, no roman numerals, no card title text, no card number, no human, no humanoid figure, no modern card design, no playing card layout, no plastic card finish, no shading, no gradient, no 3d, no realistic details, no photorealism, no white background, no watermark'
+      : 'no readable text, no letters, no readable runes, no roman numerals, no card title text, no card number, no human, no humanoid figure, no modern card design, no playing card layout, no plastic card finish, no shading, no gradient, no 3d, no realistic details, no photorealism, no watermark';
     negKr = hasTransparent
-      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인간형 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 흰 배경 없음, 워터마크 없음'
-      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인간형 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 워터마크 없음';
+      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 로마 숫자 없음, 카드 제목 텍스트 없음, 카드 번호 없음, 사람 없음, 인간형 없음, 현대 카드 디자인 없음, 트럼프 카드 레이아웃 없음, 플라스틱 카드 마감 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 흰 배경 없음, 워터마크 없음'
+      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 로마 숫자 없음, 카드 제목 텍스트 없음, 카드 번호 없음, 사람 없음, 인간형 없음, 현대 카드 디자인 없음, 트럼프 카드 레이아웃 없음, 플라스틱 카드 마감 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 워터마크 없음';
   } else {
     // 모드 C — 약한 네거티브 (실사·사람 허용, CREATURE 결)
     negEn = hasTransparent
-      ? 'no readable text, no letters, no readable runes, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no white background, no watermark'
-      : 'no readable text, no letters, no readable runes, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no watermark';
+      ? 'no readable text, no letters, no readable runes, no roman numerals, no card title text, no card number, no modern card design, no playing card layout, no plastic card finish, no white background, no watermark'
+      : 'no readable text, no letters, no readable runes, no roman numerals, no card title text, no card number, no modern card design, no playing card layout, no plastic card finish, no watermark';
     negKr = hasTransparent
-      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 흰 배경 없음, 워터마크 없음'
-      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 워터마크 없음';
+      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 로마 숫자 없음, 카드 제목 텍스트 없음, 카드 번호 없음, 현대 카드 디자인 없음, 트럼프 카드 레이아웃 없음, 플라스틱 카드 마감 없음, 흰 배경 없음, 워터마크 없음'
+      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 로마 숫자 없음, 카드 제목 텍스트 없음, 카드 번호 없음, 현대 카드 디자인 없음, 트럼프 카드 레이아웃 없음, 플라스틱 카드 마감 없음, 워터마크 없음';
   }
 
   // ═══ 프롬프트 골격 (모드별 분기) ═══
   let promptEn, promptKr;
 
   if(mode === 'A'){
-    // 모드 A — 시길 톤 (가문 사역마 결)
+    // 모드 A — 시길 톤 (가문 타로 카드 결)
     const bgPhraseEn = bgEn ? `${bgEn}` : '';
     const bgPhraseKr = bgKr ? `${bgKr}` : '';
-    promptEn = `a ${moodEn} fantasy noble house ${creatureTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, noble heraldic familiar, abstract design based on ${motifEn} motif${subEn}${bodyFormEn}${specialFeatureEn}${coatingEn}, etched with unreadable arcane markings${elementEn}${auraEn}${poseEn}, ${colorPhraseEn}, ${bgPhraseEn}${themeEn}, centered single creature, heraldic stance, clean high contrast fantasy design, strong negative space cutouts${extraEn}, ${negEn}`;
-    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${creatureTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 가문 사역마 (헤럴딕 패밀리어). ${motifKr}을(를) 모티프로 한 추상 가문 사역마${subKr}${bodyFormKr}${specialFeatureKr}${coatingKr}. 읽을 수 없는 비전 문양 새김${elementKr}${auraKr}${poseKr}. ${colorPhraseKr}. ${bgPhraseKr}${themeKr}. 중앙 단일 사역마 구도, 문장학적 정면 자세, 깔끔한 고대비 판타지 디자인, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+    promptEn = `a ${moodEn} fantasy noble house ${arcanaTypeEn} tarot card${factionEn}${rankEn}${purposeEn}${styleEn}, arcane tarot card emblem, abstract tarot design based on ${motifEn} motif${subEn}${cardFrameEn}${centralFigureEn}${sacredGeometryEn}, etched with unreadable arcane sigils${elementEn}${auraEn}${cardOrientationEn}${cardSpreadEn}, ${colorPhraseEn}, ${bgPhraseEn}${themeEn}, centered tarot card composition, traditional tarot card proportions, vertical portrait orientation, clean high contrast tarot design, strong negative space cutouts${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${arcanaTypeKr} 타로 카드${factionKr}${rankKr}${purposeKr}${styleKr}. 비전 타로 카드 시질 (시길 톤). ${motifKr}을(를) 모티프로 한 추상 타로 디자인${subKr}${cardFrameKr}${centralFigureKr}${sacredGeometryKr}. 읽을 수 없는 비전 시질 새김${elementKr}${auraKr}${cardOrientationKr}${cardSpreadKr}. ${colorPhraseKr}. ${bgPhraseKr}${themeKr}. 중앙 단일 타로 카드 구도, 전통 타로 카드 비율, 세로 초상 방향, 깔끔한 고대비 타로 디자인, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
   } else {
-    // 모드 C — 컨셉아트 (사역마 일러스트 결)
+    // 모드 C — 컨셉아트 (타로 카드 일러스트 결)
     const bgPhraseEn = bgEn ? `, ${bgEn}` : '';
     const bgPhraseKr = bgKr ? `. ${bgKr}` : '';
-    promptEn = `a ${moodEn} fantasy noble house ${creatureTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, epic fantasy creature concept art, featuring ${motifEn} motif accents${subEn}${bodyFormEn}${specialFeatureEn}${coatingEn}, weathered with mystical bestial markings${elementEn}${auraEn}${poseEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, dramatic front view, cinematic composition, painterly rendering, atmospheric lighting, environmental storytelling${extraEn}, ${negEn}`;
-    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${creatureTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 서사적 판타지 사역마 컨셉아트. ${motifKr} 모티프 디테일${subKr}${bodyFormKr}${specialFeatureKr}${coatingKr}. 풍화된 신비로운 짐승 문양${elementKr}${auraKr}${poseKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. 드라마틱 정면 시점, 시네마틱 구도, 페인털리 렌더링, 분위기 있는 조명, 환경 스토리텔링${extraKr}. ${negKr}.`;
+    promptEn = `a ${moodEn} fantasy noble house ${arcanaTypeEn} tarot card${factionEn}${rankEn}${purposeEn}${styleEn}, epic fantasy tarot card concept art, featuring ${motifEn} motif accents${subEn}${cardFrameEn}${centralFigureEn}${sacredGeometryEn}, weathered with mystical occult symbols${elementEn}${auraEn}${cardOrientationEn}${cardSpreadEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, vertical tarot card composition, traditional tarot card proportions, dramatic cinematic illustration, painterly rendering, atmospheric lighting, occult storytelling${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${arcanaTypeKr} 타로 카드${factionKr}${rankKr}${purposeKr}${styleKr}. 서사적 판타지 타로 카드 컨셉아트. ${motifKr} 모티프 디테일${subKr}${cardFrameKr}${centralFigureKr}${sacredGeometryKr}. 풍화된 신비로운 오컬트 상징${elementKr}${auraKr}${cardOrientationKr}${cardSpreadKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. 세로 타로 카드 구도, 전통 타로 카드 비율, 드라마틱 시네마틱 일러스트, 페인털리 렌더링, 분위기 있는 조명, 오컬트 스토리텔링${extraKr}. ${negKr}.`;
   }
 
   return { en:promptEn, kr:promptKr };
@@ -1790,7 +1836,7 @@ function loadAll(){
   }catch(e){}
 }
 function resetAll(){
-  if(!confirm('사역마 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
+  if(!confirm('타로 카드 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
   state = {...DEFAULT_STATE};
   saveAll();
   renderSections();

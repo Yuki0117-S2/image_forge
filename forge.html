@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FORGE — 도구 주조소</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="forge_tools.js"></script>
 <style>
   :root{
     --bg:#1a1520; --surface:#221b2a; --surface2:#2a2235; --surface3:#322840;
@@ -485,133 +486,10 @@
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-//  TOOLS — 새 도구 추가는 여기에 객체 하나 push만 하면 끝
-//  필요 필드: id, cat, title, icon, description, accent, href, tags, available
+//  TOOLS / PLACEHOLDER_TOOLS — forge_tools.js로 이관됨
+//  새 도구 추가는 forge_tools.js의 FORGE_TOOLS 배열에 객체 하나 push.
+//  → 카드 자동 추가 + 직전 도구의 sibling-link 자동 갱신.
 // ═══════════════════════════════════════════════════════════════════
-
-const TOOLS = [
-  {
-    id:'magic_circle',
-    cat:'Image · Sigil',
-    title:'마법진',
-    titleEn:'Magic Circle',
-    icon:'◯',
-    description:'룬·기하학·원소를 조합해 신성한 의식 다이어그램을 주조. 원 구조 · 룬 · 장식 · 색상 팔레트.',
-    accent:'#8889CD',
-    href:'magic_circle.html',
-    tags:['EN/KR','이미지'],
-    available:true,
-  },
-  {
-    id:'sigil',
-    cat:'Image · Crest',
-    title:'가문 문양',
-    titleEn:'Sigil',
-    icon:'✦',
-    description:'베이스 모티프 + 보조 모티프 + 격을 조합해 추상 가문 문장을 생성. 헤럴딕 · 트라이벌 · 가몬.',
-    accent:'#BB6688',
-    href:'sigil.html',
-    tags:['EN/KR','이미지'],
-    available:true,
-  },
-  {
-    id:'weapon',
-    cat:'Image · Armament',
-    title:'무기',
-    titleEn:'Weapon',
-    icon:'⚔',
-    description:'무기 종류 + 가문 모티프 + 손잡이 + 날 + 보석 + 원소 + 격을 조합해 가문 의식·전투용 무기를 주조. 검·창·완드·도끼.',
-    accent:'#CCAA88',
-    href:'weapon.html',
-    tags:['EN/KR','이미지'],
-    available:true,
-  },
-  {
-    id:'tome',
-    cat:'Image · Arcane',
-    title:'마도서',
-    titleEn:'Tome',
-    icon:'📖',
-    description:'마도서 종류 + 가문 모티프 + 표지 + 잠금 + 보석 + 원소 + 격을 조합해 가문의 그리모어를 제본. 주문서·금서·일기·두루마리.',
-    accent:'#DDAACC',
-    href:'tome.html',
-    tags:['EN/KR','이미지'],
-    available:true,
-  },
-  {
-    id:'relic',
-    cat:'Image · Artifact',
-    title:'유물',
-    titleEn:'Relic',
-    icon:'💎',
-    description:'유물 종류 + 가문 모티프 + 금속 세공 + 부속 장식 + 보석 + 원소 + 격을 조합해 가문의 신성한 장신구를 공예. 반지·왕관·아뮬렛·브로치.',
-    accent:'#884499',
-    href:'relic.html',
-    tags:['EN/KR','이미지'],
-    available:true,
-  },
-  {
-    id:'banner',
-    cat:'Image · Heraldry',
-    title:'깃발',
-    titleEn:'Banner',
-    icon:'🏳️',
-    description:'깃발 형태 + 가문 모티프 + 천 재질 + 가장자리 장식 + 보석 브로치 + 천 모션 + 격을 조합해 가문의 의례·전쟁 깃발을 주조. 곤팔론·페넌트·전쟁기.',
-    accent:'#0077DD',
-    href:'banner.html',
-    tags:['EN/KR','이미지'],
-    available:true,
-  },
-  {
-    id:'architecture',
-    cat:'Image · Landmark',
-    title:'건축물',
-    titleEn:'Architecture',
-    icon:'🏛️',
-    description:'건축 종류 + 양식 + 재료 + 첨탑 + 규모 + 모티프 + 격을 조합해 가문 랜드마크를 주조. 모드 분기로 시길 톤(가문 랜드마크) 또는 컨셉아트(환경 일러스트) 결 선택. 마법탑·대성당·검은 첨탑성.',
-    accent:'#00BBDD',
-    href:'architecture.html',
-    tags:['EN/KR','이미지','모드'],
-    available:true,
-  },
-  {
-    id:'potion',
-    cat:'Image · Alchemy',
-    title:'물약',
-    titleEn:'Potion',
-    icon:'⚗️',
-    description:'물약 종류 + 양식 + 병 형태 + 액체 상태 + 마개 + 모티프 + 효과·연출을 조합해 가문 영약을 주조. 모드 분기로 시길 톤(가문 의례 약병) 또는 컨셉아트(떠다니는 마법약 일러스트) 결 선택. 회복 물약·금단의 팅크처·전설의 만병통치약.',
-    accent:'#FF7722',
-    href:'potion.html',
-    tags:['EN/KR','이미지','모드'],
-    available:true,
-  },
-  {
-    id:'creature',
-    cat:'Image · Familiar',
-    title:'사역마',
-    titleEn:'Creature',
-    icon:'🐺',
-    description:'사역마 종류 + 양식 + 몸 형태 + 특수 부위 + 외피 + 모티프 + 자세를 조합해 가문 영물을 주조. 모드 분기로 시길 톤(가문 문장 사역마) 또는 컨셉아트(사역마 일러스트) 결 선택. 늑대·그리핀·키메라·천상 유니콘·저주받은 짐승.',
-    accent:'#EE1166',
-    href:'creature.html',
-    tags:['EN/KR','이미지','모드'],
-    available:true,
-  },
-  // ── 새 도구는 여기에 push ──
-  // {
-  //   id:'something_new', cat:'Category', title:'제목', titleEn:'Title',
-  //   icon:'★', description:'설명', accent:'#DDAACC',
-  //   href:'something.html', tags:['태그'], available:true,
-  // },
-];
-
-// "준비 중" 카드 (선택적 — 비워둬도 됨)
-const PLACEHOLDER_TOOLS = [
-  // 예시:
-  // { id:'_x', cat:'Coming Soon', title:'다음 도구', titleEn:'Next', icon:'◇',
-  //   description:'준비 중인 새 도구.', accent:'#CCAA88', available:false, tags:['준비중'] },
-];
 
 // ═══════════════════════════════════════════════════════════════════
 //  공통 STORAGE 키 — 모든 FORGE 도구가 이 prefix를 공유
@@ -628,6 +506,8 @@ const K = {
 function renderCards(){
   const grid = document.getElementById('card-grid');
   grid.innerHTML = '';
+  const TOOLS = window.FORGE_TOOLS || [];
+  const PLACEHOLDER_TOOLS = window.FORGE_PLACEHOLDER_TOOLS || [];
   const all = [...TOOLS, ...PLACEHOLDER_TOOLS];
   const activeCount = TOOLS.filter(t => t.available !== false).length;
 

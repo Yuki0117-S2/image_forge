@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CREATURE — 사역마 주조소</title>
+<title>MAP — 지도 주조소</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -11,7 +11,7 @@
     --border:#3a2e48; --border-strong:#4a3a5a;
     --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
-    --tool-color:#EE1166;
+    --tool-color:#8889CD;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{min-height:100vh;}
@@ -26,7 +26,7 @@
   }
   body::after{
     content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(238,17,102,0.16),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
+    background:radial-gradient(ellipse 800px 600px at 15% -10%,rgba(136,137,205,0.16),transparent 60%),radial-gradient(ellipse 700px 500px at 95% 110%,rgba(136,137,205,0.12),transparent 55%);
   }
 
   /* ── 헤더 ── */
@@ -146,6 +146,19 @@
 
   /* ── 섹션 ── */
   .section{margin-bottom:26px;}
+  /* 모드 제한 섹션 비활성화 패턴 (TAROT 19번 mapLayout) */
+  .section.mode-disabled{opacity:0.42;pointer-events:none;transition:opacity 0.2s ease;}
+  .mode-restrict-notice{
+    display:none;
+    margin-bottom:10px;padding:8px 12px;
+    background:rgba(136,137,205,0.08);
+    border:1px dashed rgba(136,137,205,0.4);
+    border-radius:6px;
+    color:var(--tool-color);
+    font-size:11px;letter-spacing:0.5px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .section.mode-disabled .mode-restrict-notice{display:block;}
   .section-head{
     display:flex;align-items:baseline;gap:10px;margin-bottom:6px;
   }
@@ -423,24 +436,24 @@
     flex:1;min-width:140px;
     display:flex;align-items:center;gap:10px;
     padding:12px 14px;
-    background:rgba(238,17,102,0.04);
+    background:rgba(136,137,205,0.04);
     border:1px solid var(--border);
     border-radius:10px;
     cursor:pointer;
     transition:all 0.2s;
   }
   .mode-radio:hover{
-    background:rgba(238,17,102,0.10);
-    border-color:rgba(238,17,102,0.4);
+    background:rgba(136,137,205,0.10);
+    border-color:rgba(136,137,205,0.4);
   }
   .mode-radio.active{
-    background:rgba(238,17,102,0.18);
-    border-color:#EE1166;
-    box-shadow:0 0 0 1px rgba(238,17,102,0.4);
+    background:rgba(136,137,205,0.18);
+    border-color:#8889CD;
+    box-shadow:0 0 0 1px rgba(136,137,205,0.4);
   }
   .mode-radio input[type="radio"]{
     flex-shrink:0;width:16px;height:16px;
-    accent-color:#EE1166;cursor:pointer;
+    accent-color:#8889CD;cursor:pointer;
   }
   .mode-radio-content{flex:1;}
   .mode-radio-title{
@@ -460,9 +473,9 @@
      ═══════════════════════════════════════════════════ -->
 <header class="header">
   <a href="forge.html" class="back-link">← <span class="btn-label">메인</span></a>
-  <a href="tarot.html" class="sibling-link">🔮 <span class="btn-label">타로 카드</span></a>
+  <a href="magic_circle.html" class="sibling-link">🔯 <span class="btn-label">마법진</span></a>
   <div>
-    <div class="header-logo">CREATURE</div>
+    <div class="header-logo">MAP</div>
     <div class="header-sub">ALCHEMY · ELIXIR</div>
   </div>
   <div class="header-right">
@@ -482,10 +495,10 @@
   <div class="options-col">
 
     <section class="hero">
-      <div class="hero-tag">NOBLE · CREATURE · FAMILIAR</div>
-      <h1 class="hero-title">가문의 사역마를<br><span class="accent">주조</span>하다</h1>
+      <div class="hero-tag">NOBLE · MAP · REGION</div>
+      <h1 class="hero-title">가문의 지도를<br><span class="accent">주조</span>하다</h1>
       <p class="hero-desc">
-        사역마 종류·모티프·몸 형태·특수 부위·외피·자세를 골라 가문 영물의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내. 모드 선택으로 시길 톤 / 컨셉아트 결 분기.
+        지도 타입·모티프·지형·핵심 랜드마크·생활요소·시점·레이아웃을 골라 가문 영지 지도의 영문(GPT)·한글(Gemini) 프롬프트를 동시에 뽑아내. 모드 선택으로 시길 톤 / 컨셉아트 / 탑다운 미니맵 3결 분기 (5호기 ⭐).
       </p>
     </section>
 
@@ -570,8 +583,8 @@ const COLOR_NAMES = [
   { hex:'#CCAA88', en:'warm beige tan', kr:'따뜻한 베이지 탠' },
   { hex:'#BB6688', en:'dusty wine rose', kr:'더스티 와인 로즈' },
   { hex:'#884499', en:'deep royal purple', kr:'딥 로열 퍼플' },
-  { hex:'#EE1166', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
-  { hex:'#FF6699', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
+  { hex:'#8889CD', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
+  { hex:'#8889CD', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
   { hex:'#00BBDD', en:'bright cyan blue', kr:'밝은 시안 블루' },
   { hex:'#FF7722', en:'vivid tangerine orange', kr:'선명한 탠저린 오렌지' },
   { hex:'#00BBDD', en:'deep azure blue', kr:'딥 애저 블루' },
@@ -659,261 +672,363 @@ const COLOR_NAMES = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════
-//  가문 사역마 데이터
+//  가문 지도 데이터
 // ═══════════════════════════════════════════════════════════════════
-// 사역마 종류 (베이스) — 그룹화
-const CREATURE_TYPE_GROUPS = [
-  { label:'길짐승·포유 계열', items:[
-    {en:'wolf familiar', kr:'늑대 사역마'},
-    {en:'great hound', kr:'사냥개·하운드'},
-    {en:'spirit fox', kr:'영물 여우'},
-    {en:'sacred cat', kr:'영묘(靈猫)'},
-  ]},
-  { label:'날짐승·새 계열', items:[
-    {en:'raven familiar', kr:'까마귀 사역마'},
-    {en:'spectral owl', kr:'유령 부엉이'},
-    {en:'phoenix hatchling', kr:'어린 봉황'},
-  ]},
-  { label:'파충·신수 계열', items:[
-    {en:'crowned serpent', kr:'관모(冠帽) 뱀'},
-    {en:'dragonling', kr:'어린 용'},
-    {en:'lindwurm', kr:'린트부름'},
-  ]},
-  { label:'신화·키메라 계열', items:[
-    {en:'noble griffin', kr:'고결한 그리핀'},
-    {en:'chimera familiar', kr:'키메라 사역마'},
-    {en:'celestial unicorn', kr:'천상 유니콘'},
-  ]},
+// 지도 타입 (베이스) — 그룹화 (TAROT의 ARCANA_TYPE_GROUPS 자리)
+const MAP_TYPE_GROUPS = [
+  {
+    label:'지역·자연 (Region · Wild)',
+    items:[
+      {en:'region map', kr:'지역 지도'},
+      {en:'province map', kr:'주(州) 지도'},
+      {en:'biome map', kr:'생물군계 지도'},
+      {en:'island map', kr:'섬 지도'},
+      {en:'floating island map', kr:'부유섬 지도'},
+      {en:'archipelago map', kr:'군도 지도'},
+    ],
+  },
+  {
+    label:'도시·정착지 (City · Settlement)',
+    items:[
+      {en:'city map', kr:'도시 지도'},
+      {en:'capital city map', kr:'수도 지도'},
+      {en:'port city map', kr:'항구 도시 지도'},
+      {en:'academy city map', kr:'아카데미 도시 지도'},
+      {en:'village map', kr:'마을 지도'},
+      {en:'fortress map', kr:'요새 지도'},
+    ],
+  },
+  {
+    label:'던전·내부 (Dungeon · Interior)',
+    items:[
+      {en:'dungeon map', kr:'던전 지도'},
+      {en:'dungeon floor map', kr:'던전 층별 지도'},
+      {en:'battle map', kr:'전투 지도'},
+      {en:'chamber map', kr:'밀실 지도'},
+      {en:'crypt map', kr:'지하 묘소 지도'},
+    ],
+  },
+  {
+    label:'월드·대륙 (World · Atlas)',
+    items:[
+      {en:'world map', kr:'월드맵'},
+      {en:'continent map', kr:'대륙 지도'},
+      {en:'realm map', kr:'왕국 지도'},
+      {en:'atlas plate', kr:'아틀라스 판'},
+    ],
+  },
+  {
+    label:'미니맵·특수 (Mini · Special)',
+    items:[
+      {en:'mini-map', kr:'미니맵'},
+      {en:'circular floating island mini-map', kr:'원형 부유섬 미니맵'},
+      {en:'strategic overview map', kr:'전략 개요 지도'},
+      {en:'magical scrying map', kr:'마법 점복 지도'},
+    ],
+  },
 ];
-const ALL_CREATURE_TYPES = CREATURE_TYPE_GROUPS.flatMap(g => g.items);
+
+const ALL_MAP_TYPES = MAP_TYPE_GROUPS.flatMap(g => g.items);
 
 // 가문 모티프 (sigil의 BASE_MOTIFS 재활용 — 변경 없음)
 const MOTIF_GROUPS = [
-  { label:'기본', items:[
-    {en:'heart', kr:'하트'}, {en:'sword', kr:'검'}, {en:'rose', kr:'장미'},
-    {en:'star', kr:'별'}, {en:'cross', kr:'십자가'}, {en:'moon', kr:'달'},
-  ]},
-  { label:'동물', items:[
-    {en:'wolf', kr:'늑대'}, {en:'dragon', kr:'용'}, {en:'serpent', kr:'뱀'},
-    {en:'raven', kr:'까마귀'}, {en:'lion', kr:'사자'}, {en:'eagle', kr:'독수리'},
-    {en:'bear', kr:'곰'}, {en:'tiger', kr:'호랑이'}, {en:'swan', kr:'백조'},
-    {en:'stag', kr:'사슴'}, {en:'fox', kr:'여우'}, {en:'owl', kr:'부엉이'},
-    {en:'octopus', kr:'문어'},
-  ]},
-  { label:'신화수', items:[
-    {en:'griffin', kr:'그리핀'}, {en:'pegasus', kr:'페가수스'}, {en:'chimera', kr:'키메라'},
-    {en:'phoenix', kr:'봉황'}, {en:'unicorn', kr:'유니콘'}, {en:'hydra', kr:'히드라'},
-    {en:'cerberus', kr:'케르베로스'},
-  ]},
-  { label:'식물', items:[
-    {en:'lily', kr:'백합'}, {en:'oak leaf', kr:'떡갈나무잎'}, {en:'thorn bush', kr:'가시덤불'},
-    {en:'ivy', kr:'담쟁이'}, {en:'mandrake', kr:'만드라고라'},
-  ]},
-  { label:'상징', items:[
-    {en:'anchor', kr:'닻'}, {en:'key', kr:'열쇠'}, {en:'hourglass', kr:'모래시계'},
-    {en:'feather', kr:'깃털'}, {en:'arrow', kr:'화살'}, {en:'torch', kr:'횃불'},
-    {en:'lantern', kr:'등불'}, {en:'eye symbol', kr:'눈(eye)'},
-  ]},
-  { label:'기하·룬', items:[
-    {en:'pentagram', kr:'펜타그램'}, {en:'hexagram', kr:'헥사그램'}, {en:'rune', kr:'룬 문자'},
-    {en:'constellation', kr:'별자리'}, {en:'triangle', kr:'삼각형'},
-  ]},
-  { label:'자연·원소', items:[
-    {en:'sun', kr:'태양'}, {en:'moon phases', kr:'달의 위상'}, {en:'mountain', kr:'산'},
-    {en:'wave', kr:'파도'}, {en:'lightning bolt', kr:'번개'}, {en:'flame', kr:'불꽃'},
-    {en:'snowflake', kr:'눈송이'}, {en:'storm cloud', kr:'폭풍'},
-  ]},
+  {
+    label:'자연 (Nature)',
+    items:[
+      {en:'rose', kr:'장미'}, {en:'oak', kr:'참나무'}, {en:'lily', kr:'백합'},
+      {en:'thorn', kr:'가시'}, {en:'ivy', kr:'담쟁이'}, {en:'lotus', kr:'연꽃'},
+      {en:'cherry blossom', kr:'벚꽃'},
+    ],
+  },
+  {
+    label:'동물 (Beast)',
+    items:[
+      {en:'wolf', kr:'늑대'}, {en:'lion', kr:'사자'}, {en:'eagle', kr:'독수리'},
+      {en:'raven', kr:'까마귀'}, {en:'serpent', kr:'뱀'}, {en:'stag', kr:'수사슴'},
+      {en:'griffin', kr:'그리핀'},
+    ],
+  },
+  {
+    label:'천체 (Celestial)',
+    items:[
+      {en:'sun', kr:'태양'}, {en:'crescent moon', kr:'초승달'}, {en:'star', kr:'별'},
+      {en:'comet', kr:'혜성'}, {en:'eclipse', kr:'식'}, {en:'aurora', kr:'오로라'},
+    ],
+  },
+  {
+    label:'무구 (Arms)',
+    items:[
+      {en:'sword', kr:'검'}, {en:'spear', kr:'창'}, {en:'shield', kr:'방패'},
+      {en:'crown', kr:'왕관'}, {en:'key', kr:'열쇠'}, {en:'chalice', kr:'성배'},
+    ],
+  },
+  {
+    label:'원소 (Element)',
+    items:[
+      {en:'flame', kr:'불꽃'}, {en:'water drop', kr:'물방울'}, {en:'mountain', kr:'산'},
+      {en:'whirlwind', kr:'회오리바람'}, {en:'lightning', kr:'번개'}, {en:'snowflake', kr:'눈송이'},
+    ],
+  },
 ];
+
 const ALL_MOTIFS = MOTIF_GROUPS.flatMap(g => g.items);
 
-// 보조 디테일 (사역마 보강 — POTION 8개 제거 + CREATURE 8개 추가)
+// 보조 디테일 (지도 결 — 지형·요소·장식 디테일)
 const SUB_MOTIFS = [
-  {en:'thorns', kr:'가시'}, {en:'wings', kr:'날개'}, {en:'crown', kr:'왕관'},
-  {en:'chains', kr:'사슬'}, {en:'skull', kr:'해골'}, {en:'vines', kr:'덩굴'},
-  {en:'small feathers', kr:'깃털 장식'}, {en:'ribbon', kr:'리본'}, {en:'knot', kr:'매듭'},
-  {en:'halo', kr:'광배(halo)'}, {en:'bow ornament', kr:'활 장식'}, {en:'small arrow', kr:'화살(보조)'},
-  {en:'gears', kr:'톱니'}, {en:'tear drop', kr:'눈물'}, {en:'blood drop', kr:'핏방울'},
-  {en:'leaves', kr:'잎사귀'}, {en:'petals', kr:'꽃잎'}, {en:'star spikes', kr:'별가시'},
-  {en:'bone chain', kr:'사슬뼈'}, {en:'spider web', kr:'거미줄'},
-  // CREATURE 보강 8개
-  {en:'glowing eyes', kr:'빛나는 눈'},
-  {en:'spectral aura outline', kr:'영체 윤곽선'},
-  {en:'territorial marking trail', kr:'영역 표시 흔적'},
-  {en:'ancestral fang markings', kr:'가문 송곳니 문양'},
-  {en:'bloodline crest on forehead', kr:'이마 혈통 문장'},
-  {en:'shadow appendage tendrils', kr:'그림자 부속 촉수'},
-  {en:'arcane vein patterns', kr:'마력 혈관 무늬'},
-  {en:'rune-etched claws', kr:'룬 새김 발톱'},
+  {en:'ancient ruins scattered', kr:'고대 유적 산재'},
+  {en:'magical glowing landmarks', kr:'마법으로 빛나는 랜드마크'},
+  {en:'hidden caves', kr:'숨겨진 동굴'},
+  {en:'sacred stone circles', kr:'신성한 돌 환상열석'},
+  {en:'enchanted forests', kr:'마법의 숲'},
+  {en:'glowing crystal deposits', kr:'빛나는 크리스털 광맥'},
+  {en:'forgotten shrines', kr:'잊혀진 사당'},
+  {en:'old battlefields', kr:'옛 전장'},
+  {en:'magical leyline traces', kr:'마법 레이라인 흔적'},
+  {en:'wandering mist patches', kr:'떠도는 안개 구역'},
+  {en:'hot springs', kr:'온천'},
+  {en:'sacred groves', kr:'신성한 숲'},
+  {en:'underground passages', kr:'지하 통로'},
+  {en:'collapsed bridges', kr:'무너진 다리'},
+  {en:'old waystations', kr:'옛 역참'},
 ];
 
-// 사역마 양식 — 문장학·신화·다크·페어리 등 결
-const CREATURE_STYLES = [
-  {en:'heraldic', kr:'문장학적'},
-  {en:'chimeric', kr:'키메릭(혼종)'},
-  {en:'mythical', kr:'신화적'},
-  {en:'dark fantasy', kr:'다크 판타지'},
-  {en:'celestial', kr:'천상적'},
-  {en:'faerie', kr:'페어리·요정'},
-  {en:'arcane', kr:'비전 마법풍'},
-  {en:'ancient primal', kr:'고대 원시'},
-  {en:'corrupted', kr:'오염된'},
-  {en:'regal beast', kr:'위엄있는 영물'},
+// 지도 양식 — 카토그래피·페인터리·문장학 결 (architectureStyle 흡수)
+const MAP_STYLES = [
+  {en:'painterly MMO map style', kr:'페인터리 MMO 맵'},
+  {en:'antique parchment cartography style', kr:'고전 양피지 카토그래피'},
+  {en:'fantasy atlas style', kr:'판타지 아틀라스'},
+  {en:'hand-drawn ink cartography style', kr:'손그림 잉크 지도'},
+  {en:'topographic illustrated style', kr:'지형도 일러스트'},
+  {en:'pastel watercolor map style', kr:'파스텔 수채화 지도'},
+  {en:'gothic kingdom cartography style', kr:'고딕 왕국 지도'},
+  {en:'elven illuminated map style', kr:'엘프 일루미네이션 지도'},
+  {en:'dwarven engraved map style', kr:'드워프 각인 지도'},
+  {en:'medieval scriptorium map style', kr:'중세 필사실 지도'},
+  {en:'arcane academy survey map style', kr:'마법 학회 측량 지도'},
+  {en:'oriental fantasy map style', kr:'동방 판타지 지도'},
+  {en:'pixel art map style', kr:'픽셀 아트 지도'},
+  {en:'storybook fantasy map style', kr:'동화 판타지 지도'},
 ];
 
-// 몸 형태 (05번 본질 — ← POTION의 vesselShape 자리)
-const BODY_FORMS = [
-  {en:'noble quadruped form', kr:'고결한 4족 형태'},
-  {en:'upright biped form', kr:'직립 2족 형태'},
-  {en:'serpentine coiled form', kr:'뱀처럼 굽이치는 형태'},
-  {en:'winged quadruped form', kr:'날개 달린 4족'},
-  {en:'multi-limbed chimeric form', kr:'다지 키메라 형태'},
-  {en:'serpent-tailed feline form', kr:'뱀꼬리 고양잇과'},
-  {en:'hulking massive form', kr:'육중한 거구'},
-  {en:'slender elegant form', kr:'호리호리한 우아한'},
-  {en:'diminutive familiar form', kr:'소형 사역마'},
-  {en:'amorphous shifting form', kr:'정형 없는 변형체'},
+// 지형 (05번 본질 — ← TAROT의 terrain 자리)
+const TERRAINS = [
+  {en:'dense magical forest terrain', kr:'울창한 마법 숲 지형'},
+  {en:'snowy cliff terrain', kr:'설원 절벽 지형'},
+  {en:'wide blue lake terrain', kr:'드넓은 푸른 호수 지형'},
+  {en:'mountain range terrain', kr:'산맥 지형'},
+  {en:'rolling grassland terrain', kr:'완만한 초원 지형'},
+  {en:'arid desert dune terrain', kr:'건조한 사막 사구'},
+  {en:'volcanic wasteland terrain', kr:'화산 황무지'},
+  {en:'mystical swampland terrain', kr:'신비한 늪지'},
+  {en:'frozen tundra terrain', kr:'얼어붙은 툰드라'},
+  {en:'jungle rainforest terrain', kr:'정글 우림'},
+  {en:'rocky canyon terrain', kr:'바위 협곡'},
+  {en:'coastal cliffside terrain', kr:'해안 절벽'},
+  {en:'archipelago island terrain', kr:'군도 섬 지형'},
+  {en:'glacier ice terrain', kr:'빙하 지형'},
+  {en:'crystalline field terrain', kr:'크리스털 평원'},
+  {en:'flower garden terrain', kr:'꽃밭 정원 지형'},
+  {en:'cursed dead land terrain', kr:'저주받은 죽음의 땅'},
+  {en:'mushroom forest terrain', kr:'버섯 숲 지형'},
 ];
 
-// 특수 부위 (06번 본질 — ← POTION의 liquidState 자리)
-const SPECIAL_FEATURES = [
-  {en:'crystal horns', kr:'크리스털 뿔'},
-  {en:'multiple braided tails', kr:'여러 갈래 꼬리'},
-  {en:'extra heads', kr:'다중 머리'},
-  {en:'spectral glowing wings', kr:'영적 발광 날개'},
-  {en:'gemstone embedded forehead', kr:'이마 보석'},
-  {en:'floating halo ring', kr:'떠있는 광배 고리'},
-  {en:'thorn-like antlers', kr:'가시 같은 뿔(앤틀러)'},
-  {en:'ethereal flowing mane', kr:'영적 흐르는 갈기'},
-  {en:'serpent-eye crest', kr:'뱀의 눈 문장'},
-  {en:'elongated curved fangs', kr:'길게 굽은 송곳니'},
+// 핵심 랜드마크 (06번 본질 — ← TAROT의 mainLandmark 자리)
+const MAIN_LANDMARKS = [
+  {en:'central royal castle', kr:'중앙 왕성'},
+  {en:'crystal kingdom shrine', kr:'크리스털 왕국 사당'},
+  {en:'ancient magic tower', kr:'고대 마법탑'},
+  {en:'grand academy complex', kr:'대규모 아카데미 단지'},
+  {en:'celestial cathedral', kr:'천상의 대성당'},
+  {en:'stone lighthouse', kr:'석조 등대'},
+  {en:'forgotten ruins', kr:'잊혀진 유적'},
+  {en:'dungeon gate', kr:'던전 입구'},
+  {en:'colosseum arena', kr:'콜로세움 아레나'},
+  {en:'ancient tree shrine', kr:'고대 나무 사당'},
+  {en:'black citadel', kr:'검은 성채'},
+  {en:'celestial observatory', kr:'천체 관측소'},
+  {en:'sacred temple complex', kr:'신성한 신전 단지'},
+  {en:'forge mountain stronghold', kr:'대장간 산 요새'},
+  {en:'garden palace', kr:'정원 궁전'},
+  {en:'monument obelisk', kr:'기념 오벨리스크'},
+  {en:'water shrine', kr:'물의 사당'},
+  {en:'frozen shrine', kr:'얼음 사당'},
 ];
 
-// 외피 (07번 본질 — ← POTION의 stopper 자리, B안 채택: gemstone/stopper 자리 교체)
-const COATINGS = [
-  {en:'sleek noble fur', kr:'매끄러운 고귀한 모피'},
-  {en:'flowing iridescent feathers', kr:'흐르는 무지갯빛 깃털'},
-  {en:'gleaming dragon scales', kr:'빛나는 용 비늘'},
-  {en:'crystalline armor plates', kr:'결정질 갑주판'},
-  {en:'ethereal mist coating', kr:'영적 안개 외피'},
-  {en:'bone-like armored hide', kr:'뼈 같은 갑피'},
-  {en:'moss-grown ancient hide', kr:'이끼 자란 고대 가죽'},
-  {en:'shadow-veiled pelt', kr:'그림자 베일 털가죽'},
-  {en:'mirror-bright reflective skin', kr:'거울처럼 빛나는 피부'},
-  {en:'woven moonlight fibers', kr:'달빛 짠 섬유'},
+// 생활요소 (07번 본질 — ← TAROT의 livingElements 자리, B안 채택: 본질에 보석 안 다룸)
+const LIVING_ELEMENTS = [
+  {en:'residential houses clustered', kr:'주거 가옥 군집'},
+  {en:'winding roads and paths', kr:'구불구불한 길과 오솔길'},
+  {en:'arched stone bridges', kr:'아치형 석조 다리'},
+  {en:'flowered gardens', kr:'꽃 정원'},
+  {en:'wooden docks and piers', kr:'목조 부두와 잔교'},
+  {en:'farmlands and orchards', kr:'농지와 과수원'},
+  {en:'open market streets', kr:'노천 시장 거리'},
+  {en:'small canals and waterways', kr:'작은 운하와 수로'},
+  {en:'town wells and fountains', kr:'우물과 분수대'},
+  {en:'windmills and watermills', kr:'풍차와 물레방아'},
+  {en:'fishing huts along coast', kr:'해안 어부 오두막'},
+  {en:'training grounds and arenas', kr:'훈련장과 경기장'},
+  {en:'graveyards and small shrines', kr:'묘지와 작은 사당'},
+  {en:'town squares and plazas', kr:'마을 광장과 플라자'},
+  {en:'fortified gates and walls', kr:'요새화된 성문과 성벽'},
+  {en:'lanterns lighting paths', kr:'길을 비추는 등불'},
 ];
 
 const MOODS = [
-  {en:'ominous', kr:'위협적인'}, {en:'regal', kr:'위엄있는'}, {en:'holy', kr:'신성한'},
-  {en:'cursed', kr:'저주받은'}, {en:'melancholic', kr:'우울한'}, {en:'savage', kr:'야만적인'},
-  {en:'mysterious', kr:'신비로운'}, {en:'tragic', kr:'비극적인'}, {en:'radiant', kr:'광휘로운'},
-  {en:'elegant', kr:'우아한'}, {en:'cold', kr:'차가운'}, {en:'feral', kr:'야성적인'},
-  {en:'celestial', kr:'천상의'}, {en:'infernal', kr:'지옥의'}, {en:'maddening', kr:'광기 어린'},
-  {en:'pure and chaste', kr:'청초한'}, {en:'gloomy', kr:'음울한'},
+  {en:'mysterious', kr:'신비로운'},
+  {en:'serene', kr:'고요한'},
+  {en:'treacherous', kr:'위험한'},
+  {en:'bustling', kr:'분주한'},
+  {en:'ancient', kr:'고대의'},
+  {en:'sacred', kr:'신성한'},
+  {en:'cursed', kr:'저주받은'},
+  {en:'abandoned', kr:'버려진'},
+  {en:'lively magical', kr:'생기있고 마법적인'},
+  {en:'ominous', kr:'불길한'},
+  {en:'pristine wild', kr:'손때 묻지 않은 야생의'},
+  {en:'war-torn', kr:'전화에 시달린'},
+  {en:'enchanted', kr:'마법에 걸린'},
+  {en:'forgotten', kr:'잊혀진'},
 ];
 
 const BACKGROUNDS = [
   {value:'white', en:'pure white background', kr:'순백 배경'},
-  {value:'black', en:'pure black background', kr:'검은 배경'},
-  {value:'parchment', en:'aged parchment background', kr:'오래된 양피지 배경'},
-  {value:'transparent', en:'transparent background, no background, alpha channel only', kr:'투명 배경 (배경 없음)'},
+  {value:'navy-void', en:'deep navy void background outside the landmass (#0d0f1f), subtle mist around edges', kr:'딥 네이비 보이드 (랜드마스 외부, 가장자리 안개)'},
+  {value:'parchment', en:'antique parchment cream background', kr:'고전 양피지 크림 배경'},
+  {value:'dark-void', en:'pitch black void background', kr:'칠흑 보이드 배경'},
+  {value:'sky-blue', en:'soft sky blue background', kr:'은은한 하늘색 배경'},
+  {value:'cosmic', en:'deep cosmic starry background', kr:'심우주 별빛 배경'},
+  {value:'sepia', en:'sepia toned background', kr:'세피아 톤 배경'},
+  {value:'transparent', en:'transparent background', kr:'투명 배경'},
 ];
 
-// 추가 옵션 — flat silhouette icon (모드 A 전용, 모드 C 자동 제외) + CREATURE 보강 3개
+// 추가 옵션 — flat silhouette icon (모드 A 전용, 모드 C·D 자동 제외) + markers 옵션 신규
 const EXTRAS = [
-  {en:'perfectly symmetrical composition', kr:'완벽한 좌우대칭'},
-  {en:'inverted negative space cutouts', kr:'음각(네거티브 스페이스) 컷아웃'},
-  {en:'subtle vintage texture', kr:'은은한 빈티지 텍스처'},
-  {en:'floating magical particles', kr:'마법 파편'},
-  {en:'glowing edges', kr:'가장자리 발광'},
-  {en:'posed on heraldic shield mount', kr:'문장 방패 위에 자세잡음'},
-  {en:'emerging from arcane mist', kr:'마법 안개에서 출현'},
-  {en:'perched on noble house crest', kr:'가문 문장 위에 앉음'},
   {en:'flat silhouette icon', kr:'평면 실루엣 아이콘'},
+  {en:'clear open spaces for markers', kr:'마커용 빈 공간 확보'},
+  {en:'not overcrowded composition', kr:'과밀하지 않은 구성'},
+  {en:'balanced composition', kr:'균형 잡힌 구성'},
+  {en:'landmarks distributed evenly', kr:'랜드마크 고르게 분산'},
+  {en:'lived-in magical MMO world', kr:'생활감 있는 마법 MMO 세계'},
+  {en:'residential structures visible', kr:'주거 구조 가시'},
+  {en:'subtle mist around edges', kr:'가장자리 은은한 안개'},
+  {en:'perfectly symmetrical composition', kr:'완벽한 좌우 대칭'},
+  {en:'decorative border without text', kr:'텍스트 없는 장식 테두리'},
+  {en:'readable RPG area layout', kr:'읽기 좋은 RPG 지역 레이아웃'},
+  {en:'painterly atmospheric lighting', kr:'페인터리 분위기 조명'},
+  {en:'lived-in daily-life details', kr:'생활감 디테일'},
 ];
 
 const ELEMENTS = [
-  {en:'fire-aligned', kr:'불'}, {en:'water-aligned', kr:'물'}, {en:'wind-aligned', kr:'바람'},
-  {en:'earth-aligned', kr:'땅'}, {en:'light-aligned', kr:'빛'}, {en:'dark-aligned', kr:'어둠'},
-  {en:'star-aligned', kr:'별'}, {en:'shadow-aligned', kr:'그림자'},
+  {en:'fire element', kr:'불 원소'},
+  {en:'water element', kr:'물 원소'},
+  {en:'earth element', kr:'대지 원소'},
+  {en:'air element', kr:'바람 원소'},
+  {en:'lightning element', kr:'번개 원소'},
+  {en:'ice element', kr:'얼음 원소'},
+  {en:'nature element', kr:'자연 원소'},
+  {en:'dark element', kr:'어둠 원소'},
+  {en:'light element', kr:'빛 원소'},
+  {en:'arcane element', kr:'비전 원소'},
 ];
 
-// 사역마 격 (banner 패턴 — "familiar" 통일)
+// 지도 격 (Rank)
 const RANKS = [
-  {en:'mythic divine familiar with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
-  {en:'legendary heroic familiar with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
-  {en:'epic high-grade ceremonial familiar with elegant detailing', kr:'영웅급 (우아한 디테일)'},
-  {en:'rare embellished familiar with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
-  {en:'uncommon refined familiar with subtle detailing', kr:'고급 (절제된 디테일)'},
-  {en:'common standard familiar with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
+  {en:'mythic divine cartography with overwhelming complex detailing', kr:'신화급 (압도적 디테일)'},
+  {en:'legendary heroic-scale map with rich ornate detailing', kr:'전설급 (풍부한 장식)'},
+  {en:'epic kingdom-scale ceremonial map with elegant detailing', kr:'영웅급 (우아한 디테일)'},
+  {en:'rare embellished map with balanced moderate detailing', kr:'희귀급 (균형잡힌)'},
+  {en:'uncommon refined map with subtle detailing', kr:'고급 (절제된 디테일)'},
+  {en:'common standard map with minimal clean detailing', kr:'일반급 (단순·깔끔)'},
 ];
 
-// 사역마 유래·성격 (banner 패턴 미러링, CREATURE 결로 단어 변환)
+// 지도 유래·계보
 const PURPOSES = [
-  {en:'royal court familiar', kr:'왕실 사역마'},
-  {en:'military war beast', kr:'군사 전투 짐승'},
-  {en:'religious sacred guardian', kr:'종교 성스러운 수호자'},
-  {en:'arcane experiment subject', kr:'마법 실험체'},
-  {en:'ancestral bound spirit', kr:'가문 결속 영체'},
-  {en:'ceremonial summoned beast', kr:'의례 소환수'},
-  {en:'ancient bound creature', kr:'고대 봉인수'},
-  {en:'cursed corrupted beast', kr:'저주받은 짐승'},
-  {en:'diplomatic envoy creature', kr:'외교 사자수'},
-  {en:'scholarly research specimen', kr:'학자의 연구 표본'},
-  {en:'funerary tomb watcher', kr:'장례 무덤 감시자'},
-  {en:'legendary mythic beast', kr:'전설의 신수'},
+  {en:'royal survey cartographic record', kr:'왕실 측량 지도'},
+  {en:'exploration discovery map', kr:'탐험 발견 지도'},
+  {en:'battle strategy military map', kr:'전투 전략 군용 지도'},
+  {en:'treasure hunt parchment', kr:'보물 찾기 양피지'},
+  {en:'pilgrimage sacred route map', kr:'순례 신성 경로'},
+  {en:'merchant trade route chart', kr:'상인 무역로 차트'},
+  {en:'arcane scrying divination map', kr:'마법 점복 지도'},
+  {en:'ancient prophecy cartography', kr:'고대 예언 지도'},
+  {en:'noble household domain chart', kr:'영주 가문 영지 차트'},
+  {en:'forgotten cartographer record', kr:'잊혀진 지도 제작자 기록'},
 ];
 
 // 오라·광휘
 const AURAS = [
-  {en:'powerful glowing aura', kr:'강한 광휘'},
-  {en:'subtle ethereal glow', kr:'은은한 빛'},
-  {en:'no aura', kr:'광휘 없음'},
+  {en:'soft enchanted glow', kr:'은은한 마법 빛'},
+  {en:'radiant divine light', kr:'찬란한 신성한 빛'},
+  {en:'cursed dark aura', kr:'저주받은 어두운 오라'},
+  {en:'crystalline shimmer', kr:'크리스털 반짝임'},
+  {en:'ethereal mist aura', kr:'에테르 안개 오라'},
+  {en:'ancient mystical aura', kr:'고대 신비 오라'},
 ];
 
 const THEMES = [
-  {en:'love', kr:'사랑'}, {en:'vengeance', kr:'복수'}, {en:'honor', kr:'명예'},
-  {en:'betrayal', kr:'배신'}, {en:'freedom', kr:'자유'}, {en:'madness', kr:'광기'},
-  {en:'faith', kr:'신앙'}, {en:'desire', kr:'욕망'},
+  {en:'exploration and discovery', kr:'탐험과 발견'},
+  {en:'war and conquest', kr:'전쟁과 정복'},
+  {en:'peace and prosperity', kr:'평화와 번영'},
+  {en:'decay and ruin', kr:'쇠퇴와 폐허'},
+  {en:'pilgrimage and devotion', kr:'순례와 신앙'},
+  {en:'siege and resistance', kr:'공성과 저항'},
+  {en:'colonization and frontier', kr:'식민화와 변경'},
+  {en:'cursed wasteland survival', kr:'저주받은 황무지 생존'},
+  {en:'sacred forbidden territory', kr:'성스러운 금단의 영역'},
+  {en:'forgotten ancient civilization', kr:'잊혀진 고대 문명'},
 ];
 
 const FACTIONS = [
-  {en:'human noble', kr:'인간'}, {en:'elven high-house', kr:'엘프'}, {en:'demonic', kr:'데몬'},
-  {en:'angelic', kr:'천사'}, {en:'vampiric', kr:'뱀파이어'}, {en:'werewolf clan', kr:'늑대인간'},
-  {en:'undead', kr:'언데드'},
+  {en:'noble human kingdom', kr:'고결한 인간 왕국'},
+  {en:'elven realm', kr:'엘프 왕국'},
+  {en:'dwarven hold', kr:'드워프 거점'},
+  {en:'celestial order', kr:'천상 교단'},
+  {en:'shadow brotherhood', kr:'그림자 동맹'},
+  {en:'arcane academy', kr:'마법 학회'},
+  {en:'fey court', kr:'요정 궁정'},
+  {en:'cursed wasteland clan', kr:'저주받은 황무지 부족'},
 ];
 
-// 자세 (Pose) — CREATURE 전용 18번 섹션
-// 모드 A: 문장학적 자세 6개 / 모드 C: 일러스트 자세 6개 (라벨에 [시길]/[컨셉] 표시)
-const POSES = [
-  // 모드 A — 문장학적 (heraldic) 자세
-  {en:'in rampant heraldic pose', kr:'람판트 자세 — 두 발 들고 으르렁 [시길]'},
-  {en:'in passant heraldic pose', kr:'파산트 자세 — 한 발 들고 걷기 [시길]'},
-  {en:'in sejant heraldic pose', kr:'세잔트 자세 — 앉기 [시길]'},
-  {en:'in couchant heraldic pose', kr:'쿠샹트 자세 — 누움 [시길]'},
-  {en:'in statant heraldic pose', kr:'스타탄트 자세 — 네 발 정면 응시 [시길]'},
-  {en:'in salient heraldic pose', kr:'살리엔트 자세 — 도약 [시길]'},
-  // 모드 C — 컨셉아트 일러스트 자세
-  {en:'stalking through mist', kr:'안개 속 잠행 [컨셉]'},
-  {en:'leaping mid-air', kr:'공중 도약 [컨셉]'},
-  {en:'coiled and ready to strike', kr:'똬리 틀고 경계 [컨셉]'},
-  {en:'curled in slumber', kr:'웅크리고 잠 [컨셉]'},
-  {en:'roaring defiant', kr:'포효 [컨셉]'},
-  {en:'gliding silently', kr:'활공 [컨셉]'},
+// 시점 (18번 본질 — ← TAROT의 viewpoint 자리, prefix-comma postfix 결구)
+const VIEWPOINTS = [
+  {en:'top-down view', kr:'탑다운 시점'},
+  {en:'isometric view', kr:'아이소메트릭 시점'},
+  {en:'oblique perspective view', kr:'사선 시점'},
+  {en:'cartographic flat view', kr:'카토그래피 평면 시점'},
+  {en:'hand-drawn perspective view', kr:'손그림 시점'},
+  {en:'painterly fly-over view', kr:'페인터리 부감 시점'},
+  {en:'pixel art top-down view', kr:'픽셀 아트 탑다운'},
+  {en:'orthographic projection view', kr:'정사 투영 시점'},
 ];
 
-// 모드 선택 (00번) — 모드 A: 시길 톤 / 모드 C: 컨셉아트
+// 지도 레이아웃 (19번 본질 — ← TAROT의 cardSpread 자리, modeRestrict 없음 ⭐ MAP은 모든 모드 활성)
+const MAP_LAYOUTS = [
+  {en:'circular floating island layout', kr:'원형 부유섬 레이아웃'},
+  {en:'square 1:1 grid layout', kr:'정사각 1:1 그리드'},
+  {en:'hexagonal grid layout', kr:'육각 그리드'},
+  {en:'organic continent outline layout', kr:'유기적 대륙 윤곽'},
+  {en:'grid-based dungeon layout', kr:'그리드 기반 던전'},
+  {en:'radial wheel layout', kr:'방사형 휠'},
+  {en:'vertical scroll layout', kr:'세로 두루마리'},
+  {en:'horizontal scroll layout', kr:'가로 두루마리'},
+];
+
+// 모드 선택 (00번) — A: 시길 톤 / C: 컨셉아트 / D: 탑다운 미니맵 (5호기 신규 ⭐⭐)
 const MODES = [
-  {value:'A', en:'sigil-aligned familiar icon', kr:'시길 톤 (가문 문장 사역마)'},
-  {value:'C', en:'concept art creature illustration', kr:'컨셉아트 (사역마 일러스트)'},
+  {value:'A', en:'sigil-aligned heraldic map emblem', kr:'시길 톤 (가문 문장 지도)'},
+  {value:'C', en:'concept art fantasy cartography illustration', kr:'컨셉아트 (판타지 일러스트맵)'},
+  {value:'D', en:'top-down painterly MMO mini-map', kr:'탑다운 미니맵 (페인터리 MMO)'},
 ];
+
 
 
 // ═══════════════════════════════════════════════════════════════════
 //  STORAGE
 // ═══════════════════════════════════════════════════════════════════
 const STORAGE_PREFIX = 'forge_';
-const STATE_KEY = STORAGE_PREFIX + 'creature';
-const CUSTOM_KEY = STORAGE_PREFIX + 'creature_custom';
+const STATE_KEY = STORAGE_PREFIX + 'map';
+const CUSTOM_KEY = STORAGE_PREFIX + 'map_custom';
 const K = {
   token:  STORAGE_PREFIX + 'gist_token',
   gistId: STORAGE_PREFIX + 'gist_id',
@@ -923,36 +1038,37 @@ const K = {
 //  STATE
 // ═══════════════════════════════════════════════════════════════════
 const DEFAULT_STATE = {
-  mode: ['A'],  // 00번 — 모드 라디오 (A: 시길 톤 / C: 컨셉아트)
-  creatureType: ['wolf familiar'],
-  customCreatureType: '',
+  mode: ['A'],  // 00번 — 모드 라디오 (A: 시길 톤 / C: 컨셉아트 / D: 탑다운 미니맵 — 5호기 신규)
+  mapType: ['region map'],
+  customMapType: '',
   motifs: ['rose'],
   customMotif: '',
   subMotifs: [],
   customSubMotif: '',
   style: [],
-  bodyForm: [],
-  specialFeature: [],
-  coating: [],
+  terrain: [],        // 05번 본질 — ← TAROT의 terrain 자리
+  mainLandmark: [],   // 06번 본질 — ← TAROT의 mainLandmark 자리
+  livingElements: [], // 07번 본질 — ← TAROT의 livingElements 자리
   moods: ['mysterious'],
-  primaryColor: '#EE1166',
+  primaryColor: '#8889CD',
   secondaryColors: [],
   background: ['white'],
-  extras: ['perfectly symmetrical composition'],
+  extras: ['balanced composition'],
   element: [],
   rank: [],
   purpose: [],
   aura: [],
   themes: [],
   faction: [],
-  pose: [],  // 18번 — CREATURE 전용 (자세, 모드 A 문장학적 / 모드 C 일러스트)
+  viewpoint: [],      // 18번 본질 — ← TAROT의 viewpoint 자리 (시점)
+  mapLayout: [],      // 19번 본질 — ← TAROT의 cardSpread 자리 (레이아웃, modeRestrict 없음)
 };
 
 let state = {...DEFAULT_STATE};
 let customChips = {
-  mode:[], creatureType:[], motifs:[], subMotifs:[], style:[], bodyForm:[], specialFeature:[],
-  coating:[], moods:[], background:[], extras:[], element:[], rank:[],
-  purpose:[], aura:[], themes:[], faction:[], pose:[],
+  mode:[], mapType:[], motifs:[], subMotifs:[], style:[], terrain:[], mainLandmark:[],
+  livingElements:[], moods:[], background:[], extras:[], element:[], rank:[],
+  purpose:[], aura:[], themes:[], faction:[], viewpoint:[], mapLayout:[],
 };
 
 // SUB_MOTIFS 최대 4개 (기존 동작 유지)
@@ -962,25 +1078,26 @@ const SUB_MOTIF_MAX = 4;
 //  섹션 정의
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
-  // 00 모드 선택 — 별도 그룹화 렌더링 (라디오 UI)
-  // 01 사역마 종류 — 별도 그룹화 렌더링
+  // 00 모드 선택 — 별도 그룹화 렌더링 (라디오 UI, 3모드 A/C/D ⭐⭐)
+  // 01 지도 타입 — 별도 그룹화 렌더링
   // 02 가문 모티프 — 별도 그룹화 렌더링
   { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
-  { num:'04', key:'style', title:'양식', sub:'사역마의 조형 언어 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:CREATURE_STYLES, mode:'multi', accent:'#DDAACC' },
-  { num:'05', key:'bodyForm', title:'몸 형태', sub:'사역마의 몸 구조·실루엣 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:BODY_FORMS, mode:'multi', accent:'#CCAA88' },
-  { num:'06', key:'specialFeature', title:'특수 부위', sub:'사역마의 특수 부위·돌출 디테일 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:SPECIAL_FEATURES, mode:'multi', accent:'#BB6688' },
-  { num:'07', key:'coating', title:'외피', sub:'가죽·털·비늘·껍질 등 외피 결 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:COATINGS, mode:'multi', accent:'#DDAACC' },
-  // 08 색상 별도 (액체 색)
+  { num:'04', key:'style', title:'양식', sub:'지도의 양식 결 (건축양식 흡수: gothic/elven/dwarven 등) · 단일 권장 · 복수 선택 가능 · 선택 사항', items:MAP_STYLES, mode:'multi', accent:'#DDAACC' },
+  { num:'05', key:'terrain', title:'지형 (Terrain)', sub:'지도의 지형 결 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:TERRAINS, mode:'multi', accent:'#CCAA88' },
+  { num:'06', key:'mainLandmark', title:'핵심 랜드마크', sub:'지도의 중심 랜드마크 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:MAIN_LANDMARKS, mode:'multi', accent:'#BB6688' },
+  { num:'07', key:'livingElements', title:'생활요소', sub:'마을·길·다리·정원 등 거주감 디테일 · 복수 선택 권장 · 선택 사항', items:LIVING_ELEMENTS, mode:'multi', accent:'#DDAACC' },
+  // 08 색상 별도 (지도 톤)
   { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
-  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정 · 모드 C는 미선택 가능', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
-  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정 · 모드 C/D는 미선택 가능', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
+  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C/D 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8889CD' },
   { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
-  { num:'13', key:'rank', title:'사역마 격 (Rank)', sub:'사역마의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
-  { num:'14', key:'purpose', title:'사역마 유래·성격', sub:'사역마의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
+  { num:'13', key:'rank', title:'지도 격 (Rank)', sub:'지도 등급에 따른 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
+  { num:'14', key:'purpose', title:'지도 유래·계보', sub:'지도의 쓰임과 계보 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
   { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8889CD' },
-  { num:'16', key:'themes', title:'테마 키워드', sub:'사역마의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'16', key:'themes', title:'테마 키워드', sub:'지도의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
   { num:'17', key:'faction', title:'종족·진영', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FACTIONS, mode:'multi', accent:'#DDAACC' },
-  { num:'18', key:'pose', title:'자세 (Pose)', sub:'시길 톤(문장학적) 또는 컨셉아트(일러스트) 자세 · 단일 권장 · 복수 선택 가능 · 선택 사항 · CREATURE 전용', items:POSES, mode:'multi', accent:'#EE1166' },
+  { num:'18', key:'viewpoint', title:'시점 (Viewpoint)', sub:'탑다운/아이소메트릭/양피지/페인터리 등 시점 결 · 단일 권장 · 복수 선택 가능 · 선택 사항 · MAP 전용', items:VIEWPOINTS, mode:'multi', accent:'#8889CD' },
+  { num:'19', key:'mapLayout', title:'지도 레이아웃 (Layout)', sub:'원형 부유섬/사각/육각/유기 대륙 등 형태 · 단일 권장 · 복수 선택 가능 · 선택 사항 · MAP 전용', items:MAP_LAYOUTS, mode:'multi', accent:'#8889CD' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1046,10 +1163,10 @@ function renderSections(){
   modeSec.innerHTML = renderModeHTML();
   root.appendChild(modeSec);
 
-  // 01: 사역마 종류 (그룹화)
+  // 01: 지도 타입 (그룹화)
   const btSec = document.createElement('section');
   btSec.className = 'section';
-  btSec.innerHTML = renderPotionTypeHTML();
+  btSec.innerHTML = renderMapTypeHTML();
   root.appendChild(btSec);
 
   // 02: 가문 모티프 (그룹화)
@@ -1059,9 +1176,15 @@ function renderSections(){
   root.appendChild(motifSec);
 
   // 나머지 섹션
+  const currentMode = (state.mode || ['A'])[0];
   SECTIONS.forEach(sec => {
     const div = document.createElement('section');
-    div.className = 'section';
+    // modeRestrict 패턴: 섹션 통째 모드 제한 (TAROT cardSpread 결, MAP에선 미사용 — 코드는 재사용 위해 유지)
+    let secCls = 'section';
+    if(sec.modeRestrict && sec.modeRestrict !== currentMode){
+      secCls += ' mode-disabled';
+    }
+    div.className = secCls;
     div.id = 'sec-' + sec.key;
     div.innerHTML = renderSectionHTML(sec);
     root.appendChild(div);
@@ -1082,41 +1205,41 @@ function renderSections(){
   attachModeListeners();
 }
 
-function renderPotionTypeHTML(){
-  const customItems = (customChips.creatureType || []).map(label => ({
+function renderMapTypeHTML(){
+  const customItems = (customChips.mapType || []).map(label => ({
     en:label, kr:label, _custom:true,
   }));
   return `
     <div class="section-head">
       <span class="section-num">/ 01</span>
-      <h2 class="section-title">사역마 종류</h2>
+      <h2 class="section-title">지도 타입</h2>
     </div>
     <div class="section-sub">단일 권장 · 복수 선택 가능 · 직접 입력은 콤마로 구분 (둘 다 합쳐짐)</div>
     <div class="chip-group-wrap">
-      ${CREATURE_TYPE_GROUPS.map(group => `
+      ${MAP_TYPE_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
-        <div class="chip-group" data-section="creatureType" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="mapType" data-mode="multi" style="margin-bottom:8px">
           ${group.items.map(item => {
-            const active = (state.creatureType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="creatureType" data-value="${esc(item.en)}" style="--chip-accent:#EE1166">${esc(item.kr)}</div>`;
+            const active = (state.mapType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="mapType" data-value="${esc(item.en)}" style="--chip-accent:#8889CD">${esc(item.kr)}</div>`;
           }).join('')}
         </div>
       `).join('')}
       ${customItems.length ? `
         <div class="group-label">커스텀</div>
-        <div class="chip-group" data-section="creatureType" data-mode="multi" style="margin-bottom:8px">
+        <div class="chip-group" data-section="mapType" data-mode="multi" style="margin-bottom:8px">
           ${customItems.map(item => {
-            const active = (state.creatureType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="creatureType" data-value="${esc(item.en)}" style="--chip-accent:#EE1166">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="creatureType" data-value="${esc(item.en)}">×</span></div>`;
+            const active = (state.mapType||[]).includes(item.en);
+            return `<div class="chip${active?' active':''}" data-section="mapType" data-value="${esc(item.en)}" style="--chip-accent:#8889CD">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="mapType" data-value="${esc(item.en)}">×</span></div>`;
           }).join('')}
         </div>
       ` : ''}
-      <div class="chip-group" data-section="creatureType" data-mode="multi">
-        <div class="chip chip-add" data-action="add-chip" data-section="creatureType" style="--chip-accent:#EE1166">＋</div>
+      <div class="chip-group" data-section="mapType" data-mode="multi">
+        <div class="chip chip-add" data-action="add-chip" data-section="mapType" style="--chip-accent:#8889CD">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-creatureType" placeholder="직접 입력 (콤마로 여러 개, 예: smoke bomb, 연막탄)" value="${esc(state.customCreatureType || '')}">
-    <div class="input-hint" id="custom-creatureType-hint"></div>
+    <input type="text" class="text-input" id="custom-mapType" placeholder="직접 입력 (콤마로 여러 개, 예: lost realm map, 잊혀진 왕국 지도)" value="${esc(state.customMapType || '')}">
+    <div class="input-hint" id="custom-mapType-hint"></div>
   `;
 }
 
@@ -1132,7 +1255,7 @@ function renderModeHTML(){
         const active = (state.mode||[])[0] === m.value;
         return `
           <label class="mode-radio${active?' active':''}" data-mode-value="${m.value}">
-            <input type="radio" name="creature-mode" value="${m.value}" ${active?'checked':''}>
+            <input type="radio" name="map-mode" value="${m.value}" ${active?'checked':''}>
             <div class="mode-radio-content">
               <div class="mode-radio-title">${esc(m.kr)}</div>
               <div class="mode-radio-en">${esc(m.en)}</div>
@@ -1153,7 +1276,7 @@ function renderMotifHTML(){
       <span class="section-num">/ 02</span>
       <h2 class="section-title">가문 모티프</h2>
     </div>
-    <div class="section-sub">사역마에 새겨질 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
+    <div class="section-sub">지도에 들어갈 가문의 상징 · 다중 선택 가능 · 직접 입력은 콤마로 구분</div>
     <div class="chip-group-wrap">
       ${MOTIF_GROUPS.map(group => `
         <div class="group-label">${esc(group.label)}</div>
@@ -1183,7 +1306,13 @@ function renderMotifHTML(){
 }
 
 function renderSectionHTML(sec){
+  // modeRestrict 안내 문구 (TAROT 19번 cardSpread 등 — 4-10 패턴, MAP은 미사용)
+  const modeKr = {A:'시길 톤', C:'컨셉아트'};
+  const restrictNotice = sec.modeRestrict
+    ? `<div class="mode-restrict-notice">⚠️ 모드 ${sec.modeRestrict}(${modeKr[sec.modeRestrict]||''}) 선택 시에만 활성화됨</div>`
+    : '';
   return `
+    ${restrictNotice}
     <div class="section-head">
       <span class="section-num">/ ${sec.num}</span>
       <h2 class="section-title">${esc(sec.title)}</h2>
@@ -1340,10 +1469,10 @@ function attachChipListeners(){
 }
 
 function attachInputListeners(){
-  const customBs = document.getElementById('custom-creatureType');
+  const customBs = document.getElementById('custom-mapType');
   if(customBs){
     customBs.addEventListener('input', (e) => {
-      state.customCreatureType = e.target.value;
+      state.customMapType = e.target.value;
       saveAll();
       updatePreview();
       updateBuildingTypeHint();
@@ -1373,13 +1502,13 @@ function attachInputListeners(){
 }
 
 function updateBuildingTypeHint(){
-  const hint = document.getElementById('custom-creatureType-hint');
+  const hint = document.getElementById('custom-mapType-hint');
   if(!hint) return;
-  const fromChips = (state.creatureType||[]).map(en => {
-    const found = ALL_CREATURE_TYPES.find(m => m.en === en);
+  const fromChips = (state.mapType||[]).map(en => {
+    const found = ALL_MAP_TYPES.find(m => m.en === en);
     return found ? found.kr : en;
   });
-  const customs = (state.customCreatureType||'').split(',').map(s => s.trim()).filter(Boolean);
+  const customs = (state.customMapType||'').split(',').map(s => s.trim()).filter(Boolean);
   const all = [...fromChips, ...customs];
   hint.textContent = all.length ? '선택됨: ' + all.join(' + ') : '';
 }
@@ -1478,7 +1607,7 @@ function applyColorChange(id, hex){
 let currentChipModalSection = null;
 function openChipModal(sectionKey){
   currentChipModalSection = sectionKey;
-  const specialTitles = { creatureType:'사역마 종류', motifs:'가문 모티프' };
+  const specialTitles = { mapType:'지도 타입', motifs:'가문 모티프' };
   const sec = specialTitles[sectionKey]
     ? {title:specialTitles[sectionKey]}
     : SECTIONS.find(s => s.key === sectionKey);
@@ -1523,18 +1652,18 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 //  프롬프트 생성 (CREATURE — ARCHITECTURE/POTION 모드 분기 패턴 재사용)
 // ═══════════════════════════════════════════════════════════════════
 function buildPrompts(){
-  const mode = (state.mode || ['A'])[0] || 'A';  // 00번 모드
+  const mode = (state.mode || ['A'])[0] || 'A';  // 00번 모드 (A 시길 / C 컨셉아트 / D 탑다운 미니맵, 5호기 ⭐)
 
-  // 사역마 종류 (필수)
-  const ptFromChips = (state.creatureType||[]).map(en => {
-    const found = ALL_CREATURE_TYPES.find(m => m.en === en);
+  // 지도 타입 (필수)
+  const ptFromChips = (state.mapType||[]).map(en => {
+    const found = ALL_MAP_TYPES.find(m => m.en === en);
     return found ? {en:found.en, kr:found.kr} : {en, kr:en};
   });
-  const ptCustoms = (state.customCreatureType||'').split(',').map(s => s.trim()).filter(Boolean)
+  const ptCustoms = (state.customMapType||'').split(',').map(s => s.trim()).filter(Boolean)
     .map(c => ({en:c, kr:c}));
   const ptList = [...ptFromChips, ...ptCustoms];
-  const creatureTypeEn = ptList.length ? joinWithAnd(ptList.map(m => m.en)) : 'wolf familiar';
-  const creatureTypeKr = ptList.length ? ptList.map(m => m.kr).join(', ') : '늑대 사역마';
+  const mapTypeEn = ptList.length ? joinWithAnd(ptList.map(m => m.en)) : 'region map';
+  const mapTypeKr = ptList.length ? ptList.map(m => m.kr).join(', ') : '지역 지도';
 
   // 가문 모티프 (필수)
   const motifFromChips = (state.motifs||[]).map(en => {
@@ -1563,33 +1692,33 @@ function buildPrompts(){
   const moodEn = moodList.length ? moodList.join(', ') : 'atmospheric';
   const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || {kr:m}).kr).join(', ') : '분위기 있는';
 
-  // 양식 (옵션, multi)
+  // 양식 (옵션, multi) — architectureStyle 흡수
   const styleList = state.style || [];
-  const styleResolved = styleList.map(s => CREATURE_STYLES.find(x => x.en === s) || {en:s, kr:s});
-  const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
+  const styleResolved = styleList.map(s => MAP_STYLES.find(x => x.en === s) || {en:s, kr:s});
+  const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))}` : '';
   const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
 
-  // 몸 형태 (옵션, multi) — CREATURE 본질
-  const bodyFormList = state.bodyForm || [];
-  const bodyFormResolved = bodyFormList.map(s => BODY_FORMS.find(x => x.en === s) || {en:s, kr:s});
-  const bodyFormEn = bodyFormResolved.length ? `, with ${joinWithAnd(bodyFormResolved.map(v => v.en))}` : '';
-  const bodyFormKr = bodyFormResolved.length ? `, ${bodyFormResolved.map(v => v.kr).join('·')}` : '';
+  // 지형 (옵션, multi) — 05번 본질 (MAP 결구)
+  const terrainList = state.terrain || [];
+  const terrainResolved = terrainList.map(s => TERRAINS.find(x => x.en === s) || {en:s, kr:s});
+  const terrainEn = terrainResolved.length ? `, set across ${joinWithAnd(terrainResolved.map(v => v.en))}` : '';
+  const terrainKr = terrainResolved.length ? `, ${terrainResolved.map(v => v.kr).join('·')}이 펼쳐진` : '';
 
-  // 특수 부위 (옵션, multi) — CREATURE 본질
-  const specialFeatureList = state.specialFeature || [];
-  const specialFeatureResolved = specialFeatureList.map(s => SPECIAL_FEATURES.find(x => x.en === s) || {en:s, kr:s});
-  const specialFeatureEn = specialFeatureResolved.length ? `, featuring ${joinWithAnd(specialFeatureResolved.map(l => l.en))}` : '';
-  const specialFeatureKr = specialFeatureResolved.length ? `, ${specialFeatureResolved.map(l => l.kr).join('·')} 보유` : '';
+  // 핵심 랜드마크 (옵션, multi) — 06번 본질 (MAP 결구)
+  const mainLandmarkList = state.mainLandmark || [];
+  const mainLandmarkResolved = mainLandmarkList.map(s => MAIN_LANDMARKS.find(x => x.en === s) || {en:s, kr:s});
+  const mainLandmarkEn = mainLandmarkResolved.length ? `, anchored by ${joinWithAnd(mainLandmarkResolved.map(l => l.en))} as the central landmark` : '';
+  const mainLandmarkKr = mainLandmarkResolved.length ? `, ${mainLandmarkResolved.map(l => l.kr).join('·')}을(를) 중심 랜드마크로` : '';
 
-  // 외피 (옵션, multi) — CREATURE 본질
-  const coatingList = state.coating || [];
-  const coatingResolved = coatingList.map(s => COATINGS.find(x => x.en === s) || {en:s, kr:s});
-  const coatingEn = coatingResolved.length ? `, coated in ${joinWithAnd(coatingResolved.map(s => s.en))}` : '';
-  const coatingKr = coatingResolved.length ? `, ${coatingResolved.map(s => s.kr).join('·')}로 덮인 외피` : '';
+  // 생활요소 (옵션, multi) — 07번 본질 (MAP 결구)
+  const livingElementsList = state.livingElements || [];
+  const livingElementsResolved = livingElementsList.map(s => LIVING_ELEMENTS.find(x => x.en === s) || {en:s, kr:s});
+  const livingElementsEn = livingElementsResolved.length ? `, populated with ${joinWithAnd(livingElementsResolved.map(s => s.en))}` : '';
+  const livingElementsKr = livingElementsResolved.length ? `, ${livingElementsResolved.map(s => s.kr).join('·')}이 어우러진` : '';
 
   // 배경 (모드별 분기)
   // 모드 A 미선택 시: 'pure white background' 폴백 (시길 톤 본질)
-  // 모드 C 미선택 시: 빈 채로 (자율)
+  // 모드 C/D 미선택 시: 빈 채로 (자율, 모드 D는 데이터셋의 navy-void 결 권장)
   const bgList = state.background || [];
   const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || {en:v, kr:v});
   const bgEn = bgResolved.length
@@ -1600,33 +1729,41 @@ function buildPrompts(){
     : (mode === 'A' ? '순백 배경' : '');
   const hasTransparent = bgList.includes('transparent');
 
-  // 색상 (모드별 분기) — primaryColor = 액체 색
+  // 색상 (모드별 분기) — primaryColor = 지도 톤
   const primaryInfo = findClosestColorName(state.primaryColor);
   const secondaryInfos = (state.secondaryColors||[]).map(hex => ({hex, ...findClosestColorName(hex)}));
   const colorPhraseEn = (() => {
     const main = `${primaryInfo.en} (${state.primaryColor})`;
     if(mode === 'A'){
-      if(!secondaryInfos.length) return `single-color flat silhouette in ${main} creature tone`;
-      return `flat color design featuring ${main} pelt accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+      if(!secondaryInfos.length) return `single-color flat silhouette in ${main} heraldic map tone`;
+      return `flat color heraldic map design featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    } else if(mode === 'D'){
+      if(!secondaryInfos.length) return `bright painterly mini-map palette emphasizing ${main}`;
+      return `bright fantasy MMO mini-map palette featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
     } else {
-      if(!secondaryInfos.length) return `rich painterly creature color emphasizing ${main}`;
-      return `cinematic creature color tones featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+      // mode C
+      if(!secondaryInfos.length) return `rich painterly cartographic color emphasizing ${main}`;
+      return `cinematic fantasy map color tones featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
     }
   })();
   const colorPhraseKr = (() => {
     const main = `${primaryInfo.kr} (${state.primaryColor})`;
     if(mode === 'A'){
-      if(!secondaryInfos.length) return `${main} 단색 평면 실루엣 외피 톤`;
-      return `${main} 외피에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+      if(!secondaryInfos.length) return `${main} 단색 평면 실루엣 문장학 지도 톤`;
+      return `${main} 본체에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 문장학 지도`;
+    } else if(mode === 'D'){
+      if(!secondaryInfos.length) return `${main}을(를) 강조한 밝은 페인터리 미니맵 팔레트`;
+      return `${main} 본체에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 밝은 판타지 MMO 미니맵 팔레트`;
     } else {
-      if(!secondaryInfos.length) return `${main}을(를) 강조한 풍부한 페인털리 외피 색감`;
-      return `${main} 외피에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 시네마틱 색조`;
+      // mode C
+      if(!secondaryInfos.length) return `${main}을(를) 강조한 풍부한 페인터리 카토그래피 색감`;
+      return `${main} 본체에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 시네마틱 판타지 지도 색조`;
     }
   })();
 
-  // extras (옵션) — 모드 C 선택 시 'flat silhouette icon' 칩 자동 제외
+  // extras (옵션) — 'flat silhouette icon' 칩은 모드 A 전용 (모드 C/D 자동 제외)
   let extraList = state.extras || [];
-  if(mode === 'C'){
+  if(mode !== 'A'){
     extraList = extraList.filter(e => e !== 'flat silhouette icon');
   }
   const extraEn = extraList.length ? `, ${extraList.join(', ')}` : '';
@@ -1638,7 +1775,7 @@ function buildPrompts(){
   const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
   const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
 
-  // 사역마 격 (옵션, multi)
+  // 지도 격 (옵션, multi)
   const rankList = state.rank || [];
   const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
   const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
@@ -1667,50 +1804,67 @@ function buildPrompts(){
   const factionEn = factionResolved.length ? `, ${joinWithAnd(factionResolved.map(f => f.en))} house` : '';
   const factionKr = factionResolved.length ? `, ${factionResolved.map(f => f.kr).join('·')} 가문` : '';
 
-  // 자세 (옵션, multi) — CREATURE 전용 18번 (모드 A 문장학적 / 모드 C 일러스트, prefix-comma 패턴)
-  const poseList = state.pose || [];
-  const poseResolved = poseList.map(s => POSES.find(x => x.en === s) || {en:s, kr:s});
-  const poseEn = poseResolved.length ? `, depicted ${joinWithAnd(poseResolved.map(b => b.en))}` : '';
-  // 한글 라벨에서 ' [시길]' / ' [컨셉]' 표시자 제거 후 결구 적용
-  const poseKr = poseResolved.length
-    ? `, ${poseResolved.map(b => (b.kr || '').replace(/\s*\[(시길|컨셉)\]\s*$/, '').replace(/\s*—\s*/, ' ')).join('·')} 자세로 묘사됨`
-    : '';
+  // 시점 (옵션, multi) — 18번 본질 (MAP 전용, prefix-comma 패턴)
+  const viewpointList = state.viewpoint || [];
+  const viewpointResolved = viewpointList.map(s => VIEWPOINTS.find(x => x.en === s) || {en:s, kr:s});
+  const viewpointEn = viewpointResolved.length ? `, ${joinWithAnd(viewpointResolved.map(b => b.en))}` : '';
+  const viewpointKr = viewpointResolved.length ? `, ${viewpointResolved.map(b => b.kr).join('·')}으로 묘사됨` : '';
 
-  // ═══ 네거티브 (모드별 강도 분기 — CREATURE 결로) ═══
+  // 지도 레이아웃 (옵션, multi) — 19번 본질 (MAP 전용, modeRestrict 없음, prefix-comma postfix)
+  const mapLayoutList = state.mapLayout || [];
+  const mapLayoutResolved = mapLayoutList.map(s => MAP_LAYOUTS.find(x => x.en === s) || {en:s, kr:s});
+  const mapLayoutEn = mapLayoutResolved.length ? `, arranged in ${joinWithAnd(mapLayoutResolved.map(s => s.en))}` : '';
+  const mapLayoutKr = mapLayoutResolved.length ? `, ${mapLayoutResolved.map(s => s.kr).join('·')} 형태로 구성됨` : '';
+
+  // ═══ 네거티브 (모드별 강도 분기 — MAP 결: text/labels/UI 강력 차단) ═══
   let negEn, negKr;
   if(mode === 'A'){
-    // 모드 A — 강한 네거티브 (시길 톤 본질, CREATURE 결로)
+    // 모드 A — 시길 톤 (강한 네거티브, 실사·사람·현대 디자인 모두 차단)
     negEn = hasTransparent
-      ? 'no readable text, no letters, no readable runes, no human, no humanoid figure, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no shading, no gradient, no 3d, no realistic details, no photorealism, no white background, no watermark'
-      : 'no readable text, no letters, no readable runes, no human, no humanoid figure, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no shading, no gradient, no 3d, no realistic details, no photorealism, no watermark';
+      ? 'no text, no labels, no place names, no readable letters, no readable runes, no icons, no UI, no compass rose, no map legend, no border text, no characters, no creatures, no human figure, no modern map design, no satellite photo, no real-world map, no plastic finish, no shading, no gradient, no 3d, no realistic photo details, no photorealism, no white background, no watermark'
+      : 'no text, no labels, no place names, no readable letters, no readable runes, no icons, no UI, no compass rose, no map legend, no border text, no characters, no creatures, no human figure, no modern map design, no satellite photo, no real-world map, no plastic finish, no shading, no gradient, no 3d, no realistic photo details, no photorealism, no watermark';
     negKr = hasTransparent
-      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인간형 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 흰 배경 없음, 워터마크 없음'
-      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인간형 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 워터마크 없음';
+      ? '텍스트 없음, 라벨 없음, 장소명 없음, 읽을 수 있는 글자 없음, 읽을 수 있는 룬 없음, 아이콘 없음, UI 없음, 나침반 없음, 지도 범례 없음, 테두리 텍스트 없음, 캐릭터 없음, 생물 없음, 인간 형상 없음, 현대 지도 디자인 없음, 위성 사진 없음, 실세계 지도 없음, 플라스틱 마감 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 흰 배경 없음, 워터마크 없음'
+      : '텍스트 없음, 라벨 없음, 장소명 없음, 읽을 수 있는 글자 없음, 읽을 수 있는 룬 없음, 아이콘 없음, UI 없음, 나침반 없음, 지도 범례 없음, 테두리 텍스트 없음, 캐릭터 없음, 생물 없음, 인간 형상 없음, 현대 지도 디자인 없음, 위성 사진 없음, 실세계 지도 없음, 플라스틱 마감 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 워터마크 없음';
+  } else if(mode === 'D'){
+    // 모드 D — 탑다운 미니맵 (가장 강한 네거티브, 5호기 신규 ⭐ GPT 자료 §11 반영)
+    negEn = hasTransparent
+      ? 'no text, no labels, no place names, no readable letters, no decorative text, no icons, no UI, no compass rose, no map legend, no border text, no characters, no creatures, no human figure, no animals, no modern map design, no satellite photo, no real-world map, no urban photo, no street view, no white background, no watermark'
+      : 'no text, no labels, no place names, no readable letters, no decorative text, no icons, no UI, no compass rose, no map legend, no border text, no characters, no creatures, no human figure, no animals, no modern map design, no satellite photo, no real-world map, no urban photo, no street view, no watermark';
+    negKr = hasTransparent
+      ? '텍스트 없음, 라벨 없음, 장소명 없음, 읽을 수 있는 글자 없음, 장식 텍스트 없음, 아이콘 없음, UI 없음, 나침반 없음, 지도 범례 없음, 테두리 텍스트 없음, 캐릭터 없음, 생물 없음, 인간 형상 없음, 동물 없음, 현대 지도 디자인 없음, 위성 사진 없음, 실세계 지도 없음, 도시 사진 없음, 거리뷰 없음, 흰 배경 없음, 워터마크 없음'
+      : '텍스트 없음, 라벨 없음, 장소명 없음, 읽을 수 있는 글자 없음, 장식 텍스트 없음, 아이콘 없음, UI 없음, 나침반 없음, 지도 범례 없음, 테두리 텍스트 없음, 캐릭터 없음, 생물 없음, 인간 형상 없음, 동물 없음, 현대 지도 디자인 없음, 위성 사진 없음, 실세계 지도 없음, 도시 사진 없음, 거리뷰 없음, 워터마크 없음';
   } else {
-    // 모드 C — 약한 네거티브 (실사·사람 허용, CREATURE 결)
+    // 모드 C — 컨셉아트 (중강도 네거티브, 페인터리 일러스트 허용)
     negEn = hasTransparent
-      ? 'no readable text, no letters, no readable runes, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no white background, no watermark'
-      : 'no readable text, no letters, no readable runes, no modern animal photo, no taxidermy, no anatomical diagram, no zoo photo, no domestic pet portrait, no watermark';
+      ? 'no text, no labels, no place names, no readable letters, no icons, no UI, no compass rose, no map legend, no border text, no characters, no creatures, no modern map design, no satellite photo, no real-world map, no plastic finish, no white background, no watermark'
+      : 'no text, no labels, no place names, no readable letters, no icons, no UI, no compass rose, no map legend, no border text, no characters, no creatures, no modern map design, no satellite photo, no real-world map, no plastic finish, no watermark';
     negKr = hasTransparent
-      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 흰 배경 없음, 워터마크 없음'
-      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 동물 사진 없음, 박제 없음, 해부도 없음, 동물원 사진 없음, 가축 초상 없음, 워터마크 없음';
+      ? '텍스트 없음, 라벨 없음, 장소명 없음, 읽을 수 있는 글자 없음, 아이콘 없음, UI 없음, 나침반 없음, 지도 범례 없음, 테두리 텍스트 없음, 캐릭터 없음, 생물 없음, 현대 지도 디자인 없음, 위성 사진 없음, 실세계 지도 없음, 플라스틱 마감 없음, 흰 배경 없음, 워터마크 없음'
+      : '텍스트 없음, 라벨 없음, 장소명 없음, 읽을 수 있는 글자 없음, 아이콘 없음, UI 없음, 나침반 없음, 지도 범례 없음, 테두리 텍스트 없음, 캐릭터 없음, 생물 없음, 현대 지도 디자인 없음, 위성 사진 없음, 실세계 지도 없음, 플라스틱 마감 없음, 워터마크 없음';
   }
 
-  // ═══ 프롬프트 골격 (모드별 분기) ═══
+  // ═══ 프롬프트 골격 (모드별 분기 — 5호기 A/C/D ⭐⭐) ═══
   let promptEn, promptKr;
 
   if(mode === 'A'){
-    // 모드 A — 시길 톤 (가문 사역마 결)
+    // 모드 A — 시길 톤 (가문 엠블럼 지도 결)
     const bgPhraseEn = bgEn ? `${bgEn}` : '';
     const bgPhraseKr = bgKr ? `${bgKr}` : '';
-    promptEn = `a ${moodEn} fantasy noble house ${creatureTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, noble heraldic familiar, abstract design based on ${motifEn} motif${subEn}${bodyFormEn}${specialFeatureEn}${coatingEn}, etched with unreadable arcane markings${elementEn}${auraEn}${poseEn}, ${colorPhraseEn}, ${bgPhraseEn}${themeEn}, centered single creature, heraldic stance, clean high contrast fantasy design, strong negative space cutouts${extraEn}, ${negEn}`;
-    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${creatureTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 가문 사역마 (헤럴딕 패밀리어). ${motifKr}을(를) 모티프로 한 추상 가문 사역마${subKr}${bodyFormKr}${specialFeatureKr}${coatingKr}. 읽을 수 없는 비전 문양 새김${elementKr}${auraKr}${poseKr}. ${colorPhraseKr}. ${bgPhraseKr}${themeKr}. 중앙 단일 사역마 구도, 문장학적 정면 자세, 깔끔한 고대비 판타지 디자인, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
-  } else {
-    // 모드 C — 컨셉아트 (사역마 일러스트 결)
+    promptEn = `a ${moodEn} fantasy noble house heraldic map of ${mapTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, sigil-aligned heraldic map emblem, abstract heraldic cartography based on ${motifEn} motif${subEn}${terrainEn}${mainLandmarkEn}${livingElementsEn}, etched with unreadable arcane cartographic glyphs${elementEn}${auraEn}${viewpointEn}${mapLayoutEn}, ${colorPhraseEn}, ${bgPhraseEn}${themeEn}, centered heraldic map composition, balanced cartographic symmetry, clean high contrast map design, strong negative space cutouts${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${mapTypeKr} 문장학 지도${factionKr}${rankKr}${purposeKr}${styleKr}. 시길 톤 문장학 지도 엠블럼. ${motifKr}을(를) 모티프로 한 추상 문장학 카토그래피${subKr}${terrainKr}${mainLandmarkKr}${livingElementsKr}. 읽을 수 없는 비전 카토그래피 글리프 새김${elementKr}${auraKr}${viewpointKr}${mapLayoutKr}. ${colorPhraseKr}. ${bgPhraseKr}${themeKr}. 중앙 문장학 지도 구도, 균형 잡힌 카토그래피 대칭, 깔끔한 고대비 지도 디자인, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+  } else if(mode === 'D'){
+    // 모드 D — 탑다운 미니맵 (5호기 신규 ⭐⭐, 네 미니맵 결: painterly MMO mini-map)
     const bgPhraseEn = bgEn ? `, ${bgEn}` : '';
     const bgPhraseKr = bgKr ? `. ${bgKr}` : '';
-    promptEn = `a ${moodEn} fantasy noble house ${creatureTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, epic fantasy creature concept art, featuring ${motifEn} motif accents${subEn}${bodyFormEn}${specialFeatureEn}${coatingEn}, weathered with mystical bestial markings${elementEn}${auraEn}${poseEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, dramatic front view, cinematic composition, painterly rendering, atmospheric lighting, environmental storytelling${extraEn}, ${negEn}`;
-    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${creatureTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 서사적 판타지 사역마 컨셉아트. ${motifKr} 모티프 디테일${subKr}${bodyFormKr}${specialFeatureKr}${coatingKr}. 풍화된 신비로운 짐승 문양${elementKr}${auraKr}${poseKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. 드라마틱 정면 시점, 시네마틱 구도, 페인털리 렌더링, 분위기 있는 조명, 환경 스토리텔링${extraKr}. ${negKr}.`;
+    promptEn = `a ${moodEn} fantasy noble house ${mapTypeEn}${factionEn}${rankEn}${purposeEn}${styleEn}, top-down painterly MMO mini-map, bright fantasy RPG cartographic illustration based on ${motifEn} motif${subEn}${terrainEn}${mainLandmarkEn}${livingElementsEn}, readable game map layout with clean cartography${elementEn}${auraEn}${viewpointEn}${mapLayoutEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, top-down composition with traditional mini-map proportions, lived-in magical MMO world details, balanced map layout with clear landmarks${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${mapTypeKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 탑다운 페인터리 MMO 미니맵. ${motifKr} 모티프 기반의 밝은 판타지 RPG 카토그래피 일러스트${subKr}${terrainKr}${mainLandmarkKr}${livingElementsKr}. 깔끔한 카토그래피의 읽기 좋은 게임 맵 레이아웃${elementKr}${auraKr}${viewpointKr}${mapLayoutKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. 탑다운 구도와 전통 미니맵 비율, 생활감 있는 마법 MMO 세계 디테일, 명확한 랜드마크가 있는 균형 잡힌 맵 레이아웃${extraKr}. ${negKr}.`;
+  } else {
+    // 모드 C — 컨셉아트 (판타지 일러스트맵 결)
+    const bgPhraseEn = bgEn ? `, ${bgEn}` : '';
+    const bgPhraseKr = bgKr ? `. ${bgKr}` : '';
+    promptEn = `a ${moodEn} fantasy noble house ${mapTypeEn} cartographic illustration${factionEn}${rankEn}${purposeEn}${styleEn}, concept art fantasy cartography illustration, featuring ${motifEn} motif accents${subEn}${terrainEn}${mainLandmarkEn}${livingElementsEn}, weathered with mystical cartographic markings${elementEn}${auraEn}${viewpointEn}${mapLayoutEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, dramatic fantasy atlas composition, painterly cartographic rendering, atmospheric lighting, lived-in worldbuilding storytelling${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${mapTypeKr} 카토그래피 일러스트${factionKr}${rankKr}${purposeKr}${styleKr}. 컨셉아트 판타지 카토그래피 일러스트. ${motifKr} 모티프 디테일${subKr}${terrainKr}${mainLandmarkKr}${livingElementsKr}. 풍화된 신비로운 카토그래피 마킹${elementKr}${auraKr}${viewpointKr}${mapLayoutKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. 드라마틱 판타지 아틀라스 구도, 페인터리 카토그래피 렌더링, 분위기 있는 조명, 생활감 있는 월드빌딩 스토리텔링${extraKr}. ${negKr}.`;
   }
 
   return { en:promptEn, kr:promptKr };
@@ -1790,7 +1944,7 @@ function loadAll(){
   }catch(e){}
 }
 function resetAll(){
-  if(!confirm('사역마 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
+  if(!confirm('지도 설정을 모두 초기화할까? (커스텀 칩은 유지돼)')) return;
   state = {...DEFAULT_STATE};
   saveAll();
   renderSections();
