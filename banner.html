@@ -414,6 +414,44 @@
     .btn .btn-label{display:none;}
     .toast{bottom:16px;right:16px;left:16px;}
   }
+
+
+  /* 00번 모드 라디오 UI (BANNER 전용) */
+  .mode-radio-group{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;
+  }
+  .mode-radio{
+    flex:1;min-width:140px;
+    display:flex;align-items:center;gap:10px;
+    padding:12px 14px;
+    background:rgba(0,119,221,0.04);
+    border:1px solid var(--border);
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .mode-radio:hover{
+    background:rgba(0,119,221,0.10);
+    border-color:rgba(0,119,221,0.4);
+  }
+  .mode-radio.active{
+    background:rgba(0,119,221,0.18);
+    border-color:#0077DD;
+    box-shadow:0 0 0 1px rgba(0,119,221,0.4);
+  }
+  .mode-radio input[type="radio"]{
+    flex-shrink:0;width:16px;height:16px;
+    accent-color:#0077DD;cursor:pointer;
+  }
+  .mode-radio-content{flex:1;}
+  .mode-radio-title{
+    font-size:14px;font-weight:600;color:var(--text);
+    margin-bottom:2px;
+  }
+  .mode-radio-en{
+    font-size:11px;color:var(--muted);
+    font-family:'JetBrains Mono',monospace;
+  }
 </style>
 <script src="forge_tools.js"></script>
 </head>
@@ -848,7 +886,16 @@ const K = {
 // ═══════════════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  MODES (00번 신규) — 모드 분기 (5호기 패턴 / A·C 2분기)
+// ═══════════════════════════════════════════════════════════════════
+const MODES = [
+  {value:'A', en:'sigil-aligned banner emblem', kr:'시길 톤 (가문 의례 깃발)'},
+  {value:'C', en:'concept art banner illustration', kr:'컨셉아트 (휘날리는 전투 깃발)'},
+];
+
 const DEFAULT_STATE = {
+  mode: ['A'],  // 00번 신규 — 모드 라디오 (A: 시길 톤 / C: 컨셉아트)
   bannerShape: ['swallowtail banner'],
   customBannerShape: '',
   motifs: ['rose'],
@@ -875,7 +922,7 @@ const DEFAULT_STATE = {
 
 let state = {...DEFAULT_STATE};
 let customChips = {
-  bannerShape:[], motifs:[], subMotifs:[], style:[], fabric:[], edge:[],
+  mode:[], bannerShape:[], motifs:[], subMotifs:[], style:[], fabric:[], edge:[],
   gemstone:[], moods:[], background:[], extras:[], element:[], rank:[],
   purpose:[], aura:[], themes:[], faction:[], drape:[],
 };
@@ -887,6 +934,7 @@ const SUB_MOTIF_MAX = 4;
 //  섹션 정의
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
+  // 00 모드 선택 — 별도 그룹화 렌더링 (라디오 UI)
   // 01 깃발 형태 (베이스) — 별도 그룹화 렌더링
   // 02 가문 모티프 — 별도 그룹화 렌더링
   { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
@@ -896,8 +944,8 @@ const SECTIONS = [
   { num:'07', key:'gemstone', title:'보석 (브로치·핀)', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:GEMSTONES, mode:'multi', accent:'#DDAACC' },
   // 08 색상 별도
   { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
-  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
-  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정 · 모드 C는 미선택 가능', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
+  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8889CD' },
   { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
   { num:'13', key:'rank', title:'깃발 격 (Rank)', sub:'깃발의 등급에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
   { num:'14', key:'purpose', title:'깃발 유래·성격', sub:'깃발의 쓰임과 내력 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
@@ -963,6 +1011,13 @@ function renderSections(){
   const root = document.getElementById('sections-root');
   root.innerHTML = '';
 
+    // 00: 모드 선택 (라디오 UI, 신규)
+  const modeSec = document.createElement('section');
+  modeSec.className = 'section';
+  modeSec.id = 'sec-mode';
+  modeSec.innerHTML = renderModeHTML();
+  root.appendChild(modeSec);
+
   // 01: 깃발 형태 (그룹화)
   const bsSec = document.createElement('section');
   bsSec.className = 'section';
@@ -996,7 +1051,33 @@ function renderSections(){
   attachChipListeners();
   attachColorListeners();
   attachInputListeners();
+  attachModeListeners();
 }
+
+function renderModeHTML(){
+  return `
+    <div class="section-head">
+      <span class="section-num">/ 00</span>
+      <h2 class="section-title">모드 선택</h2>
+    </div>
+    <div class="section-sub">결과물의 결을 결정 · 라디오 (단일 선택 강제) · BANNER 전용</div>
+    <div class="mode-radio-group">
+      ${MODES.map(m => {
+        const active = (state.mode||[])[0] === m.value;
+        return `
+          <label class="mode-radio${active?' active':''}" data-mode-value="${m.value}">
+            <input type="radio" name="banner-mode" value="${m.value}" ${active?'checked':''}>
+            <div class="mode-radio-content">
+              <div class="mode-radio-title">${esc(m.kr)}</div>
+              <div class="mode-radio-en">${esc(m.en)}</div>
+            </div>
+          </label>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
 
 function renderBannerShapeHTML(){
   const customItems = (customChips.bannerShape || []).map(label => ({
@@ -1031,7 +1112,7 @@ function renderBannerShapeHTML(){
         <div class="chip chip-add" data-action="add-chip" data-section="bannerShape" style="--chip-accent:#0077DD">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-bannerShape" placeholder="직접 입력 (콤마로 여러 개, 예: oriflamme, 오리플람)" value="${esc(state.customBannerShape || '')}">
+    <input type="text" class="text-input" id="custom-bannerShape" placeholder="직접 입력 (콤마로 여러 개, 예: 오리플람/oriflamme)" value="${esc(state.customBannerShape || '')}">
     <div class="input-hint" id="custom-bannerShape-hint"></div>
   `;
 }
@@ -1069,7 +1150,7 @@ function renderMotifHTML(){
         <div class="chip chip-add" data-action="add-chip" data-section="motifs" style="--chip-accent:#BB6688">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-motifs" placeholder="직접 입력 (콤마로 여러 개, 예: phoenix, 봉황)" value="${esc(state.customMotif || '')}">
+    <input type="text" class="text-input" id="custom-motifs" placeholder="직접 입력 (콤마로 여러 개, 예: 왕관/crown, phoenix)" value="${esc(state.customMotif || '')}">
     <div class="input-hint" id="custom-motifs-hint"></div>
   `;
 }
@@ -1093,9 +1174,10 @@ function renderSectionHTML(sec){
 
 function renderChipsHTML(sec){
   const items = sec.items;
-  const customItems = (customChips[sec.key] || []).map(label => ({
-    en:label, kr:label, value:label, _custom:true,
-  }));
+  const customItems = (customChips[sec.key] || []).map(label => {
+    const t = parseCustomToken(label);
+    return {en:label, kr:t.kr, value:label, _custom:true};
+  });
   const all = [...items, ...customItems];
 
   let html = all.map(item => {
@@ -1414,14 +1496,34 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 // ═══════════════════════════════════════════════════════════════════
 //  프롬프트 생성 (기존 로직 보존)
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  커스텀 입력 슬래시 파서 (v11)
+//  - "왕관/crown" 또는 "crown/왕관" 패턴 자동 분리
+//  - 슬래시 없으면 기존 동작 유지 (en/kr 둘 다 입력값)
+// ═══════════════════════════════════════════════════════════════════
+function parseCustomToken(c){
+  const m = String(c).match(/^(.+?)\s*\/\s*(.+)$/);
+  if(m){
+    const a = m[1].trim();
+    const b = m[2].trim();
+    const aHasKr = /[가-힣]/.test(a);
+    const bHasKr = /[가-힣]/.test(b);
+    if(aHasKr && !bHasKr) return {kr:a, en:b};
+    if(!aHasKr && bHasKr) return {en:a, kr:b};
+  }
+  return {en:String(c), kr:String(c)};
+}
+
 function buildPrompts(){
+  const mode = (state.mode || ['A'])[0] || 'A';  // 00번 모드
+
   // 깃발 형태 (필수)
   const bsFromChips = (state.bannerShape||[]).map(en => {
     const found = ALL_BANNER_SHAPES.find(m => m.en === en);
-    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+    return found ? {en:found.en, kr:found.kr} : parseCustomToken(en);
   });
   const bsCustoms = (state.customBannerShape||'').split(',').map(s => s.trim()).filter(Boolean)
-    .map(c => ({en:c, kr:c}));
+    .map(parseCustomToken);
   const bsList = [...bsFromChips, ...bsCustoms];
   const bannerEn = bsList.length ? joinWithAnd(bsList.map(m => m.en)) : 'banner';
   const bannerKr = bsList.length ? bsList.map(m => m.kr).join(', ') : '깃발';
@@ -1429,21 +1531,24 @@ function buildPrompts(){
   // 가문 모티프 (필수)
   const motifFromChips = (state.motifs||[]).map(en => {
     const found = ALL_MOTIFS.find(m => m.en === en);
-    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+    return found ? {en:found.en, kr:found.kr} : parseCustomToken(en);
   });
   const motifCustoms = (state.customMotif||'').split(',').map(s => s.trim()).filter(Boolean)
-    .map(c => ({en:c, kr:c}));
+    .map(parseCustomToken);
   const motifList = [...motifFromChips, ...motifCustoms];
   const motifEn = motifList.length ? joinWithAnd(motifList.map(m => m.en)) : 'rose';
   const motifKr = motifList.length ? motifList.map(m => m.kr).join(', ') : '장미';
 
   // 보조 디테일 (옵션)
   const subFromChips = state.subMotifs || [];
-  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean);
-  const subListEn = [...subFromChips, ...subCustoms];
+  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean).map(parseCustomToken);
+  const subListEn = [
+    ...subFromChips.map(s => { const f = SUB_MOTIFS.find(x => x.en === s); return f ? s : parseCustomToken(s).en; }),
+    ...subCustoms.map(t => t.en),
+  ];
   const subListKr = [
-    ...subFromChips.map(s => (SUB_MOTIFS.find(x => x.en === s) || {kr:s}).kr),
-    ...subCustoms,
+    ...subFromChips.map(s => { const f = SUB_MOTIFS.find(x => x.en === s); return f ? f.kr : parseCustomToken(s).kr; }),
+    ...subCustoms.map(t => t.kr),
   ];
   const subEn = subListEn.length ? `, integrated with ${joinWithAnd(subListEn)}` : '';
   const subKr = subListKr.length ? `, ${subListKr.join(', ')} 디테일이 결합됨` : '';
@@ -1451,37 +1556,41 @@ function buildPrompts(){
   // 분위기 (필수)
   const moodList = state.moods || [];
   const moodEn = moodList.length ? moodList.join(', ') : 'atmospheric';
-  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || {kr:m}).kr).join(', ') : '분위기 있는';
+  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || parseCustomToken(m)).kr).join(', ') : '분위기 있는';
 
   // 양식 (옵션, multi)
   const styleList = state.style || [];
-  const styleResolved = styleList.map(s => STYLES.find(x => x.en === s) || {en:s, kr:s});
+  const styleResolved = styleList.map(s => STYLES.find(x => x.en === s) || parseCustomToken(s));
   const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
   const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
 
   // 천 재질 (옵션, multi) — weapon의 HANDLES 자리
   const fabricList = state.fabric || [];
-  const fabricResolved = fabricList.map(s => FABRICS.find(x => x.en === s) || {en:s, kr:s});
+  const fabricResolved = fabricList.map(s => FABRICS.find(x => x.en === s) || parseCustomToken(s));
   const fabricEn = fabricResolved.length ? `, in ${joinWithAnd(fabricResolved.map(f => f.en))} main fabric` : '';
   const fabricKr = fabricResolved.length ? `, ${fabricResolved.map(f => f.kr).join('·')} 메인 천` : '';
 
   // 가장자리 장식 (옵션, multi) — weapon의 BLADES 자리
   const edgeList = state.edge || [];
-  const edgeResolved = edgeList.map(s => EDGE_DECORATIONS.find(x => x.en === s) || {en:s, kr:s});
+  const edgeResolved = edgeList.map(s => EDGE_DECORATIONS.find(x => x.en === s) || parseCustomToken(s));
   const edgeEn = edgeResolved.length ? `, with ${joinWithAnd(edgeResolved.map(e => e.en))} edge` : '';
   const edgeKr = edgeResolved.length ? `, ${edgeResolved.map(e => e.kr).join('·')} 가장자리` : '';
 
   // 보석 (옵션, multi) — 깃발은 브로치/핀 컨셉
   const gemList = state.gemstone || [];
-  const gemResolved = gemList.map(s => GEMSTONES.find(x => x.en === s) || {en:s, kr:s});
+  const gemResolved = gemList.map(s => GEMSTONES.find(x => x.en === s) || parseCustomToken(s));
   const gemEn = gemResolved.length ? `, accented with ${joinWithAnd(gemResolved.map(g => g.en))} gemstone brooch` : '';
   const gemKr = gemResolved.length ? `, ${gemResolved.map(g => g.kr).join('·')} 보석 브로치 강조` : '';
 
   // 배경 (필수, multi)
   const bgList = state.background || [];
-  const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || {en:v, kr:v});
-  const bgEn = bgResolved.length ? bgResolved.map(b => b.en).join(', ') : 'pure white background';
-  const bgKr = bgResolved.length ? bgResolved.map(b => b.kr).join(', ') : '순백 배경';
+  const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || parseCustomToken(v));
+  const bgEn = bgResolved.length
+    ? bgResolved.map(b => b.en).join(', ')
+    : (mode === 'A' ? 'pure white background' : '');
+  const bgKr = bgResolved.length
+    ? bgResolved.map(b => b.kr).join(', ')
+    : (mode === 'A' ? '순백 배경' : '');
   const hasTransparent = bgList.includes('transparent');
 
   // 색상
@@ -1489,72 +1598,106 @@ function buildPrompts(){
   const secondaryInfos = (state.secondaryColors||[]).map(hex => ({hex, ...findClosestColorName(hex)}));
   const colorPhraseEn = (() => {
     const main = `${primaryInfo.en} (${state.primaryColor})`;
-    if(!secondaryInfos.length) return `single-color flat silhouette in ${main}`;
-    return `flat color design featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    if(mode === 'A'){
+      if(!secondaryInfos.length) return `single-color flat silhouette in ${main}`;
+      return `flat color design featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    } else {
+      if(!secondaryInfos.length) return `rich painterly fabric tone emphasizing ${main}`;
+      return `cinematic color tones featuring ${main} accented with ${joinWithAnd(secondaryInfos.map(c => `${c.en} (${c.hex})`))}`;
+    }
   })();
   const colorPhraseKr = (() => {
     const main = `${primaryInfo.kr} (${state.primaryColor})`;
-    if(!secondaryInfos.length) return `${main} 단색 평면 실루엣`;
-    return `${main} 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+    if(mode === 'A'){
+      if(!secondaryInfos.length) return `${main} 단색 평면 실루엣`;
+      return `${main} 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 플랫 컬러 디자인`;
+    } else {
+      if(!secondaryInfos.length) return `${main}을(를) 강조한 풍부한 페인털리 천 색채`;
+      return `${main} 주조에 ${secondaryInfos.map(c => `${c.kr} (${c.hex})`).join(', ')} 강조색이 들어간 시네마틱 색조`;
+    }
   })();
 
-  // extras (옵션)
-  const extraList = state.extras || [];
+  // extras (옵션) — 모드 A 외에서는 'flat silhouette icon' 칩 자동 제외 (5호기 일반화)
+  let extraList = state.extras || [];
+  if(mode !== 'A'){
+    extraList = extraList.filter(e => e !== 'flat silhouette icon');
+  }
   const extraEn = extraList.length ? `, ${extraList.join(', ')}` : '';
-  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || {kr:e}).kr).join(', ')}` : '';
+  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || parseCustomToken(e)).kr).join(', ')}` : '';
 
   // 원소 (옵션, multi)
   const elementList = state.element || [];
-  const elementResolved = elementList.map(s => ELEMENTS.find(x => x.en === s) || {en:s, kr:s});
+  const elementResolved = elementList.map(s => ELEMENTS.find(x => x.en === s) || parseCustomToken(s));
   const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
   const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
 
   // 깃발 격 (옵션, multi)
   const rankList = state.rank || [];
-  const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
+  const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || parseCustomToken(s));
   const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
   const rankKr = rankResolved.length ? `, ${rankResolved.map(r => r.kr).join('·')}` : '';
 
   // 유래 (옵션, multi)
   const purposeList = state.purpose || [];
-  const purposeResolved = purposeList.map(s => PURPOSES.find(x => x.en === s) || {en:s, kr:s});
+  const purposeResolved = purposeList.map(s => PURPOSES.find(x => x.en === s) || parseCustomToken(s));
   const purposeEn = purposeResolved.length ? `, ${joinWithAnd(purposeResolved.map(p => p.en))}` : '';
   const purposeKr = purposeResolved.length ? `, ${purposeResolved.map(p => p.kr).join('·')}` : '';
 
   // 오라 (옵션, multi)
   const auraList = state.aura || [];
-  const auraResolved = auraList.map(s => AURAS.find(x => x.en === s) || {en:s, kr:s});
+  const auraResolved = auraList.map(s => AURAS.find(x => x.en === s) || parseCustomToken(s));
   const auraEn = auraResolved.length ? `, ${joinWithAnd(auraResolved.map(a => a.en))}` : '';
   const auraKr = auraResolved.length ? `, ${auraResolved.map(a => a.kr).join('·')}` : '';
 
   // 테마 (옵션)
   const themeList = state.themes || [];
   const themeEn = themeList.length ? `, evoking themes of ${joinWithAnd(themeList)}` : '';
-  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || {kr:t}).kr).join('·')}의 테마를 환기시킴` : '';
+  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || parseCustomToken(t)).kr).join('·')}의 테마를 환기시킴` : '';
 
   // 종족 (옵션, multi)
   const factionList = state.faction || [];
-  const factionResolved = factionList.map(s => FACTIONS.find(x => x.en === s) || {en:s, kr:s});
+  const factionResolved = factionList.map(s => FACTIONS.find(x => x.en === s) || parseCustomToken(s));
   const factionEn = factionResolved.length ? `, ${joinWithAnd(factionResolved.map(f => f.en))} house` : '';
   const factionKr = factionResolved.length ? `, ${factionResolved.map(f => f.kr).join('·')} 가문` : '';
 
   // 천 모션·드레이프 (옵션, multi) — BANNER 전용 18번
   // 선택 시 공예 표현 자리(flowing cloth folds)를 해당 표현으로 교체
   const drapeList = state.drape || [];
-  const drapeResolved = drapeList.map(s => BANNER_DRAPE.find(x => x.en === s) || {en:s, kr:s});
+  const drapeResolved = drapeList.map(s => BANNER_DRAPE.find(x => x.en === s) || parseCustomToken(s));
   const drapePhraseEn = drapeResolved.length ? joinWithAnd(drapeResolved.map(d => d.en)) : 'flowing cloth folds';
   const drapePhraseKr = drapeResolved.length ? drapeResolved.map(d => d.kr).join('·') : '휘날리는 천 주름';
+  // ═══ 네거티브 (모드별 강도 분기) ═══
+  let negEn, negKr;
+  if(mode === 'A'){
+    negEn = hasTransparent
+      ? 'no readable text, no letters, no readable runes, no people, no characters, no human, no hand, no shield, no modern flag photo, no shading, no gradient, no 3d, no realistic details, no photorealism, no white background, no watermark'
+      : 'no readable text, no letters, no readable runes, no people, no characters, no human, no hand, no shield, no modern flag photo, no shading, no gradient, no 3d, no realistic details, no photorealism, no watermark';
+    negKr = hasTransparent
+      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인물 없음, 손 없음, 방패 없음, 현대 깃발 사진 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 흰 배경 없음, 워터마크 없음'
+      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 사람 없음, 인물 없음, 손 없음, 방패 없음, 현대 깃발 사진 없음, 음영 없음, 그라데이션 없음, 3D 없음, 사실적 디테일 없음, 포토리얼리즘 없음, 워터마크 없음';
+  } else {
+    negEn = hasTransparent
+      ? 'no readable text, no letters, no readable runes, no modern national flag, no photographic fabric catalog, no white background, no watermark'
+      : 'no readable text, no letters, no readable runes, no modern national flag, no photographic fabric catalog, no watermark';
+    negKr = hasTransparent
+      ? '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 국기 없음, 사진 천 카탈로그 없음, 흰 배경 없음, 워터마크 없음'
+      : '읽을 수 있는 글자 없음, 알파벳 없음, 읽을 수 있는 룬 없음, 현대 국기 없음, 사진 천 카탈로그 없음, 워터마크 없음';
+  }
 
-  // 네거티브 — 깃발 전용 (no shield, no character, no people 추가)
-  const negEn = hasTransparent
-    ? 'no text, no letters, no readable runes, no shield, no character, no people, no shading, no gradient, no 3d, no realistic details, no white background, no human, no hand, no border, no watermark, no photorealism'
-    : 'no text, no letters, no readable runes, no shield, no character, no people, no shading, no gradient, no 3d, no realistic details, no human, no hand, no border, no watermark, no photorealism';
-  const negKr = hasTransparent
-    ? '글자 없음, 읽을 수 있는 룬 없음, 방패 없음, 캐릭터 없음, 사람 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 흰 배경 없음, 손 없음, 테두리 없음, 워터마크 없음, 사진 사실주의 없음'
-    : '글자 없음, 읽을 수 있는 룬 없음, 방패 없음, 캐릭터 없음, 사람 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 손 없음, 테두리 없음, 워터마크 없음, 사진 사실주의 없음';
+  // ═══ 프롬프트 골격 (모드별 분기) ═══
+  let promptEn, promptKr;
 
-  const promptEn = `a ${moodEn} fantasy noble house ${bannerEn}${factionEn}${rankEn}${purposeEn}${styleEn}, ceremonial heraldic cloth, abstract design based on ${motifEn} motif${subEn}${fabricEn}${edgeEn}${gemEn}, embroidered with unreadable arcane runes${elementEn}${auraEn}, ${colorPhraseEn}, ${bgEn}${themeEn}, single object centered, clean flat silhouette, high contrast, ${drapePhraseEn}, strong negative space cutouts${extraEn}, ${negEn}`;
-  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${bannerKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 의례용 문장 천. ${motifKr}을(를) 모티프로 한 추상 가문 깃발${subKr}${fabricKr}${edgeKr}${gemKr}. 읽을 수 없는 룬 자수${elementKr}${auraKr}. ${colorPhraseKr}. ${bgKr}${themeKr}. 단일 오브젝트 중심 구도, 깔끔한 평면 실루엣, 강한 명도 대비, ${drapePhraseKr}, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+  if(mode === 'A'){
+    const bgPhraseEn = bgEn ? `${bgEn}` : '';
+    const bgPhraseKr = bgKr ? `${bgKr}` : '';
+    promptEn = `a ${moodEn} fantasy noble house ${bannerEn}${factionEn}${rankEn}${purposeEn}${styleEn}, ceremonial heraldic cloth, abstract design based on ${motifEn} motif${subEn}${fabricEn}${edgeEn}${gemEn}, embroidered with unreadable arcane runes${elementEn}${auraEn}, ${colorPhraseEn}, ${bgPhraseEn}${themeEn}, single object centered, ${drapePhraseEn}, symmetrical front view, clean flat silhouette, high contrast, strong negative space cutouts${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${bannerKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 의례용 헤럴딕 천. ${motifKr}을(를) 모티프로 한 추상 디자인${subKr}${fabricKr}${edgeKr}${gemKr}. 읽을 수 없는 룬 자수${elementKr}${auraKr}. ${colorPhraseKr}. ${bgPhraseKr}${themeKr}. 단일 오브젝트 중심 구도, ${drapePhraseKr}, 좌우대칭 정면 시점, 깔끔한 평면 실루엣, 강한 명도 대비, 강한 여백 컷아웃${extraKr}. ${negKr}.`;
+  } else {
+    const bgPhraseEn = bgEn ? `, ${bgEn}` : '';
+    const bgPhraseKr = bgKr ? `. ${bgKr}` : '';
+    promptEn = `a ${moodEn} fantasy noble house ${bannerEn}${factionEn}${rankEn}${purposeEn}${styleEn}, epic fantasy banner concept art, featuring ${motifEn} motif accents${subEn}${fabricEn}${edgeEn}${gemEn}, weathered with mystical rune embroidery${elementEn}${auraEn}, ${colorPhraseEn}${bgPhraseEn}${themeEn}, ${drapePhraseEn}, wind-swept battlefield display, cinematic composition, painterly rendering, atmospheric lighting, intricate fabric weave details${extraEn}, ${negEn}`;
+    promptKr = `${moodKr} 분위기의 판타지 영주 가문 ${bannerKr}${factionKr}${rankKr}${purposeKr}${styleKr}. 서사적 판타지 깃발 컨셉아트. ${motifKr} 모티프 디테일${subKr}${fabricKr}${edgeKr}${gemKr}. 풍화된 신비로운 룬 자수${elementKr}${auraKr}. ${colorPhraseKr}${bgPhraseKr}${themeKr}. ${drapePhraseKr}, 휘날리는 전장 깃발 구도, 시네마틱 구도, 페인털리 렌더링, 분위기 있는 조명, 정교한 천 짜임 디테일${extraKr}. ${negKr}.`;
+  }
 
   return { en:promptEn, kr:promptKr };
 }
@@ -1896,6 +2039,22 @@ function showSlotPicker(slots){
   overlay.onclick = (e) => {if(e.target === overlay) overlay.remove();};
   overlay.appendChild(box);
   document.body.appendChild(overlay);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  모드 라디오 리스너 (00번 신규)
+// ═══════════════════════════════════════════════════════════════════
+function attachModeListeners(){
+  document.querySelectorAll('.mode-radio').forEach(label => {
+    label.addEventListener('click', (e) => {
+      const value = label.dataset.modeValue;
+      if(!value) return;
+      state.mode = [value];
+      saveAll();
+      renderSections();
+      updatePreview();
+    });
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════

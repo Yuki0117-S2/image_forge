@@ -1168,7 +1168,7 @@ function renderMotifHTML(){
         <div class="chip chip-add" data-action="add-chip" data-section="motifs" style="--chip-accent:#BB6688">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-motifs" placeholder="직접 입력 (콤마로 여러 개, 예: phoenix, 봉황)" value="${esc(state.customMotif || '')}">
+    <input type="text" class="text-input" id="custom-motifs" placeholder="직접 입력 (콤마로 여러 개, 예: 왕관/crown, phoenix)" value="${esc(state.customMotif || '')}">
     <div class="input-hint" id="custom-motifs-hint"></div>
   `;
 }
@@ -1192,9 +1192,10 @@ function renderSectionHTML(sec){
 
 function renderChipsHTML(sec){
   const items = sec.items;
-  const customItems = (customChips[sec.key] || []).map(label => ({
-    en:label, kr:label, value:label, _custom:true,
-  }));
+  const customItems = (customChips[sec.key] || []).map(label => {
+    const t = parseCustomToken(label);
+    return {en:label, kr:t.kr, value:label, _custom:true};
+  });
   const all = [...items, ...customItems];
 
   let html = all.map(item => {
@@ -1513,16 +1514,34 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 // ═══════════════════════════════════════════════════════════════════
 //  프롬프트 생성 (POTION — ARCHITECTURE 모드 분기 패턴 재사용)
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  커스텀 입력 슬래시 파서 (v11)
+//  - "왕관/crown" 또는 "crown/왕관" 패턴 자동 분리
+//  - 슬래시 없으면 기존 동작 유지 (en/kr 둘 다 입력값)
+// ═══════════════════════════════════════════════════════════════════
+function parseCustomToken(c){
+  const m = String(c).match(/^(.+?)\s*\/\s*(.+)$/);
+  if(m){
+    const a = m[1].trim();
+    const b = m[2].trim();
+    const aHasKr = /[가-힣]/.test(a);
+    const bHasKr = /[가-힣]/.test(b);
+    if(aHasKr && !bHasKr) return {kr:a, en:b};
+    if(!aHasKr && bHasKr) return {en:a, kr:b};
+  }
+  return {en:String(c), kr:String(c)};
+}
+
 function buildPrompts(){
   const mode = (state.mode || ['A'])[0] || 'A';  // 00번 모드
 
   // 물약 종류 (필수)
   const ptFromChips = (state.potionType||[]).map(en => {
     const found = ALL_POTION_TYPES.find(m => m.en === en);
-    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+    return found ? {en:found.en, kr:found.kr} : parseCustomToken(en);
   });
   const ptCustoms = (state.customPotionType||'').split(',').map(s => s.trim()).filter(Boolean)
-    .map(c => ({en:c, kr:c}));
+    .map(parseCustomToken);
   const ptList = [...ptFromChips, ...ptCustoms];
   const potionTypeEn = ptList.length ? joinWithAnd(ptList.map(m => m.en)) : 'healing potion';
   const potionTypeKr = ptList.length ? ptList.map(m => m.kr).join(', ') : '회복 물약';
@@ -1530,21 +1549,24 @@ function buildPrompts(){
   // 가문 모티프 (필수)
   const motifFromChips = (state.motifs||[]).map(en => {
     const found = ALL_MOTIFS.find(m => m.en === en);
-    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+    return found ? {en:found.en, kr:found.kr} : parseCustomToken(en);
   });
   const motifCustoms = (state.customMotif||'').split(',').map(s => s.trim()).filter(Boolean)
-    .map(c => ({en:c, kr:c}));
+    .map(parseCustomToken);
   const motifList = [...motifFromChips, ...motifCustoms];
   const motifEn = motifList.length ? joinWithAnd(motifList.map(m => m.en)) : 'rose';
   const motifKr = motifList.length ? motifList.map(m => m.kr).join(', ') : '장미';
 
   // 보조 디테일 (옵션)
   const subFromChips = state.subMotifs || [];
-  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean);
-  const subListEn = [...subFromChips, ...subCustoms];
+  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean).map(parseCustomToken);
+  const subListEn = [
+    ...subFromChips.map(s => { const f = SUB_MOTIFS.find(x => x.en === s); return f ? s : parseCustomToken(s).en; }),
+    ...subCustoms.map(t => t.en),
+  ];
   const subListKr = [
-    ...subFromChips.map(s => (SUB_MOTIFS.find(x => x.en === s) || {kr:s}).kr),
-    ...subCustoms,
+    ...subFromChips.map(s => { const f = SUB_MOTIFS.find(x => x.en === s); return f ? f.kr : parseCustomToken(s).kr; }),
+    ...subCustoms.map(t => t.kr),
   ];
   const subEn = subListEn.length ? `, integrated with ${joinWithAnd(subListEn)}` : '';
   const subKr = subListKr.length ? `, ${subListKr.join(', ')} 디테일이 결합됨` : '';
@@ -1552,29 +1574,29 @@ function buildPrompts(){
   // 분위기 (필수)
   const moodList = state.moods || [];
   const moodEn = moodList.length ? moodList.join(', ') : 'atmospheric';
-  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || {kr:m}).kr).join(', ') : '분위기 있는';
+  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || parseCustomToken(m)).kr).join(', ') : '분위기 있는';
 
   // 양식 (옵션, multi)
   const styleList = state.style || [];
-  const styleResolved = styleList.map(s => POTION_STYLES.find(x => x.en === s) || {en:s, kr:s});
+  const styleResolved = styleList.map(s => POTION_STYLES.find(x => x.en === s) || parseCustomToken(s));
   const styleEn = styleResolved.length ? `, ${joinWithAnd(styleResolved.map(s => s.en))} style` : '';
   const styleKr = styleResolved.length ? `, ${styleResolved.map(s => s.kr).join(', ')} 양식` : '';
 
   // 병 형태 (옵션, multi) — POTION 본질
   const vesselList = state.vesselShape || [];
-  const vesselResolved = vesselList.map(s => VESSEL_SHAPES.find(x => x.en === s) || {en:s, kr:s});
+  const vesselResolved = vesselList.map(s => VESSEL_SHAPES.find(x => x.en === s) || parseCustomToken(s));
   const vesselEn = vesselResolved.length ? `, shaped as ${joinWithAnd(vesselResolved.map(v => v.en))}` : '';
   const vesselKr = vesselResolved.length ? `, ${vesselResolved.map(v => v.kr).join('·')} 형태` : '';
 
   // 액체 상태 (옵션, multi) — POTION 본질
   const liquidList = state.liquidState || [];
-  const liquidResolved = liquidList.map(s => LIQUID_STATES.find(x => x.en === s) || {en:s, kr:s});
+  const liquidResolved = liquidList.map(s => LIQUID_STATES.find(x => x.en === s) || parseCustomToken(s));
   const liquidEn = liquidResolved.length ? `, containing ${joinWithAnd(liquidResolved.map(l => l.en))}` : '';
   const liquidKr = liquidResolved.length ? `, 내부에 ${liquidResolved.map(l => l.kr).join('·')}` : '';
 
   // 마개 (옵션, multi) — POTION 본질
   const stopperList = state.stopper || [];
-  const stopperResolved = stopperList.map(s => STOPPERS.find(x => x.en === s) || {en:s, kr:s});
+  const stopperResolved = stopperList.map(s => STOPPERS.find(x => x.en === s) || parseCustomToken(s));
   const stopperEn = stopperResolved.length ? `, sealed with ${joinWithAnd(stopperResolved.map(s => s.en))}` : '';
   const stopperKr = stopperResolved.length ? `, ${stopperResolved.map(s => s.kr).join('·')}로 봉인됨` : '';
 
@@ -1582,7 +1604,7 @@ function buildPrompts(){
   // 모드 A 미선택 시: 'pure white background' 폴백 (시길 톤 본질)
   // 모드 C 미선택 시: 빈 채로 (자율)
   const bgList = state.background || [];
-  const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || {en:v, kr:v});
+  const bgResolved = bgList.map(v => BACKGROUNDS.find(b => b.value === v) || parseCustomToken(v));
   const bgEn = bgResolved.length
     ? bgResolved.map(b => b.en).join(', ')
     : (mode === 'A' ? 'pure white background' : '');
@@ -1617,50 +1639,50 @@ function buildPrompts(){
 
   // extras (옵션) — 모드 C 선택 시 'flat silhouette icon' 칩 자동 제외
   let extraList = state.extras || [];
-  if(mode === 'C'){
+  if(mode !== 'A'){
     extraList = extraList.filter(e => e !== 'flat silhouette icon');
   }
   const extraEn = extraList.length ? `, ${extraList.join(', ')}` : '';
-  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || {kr:e}).kr).join(', ')}` : '';
+  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || parseCustomToken(e)).kr).join(', ')}` : '';
 
   // 원소 (옵션, multi)
   const elementList = state.element || [];
-  const elementResolved = elementList.map(s => ELEMENTS.find(x => x.en === s) || {en:s, kr:s});
+  const elementResolved = elementList.map(s => ELEMENTS.find(x => x.en === s) || parseCustomToken(s));
   const elementEn = elementResolved.length ? `, ${joinWithAnd(elementResolved.map(e => e.en))}` : '';
   const elementKr = elementResolved.length ? `, ${elementResolved.map(e => e.kr).join('·')} 속성` : '';
 
   // 물약 격 (옵션, multi)
   const rankList = state.rank || [];
-  const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || {en:s, kr:s});
+  const rankResolved = rankList.map(s => RANKS.find(x => x.en === s) || parseCustomToken(s));
   const rankEn = rankResolved.length ? `, ${joinWithAnd(rankResolved.map(r => r.en))}` : '';
   const rankKr = rankResolved.length ? `, ${rankResolved.map(r => r.kr).join('·')}` : '';
 
   // 유래 (옵션, multi)
   const purposeList = state.purpose || [];
-  const purposeResolved = purposeList.map(s => PURPOSES.find(x => x.en === s) || {en:s, kr:s});
+  const purposeResolved = purposeList.map(s => PURPOSES.find(x => x.en === s) || parseCustomToken(s));
   const purposeEn = purposeResolved.length ? `, ${joinWithAnd(purposeResolved.map(p => p.en))}` : '';
   const purposeKr = purposeResolved.length ? `, ${purposeResolved.map(p => p.kr).join('·')}` : '';
 
   // 오라 (옵션, multi)
   const auraList = state.aura || [];
-  const auraResolved = auraList.map(s => AURAS.find(x => x.en === s) || {en:s, kr:s});
+  const auraResolved = auraList.map(s => AURAS.find(x => x.en === s) || parseCustomToken(s));
   const auraEn = auraResolved.length ? `, ${joinWithAnd(auraResolved.map(a => a.en))}` : '';
   const auraKr = auraResolved.length ? `, ${auraResolved.map(a => a.kr).join('·')}` : '';
 
   // 테마 (옵션)
   const themeList = state.themes || [];
   const themeEn = themeList.length ? `, evoking themes of ${joinWithAnd(themeList)}` : '';
-  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || {kr:t}).kr).join('·')}의 테마를 환기시킴` : '';
+  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || parseCustomToken(t)).kr).join('·')}의 테마를 환기시킴` : '';
 
   // 종족 (옵션, multi)
   const factionList = state.faction || [];
-  const factionResolved = factionList.map(s => FACTIONS.find(x => x.en === s) || {en:s, kr:s});
+  const factionResolved = factionList.map(s => FACTIONS.find(x => x.en === s) || parseCustomToken(s));
   const factionEn = factionResolved.length ? `, ${joinWithAnd(factionResolved.map(f => f.en))} house` : '';
   const factionKr = factionResolved.length ? `, ${factionResolved.map(f => f.kr).join('·')} 가문` : '';
 
   // 효과·연출 (옵션, multi) — POTION 전용 18번 (병 주위 효과, prefix-comma 패턴)
   const bubbleList = state.bubbleEffect || [];
-  const bubbleResolved = bubbleList.map(s => BUBBLE_EFFECTS.find(x => x.en === s) || {en:s, kr:s});
+  const bubbleResolved = bubbleList.map(s => BUBBLE_EFFECTS.find(x => x.en === s) || parseCustomToken(s));
   const bubbleEn = bubbleResolved.length ? `, surrounded by ${joinWithAnd(bubbleResolved.map(b => b.en))}` : '';
   const bubbleKr = bubbleResolved.length ? `, ${bubbleResolved.map(b => b.kr).join('·')} 효과로 둘러싸임` : '';
 

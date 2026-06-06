@@ -750,16 +750,16 @@ const DEFAULT_STATE = {
   customMotif: '',
   subMotifs: [],
   customSubMotif: '',
-  style: 'tribal tattoo-like',
+  style: ['tribal tattoo-like'],
   moods: ['ominous'],
   primaryColor: '#BB6688',
   secondaryColors: [],
-  background: 'white',
+  background: ['white'],
   extras: ['perfectly symmetrical composition'],
-  element: null,
-  rank: null,
+  element: [],
+  rank: [],
   themes: [],
-  faction: null,
+  faction: [],
 };
 
 let state = {...DEFAULT_STATE};
@@ -778,15 +778,15 @@ const SUB_MOTIF_MAX = 4;
 const SECTIONS = [
   // 01은 별도 (그룹화된 베이스 모티프)
   { num:'02', key:'subMotifs', title:'보조 모티프', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 (무제한)`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
-  { num:'03', key:'style', title:'스타일', sub:'문양의 조형 언어 (단일)', items:STYLES, mode:'single', accent:'#DDAACC' },
+  { num:'03', key:'style', title:'스타일', sub:'문양의 조형 언어 · 단일 권장 · 복수 선택 가능', items:STYLES, mode:'multi', accent:'#DDAACC' },
   // 04 색상 별도
   { num:'05', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
-  { num:'06', key:'background', title:'배경', sub:'투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'single', accent:'#DDAACC', valueKey:'value' },
+  { num:'06', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
   { num:'07', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8889CD' },
-  { num:'08', key:'element', title:'원소·속성', sub:'선택 사항 · 단일 (해제 가능)', items:ELEMENTS, mode:'single', optional:true, accent:'#BB6688' },
-  { num:'09', key:'rank', title:'격 (Rank)', sub:'가문의 격에 따라 디테일 양 조절 · 선택 사항 (해제 가능)', items:RANKS, mode:'single', optional:true, accent:'#CCAA88' },
+  { num:'08', key:'element', title:'원소·속성', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:ELEMENTS, mode:'multi', optional:true, accent:'#BB6688' },
+  { num:'09', key:'rank', title:'격 (Rank)', sub:'가문의 격에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항 (해제 가능)', items:RANKS, mode:'multi', optional:true, accent:'#CCAA88' },
   { num:'10', key:'themes', title:'테마 키워드', sub:'가문의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
-  { num:'11', key:'faction', title:'종족·진영', sub:'선택 사항 · 단일 (해제 가능)', items:FACTIONS, mode:'single', optional:true, accent:'#DDAACC' },
+  { num:'11', key:'faction', title:'종족·진영', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:FACTIONS, mode:'multi', optional:true, accent:'#DDAACC' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -907,7 +907,7 @@ function renderBaseMotifHTML(){
         <div class="chip chip-add" data-action="add-chip" data-section="baseMotifs" style="--chip-accent:#BB6688">＋</div>
       </div>
     </div>
-    <input type="text" class="text-input" id="custom-baseMotifs" placeholder="직접 입력 (콤마로 여러 개, 예: phoenix, 봉황)" value="${esc(state.customMotif || '')}">
+    <input type="text" class="text-input" id="custom-baseMotifs" placeholder="직접 입력 (콤마로 여러 개, 예: 왕관/crown, phoenix)" value="${esc(state.customMotif || '')}">
     <div class="input-hint" id="custom-baseMotifs-hint"></div>
   `;
 }
@@ -931,9 +931,10 @@ function renderSectionHTML(sec){
 
 function renderChipsHTML(sec){
   const items = sec.items;
-  const customItems = (customChips[sec.key] || []).map(label => ({
-    en:label, kr:label, value:label, _custom:true,
-  }));
+  const customItems = (customChips[sec.key] || []).map(label => {
+    const t = parseCustomToken(label);
+    return {en:label, kr:t.kr, value:label, _custom:true};
+  });
   const all = [...items, ...customItems];
 
   let html = all.map(item => {
@@ -1230,35 +1231,66 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 // ═══════════════════════════════════════════════════════════════════
 //  프롬프트 생성 (기존 로직 보존)
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  커스텀 입력 슬래시 파서 (v11)
+//  - "왕관/crown" 또는 "crown/왕관" 패턴 자동 분리
+//  - 슬래시 없으면 기존 동작 유지 (en/kr 둘 다 입력값)
+// ═══════════════════════════════════════════════════════════════════
+function parseCustomToken(c){
+  const m = String(c).match(/^(.+?)\s*\/\s*(.+)$/);
+  if(m){
+    const a = m[1].trim();
+    const b = m[2].trim();
+    const aHasKr = /[가-힣]/.test(a);
+    const bHasKr = /[가-힣]/.test(b);
+    if(aHasKr && !bHasKr) return {kr:a, en:b};
+    if(!aHasKr && bHasKr) return {en:a, kr:b};
+  }
+  return {en:String(c), kr:String(c)};
+}
+
 function buildPrompts(){
   // 베이스 모티프
   const baseFromChips = (state.baseMotifs||[]).map(en => {
     const found = ALL_BASE_MOTIFS.find(m => m.en === en);
-    return found ? {en:found.en, kr:found.kr} : {en, kr:en};
+    return found ? {en:found.en, kr:found.kr} : parseCustomToken(en);
   });
   const baseCustoms = (state.customMotif||'').split(',').map(s => s.trim()).filter(Boolean)
-    .map(c => ({en:c, kr:c}));
+    .map(parseCustomToken);
   const baseList = [...baseFromChips, ...baseCustoms];
   const motifEn = baseList.length ? joinWithAnd(baseList.map(m => m.en)) : 'heart';
   const motifKr = baseList.length ? baseList.map(m => m.kr).join(', ') : '하트';
 
   // 보조 모티프
   const subFromChips = state.subMotifs || [];
-  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean);
-  const subListEn = [...subFromChips, ...subCustoms];
+  const subCustoms = (state.customSubMotif||'').split(',').map(s => s.trim()).filter(Boolean).map(parseCustomToken);
+  const subListEn = [
+    ...subFromChips.map(s => { const f = SUB_MOTIFS.find(x => x.en === s); return f ? s : parseCustomToken(s).en; }),
+    ...subCustoms.map(t => t.en),
+  ];
   const subListKr = [
-    ...subFromChips.map(s => (SUB_MOTIFS.find(x => x.en === s) || {kr:s}).kr),
-    ...subCustoms,
+    ...subFromChips.map(s => { const f = SUB_MOTIFS.find(x => x.en === s); return f ? f.kr : parseCustomToken(s).kr; }),
+    ...subCustoms.map(t => t.kr),
   ];
   const subEn = subListEn.length ? `, integrated with ${joinWithAnd(subListEn)}` : '';
   const subKr = subListKr.length ? `, ${subListKr.join(', ')} 요소가 결합됨` : '';
 
   const moodList = state.moods || [];
   const moodEn = moodList.length ? moodList.join(', ') : 'atmospheric';
-  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || {kr:m}).kr).join(', ') : '분위기 있는';
+  const moodKr = moodList.length ? moodList.map(m => (MOODS.find(x => x.en === m) || parseCustomToken(m)).kr).join(', ') : '분위기 있는';
 
-  const styleObj = STYLES.find(s => s.en === state.style) || {en:state.style, kr:state.style};
-  const bgObj = BACKGROUNDS.find(b => b.value === state.background) || {en:state.background, kr:state.background};
+  const styleRes = (state.style || []).map(s => {
+    const f = STYLES.find(x => x.en === s);
+    return f ? {en:f.en, kr:f.kr} : parseCustomToken(s);
+  });
+  const styleEn = styleRes.length ? joinWithAnd(styleRes.map(o => o.en)) : 'tribal tattoo-like';
+  const styleKr = styleRes.length ? styleRes.map(o => o.kr).join(', ') : '부족 문신';
+  const bgRes = (state.background || []).map(s => {
+    const f = BACKGROUNDS.find(x => x.value === s);
+    return f ? {en:f.en, kr:f.kr} : parseCustomToken(s);
+  });
+  const bgEn = bgRes.length ? joinWithAnd(bgRes.map(o => o.en)) : 'white background';
+  const bgKr = bgRes.length ? bgRes.map(o => o.kr).join(', ') : '흰 배경';
 
   // 색상
   const primaryInfo = findClosestColorName(state.primaryColor);
@@ -1276,31 +1308,41 @@ function buildPrompts(){
 
   const extraList = state.extras || [];
   const extraEn = extraList.length ? `, ${extraList.join(', ')}` : '';
-  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || {kr:e}).kr).join(', ')}` : '';
+  const extraKr = extraList.length ? `. ${extraList.map(e => (EXTRAS.find(x => x.en === e) || parseCustomToken(e)).kr).join(', ')}` : '';
 
-  const elementObj = ELEMENTS.find(e => e.en === state.element) || (state.element ? {en:state.element, kr:state.element} : null);
-  const rankObj = RANKS.find(r => r.en === state.rank) || (state.rank ? {en:state.rank, kr:state.rank} : null);
+  const elementRes = (state.element || []).map(s => {
+    const f = ELEMENTS.find(x => x.en === s);
+    return f ? {en:f.en, kr:f.kr} : parseCustomToken(s);
+  });
+  const rankRes = (state.rank || []).map(s => {
+    const f = RANKS.find(x => x.en === s);
+    return f ? {en:f.en, kr:f.kr} : parseCustomToken(s);
+  });
+  const factionRes = (state.faction || []).map(s => {
+    const f = FACTIONS.find(x => x.en === s);
+    return f ? {en:f.en, kr:f.kr} : parseCustomToken(s);
+  });
   const themeList = state.themes || [];
-  const factionObj = FACTIONS.find(f => f.en === state.faction) || (state.faction ? {en:state.faction, kr:state.faction} : null);
 
-  const elementEn = elementObj ? `, ${elementObj.en}` : '';
-  const elementKr = elementObj ? `, ${elementObj.kr} 속성` : '';
-  const rankEn = rankObj ? `, ${rankObj.en}` : '';
-  const rankKr = rankObj ? `, ${rankObj.kr}의 격` : '';
+  const elementEn = elementRes.length ? `, ${joinWithAnd(elementRes.map(o => o.en))}` : '';
+  const elementKr = elementRes.length ? `, ${elementRes.map(o => o.kr).join(', ')} 속성` : '';
+  const rankEn = rankRes.length ? `, ${joinWithAnd(rankRes.map(o => o.en))}` : '';
+  const rankKr = rankRes.length ? `, ${rankRes.map(o => o.kr).join(', ')}의 격` : '';
   const themeEn = themeList.length ? `, evoking themes of ${joinWithAnd(themeList)}` : '';
-  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || {kr:t}).kr).join('·')}의 테마를 환기시킴` : '';
-  const factionEn = factionObj ? `, ${factionObj.en} house` : '';
-  const factionKr = factionObj ? `, ${factionObj.kr} 가문` : '';
+  const themeKr = themeList.length ? `, ${themeList.map(t => (THEMES.find(x => x.en === t) || parseCustomToken(t)).kr).join('·')}의 테마를 환기시킴` : '';
+  const factionEn = factionRes.length ? `, ${joinWithAnd(factionRes.map(o => o.en))} house` : '';
+  const factionKr = factionRes.length ? `, ${factionRes.map(o => o.kr).join(', ')} 가문` : '';
 
-  const negEn = state.background === 'transparent'
+  const isTransparent = (state.background || []).includes('transparent');
+  const negEn = isTransparent
     ? 'no text, no letters, no shading, no gradient, no 3d, no realistic details, no white background, no crown unless specified, no shield, no border'
     : 'no text, no letters, no shading, no gradient, no 3d, no realistic details, no crown unless specified, no shield, no border';
-  const negKr = state.background === 'transparent'
+  const negKr = isTransparent
     ? '글자 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 흰 배경 없음, 테두리 없음'
     : '글자 없음, 음영 없음, 그라데이션 없음, 3D 효과 없음, 사실적 디테일 없음, 테두리 없음';
 
-  const promptEn = `a ${moodEn} fantasy noble house sigil${factionEn}${rankEn}, ${styleObj.en} vector emblem, abstract crest based on ${motifEn} motif${subEn}, ${colorPhraseEn}, ${bgObj.en}, symmetrical magical insignia${elementEn}${themeEn}, clean flat silhouette, high contrast, elegant pointed curves, strong negative space cutouts, logo mark only${extraEn}, ${negEn}`;
-  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 문양${factionKr}${rankKr}. ${styleObj.kr} 스타일의 벡터 엠블럼. ${motifKr}을(를) 모티프로 한 추상 가문 문장${subKr}. ${colorPhraseKr}. ${bgObj.kr}. 좌우대칭의 마법 문장${elementKr}${themeKr}. 깔끔한 평면 실루엣, 강한 명도 대비, 우아한 뾰족 곡선, 강한 여백 컷아웃, 로고 마크 형태${extraKr}. ${negKr}.`;
+  const promptEn = `a ${moodEn} fantasy noble house sigil${factionEn}${rankEn}, ${styleEn} vector emblem, abstract crest based on ${motifEn} motif${subEn}, ${colorPhraseEn}, ${bgEn}, symmetrical magical insignia${elementEn}${themeEn}, clean flat silhouette, high contrast, elegant pointed curves, strong negative space cutouts, logo mark only${extraEn}, ${negEn}`;
+  const promptKr = `${moodKr} 분위기의 판타지 영주 가문 문양${factionKr}${rankKr}. ${styleKr} 스타일의 벡터 엠블럼. ${motifKr}을(를) 모티프로 한 추상 가문 문장${subKr}. ${colorPhraseKr}. ${bgKr}. 좌우대칭의 마법 문장${elementKr}${themeKr}. 깔끔한 평면 실루엣, 강한 명도 대비, 우아한 뾰족 곡선, 강한 여백 컷아웃, 로고 마크 형태${extraKr}. ${negKr}.`;
 
   return { en:promptEn, kr:promptKr };
 }
@@ -1376,6 +1418,12 @@ function loadAll(){
       const parsed = JSON.parse(c);
       customChips = {...customChips, ...parsed};
     }
+    // v11 single→multi 마이그레이션
+    ['style','background','element','rank','faction'].forEach(k => {
+      const v = state[k];
+      if(v == null) state[k] = [];
+      else if(!Array.isArray(v)) state[k] = [v];
+    });
   }catch(e){}
 }
 function resetAll(){

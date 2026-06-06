@@ -716,18 +716,18 @@ const K = {
 //  STATE
 // ═══════════════════════════════════════════════════════════════════
 const DEFAULT_STATE = {
-  structure: 'three concentric rings',
-  multiLayout: null,
-  centerShape: 'a hexagram (six-pointed star)',
-  runeType: 'unreadable runic script',
+  structure: ['three concentric rings'],
+  multiLayout: [],
+  centerShape: ['a hexagram (six-pointed star)'],
+  runeType: ['unreadable runic script'],
   decorations: ['crescent moons','small star bursts'],
   customDecoration: '',
-  element: null,
-  purpose: null,
-  visualStyle: 'luminous glowing neon linework with soft bloom',
+  element: [],
+  purpose: [],
+  visualStyle: ['luminous glowing neon linework with soft bloom'],
   primaryColor: '#00BBDD',
   secondaryColors: [],
-  background: 'black',
+  background: ['black'],
   moods: ['mystical and mysterious'],
 };
 
@@ -742,16 +742,16 @@ let customChips = {
 //  섹션 정의 (UI 자동 생성용)
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
-  { num:'01', key:'structure', title:'원 구조', sub:'마법진의 뼈대 · 단일 선택', items:CIRCLE_STRUCTURES, mode:'single', accent:'#8889CD' },
-  { num:'02', key:'multiLayout', title:'다중 배치', sub:'여러 마법진 겹치기 · 선택 사항 (해제 가능)', items:MULTI_LAYOUTS, mode:'single', optional:true, accent:'#BB6688' },
-  { num:'03', key:'centerShape', title:'중앙 도형', sub:'마법진 중앙에 그려질 도형 · 단일', items:CENTER_SHAPES, mode:'single', accent:'#DDAACC' },
-  { num:'04', key:'runeType', title:'룬·문자', sub:"새겨질 문자 종류 · 단일 (모델이 진짜 글자 망가지지 않게 'unreadable' 강제 적용)", items:RUNE_TYPES, mode:'single', accent:'#CCAA88' },
+  { num:'01', key:'structure', title:'원 구조', sub:'마법진의 뼈대 · 단일 권장 · 복수 선택 가능', items:CIRCLE_STRUCTURES, mode:'multi', accent:'#8889CD' },
+  { num:'02', key:'multiLayout', title:'다중 배치', sub:'여러 마법진 겹치기 · 단일 권장 · 복수 선택 가능 · 선택 사항 (해제 가능)', items:MULTI_LAYOUTS, mode:'multi', optional:true, accent:'#BB6688' },
+  { num:'03', key:'centerShape', title:'중앙 도형', sub:'마법진 중앙에 그려질 도형 · 단일 권장 · 복수 선택 가능', items:CENTER_SHAPES, mode:'multi', accent:'#DDAACC' },
+  { num:'04', key:'runeType', title:'룬·문자', sub:"새겨질 문자 종류 · 단일 권장 · 복수 선택 가능 (모델이 진짜 글자 망가지지 않게 'unreadable' 강제 적용)", items:RUNE_TYPES, mode:'multi', accent:'#CCAA88' },
   { num:'05', key:'decorations', title:'장식 요소', sub:'복수 선택 가능 · 직접 입력은 콤마로 자유 추가', items:DECORATIONS, mode:'multi', hasCustomInput:true, accent:'#BB6688' },
-  { num:'06', key:'element', title:'속성·원소', sub:'선택 사항 · 단일 (해제 가능)', items:ELEMENTS, mode:'single', optional:true, accent:'#8889CD' },
-  { num:'07', key:'purpose', title:'용도', sub:'마법진의 목적 · 선택 사항 (해제 가능)', items:PURPOSES, mode:'single', optional:true, accent:'#CCAA88' },
-  { num:'08', key:'visualStyle', title:'시각 스타일', sub:'조형 처리 · 단일', items:VISUAL_STYLES, mode:'single', accent:'#DDAACC' },
+  { num:'06', key:'element', title:'속성·원소', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:ELEMENTS, mode:'multi', optional:true, accent:'#8889CD' },
+  { num:'07', key:'purpose', title:'용도', sub:'마법진의 목적 · 단일 권장 · 복수 선택 가능 · 선택 사항 (해제 가능)', items:PURPOSES, mode:'multi', optional:true, accent:'#CCAA88' },
+  { num:'08', key:'visualStyle', title:'시각 스타일', sub:'조형 처리 · 단일 권장 · 복수 선택 가능', items:VISUAL_STYLES, mode:'multi', accent:'#DDAACC' },
   // 09 색상은 별도 처리
-  { num:'10', key:'background', title:'배경', sub:'투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'single', accent:'#DDAACC', valueKey:'value' },
+  { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
   { num:'11', key:'moods', title:'분위기', sub:'1~2개 권장 · 다중 선택', items:MOODS, mode:'multi', accent:'#CCAA88' },
 ];
 
@@ -852,9 +852,10 @@ function renderSectionHTML(sec){
 
 function renderChipsHTML(sec){
   const items = sec.items;
-  const customItems = (customChips[sec.key] || []).map(label => ({
-    en: label, kr: label, value: label, _custom:true,
-  }));
+  const customItems = (customChips[sec.key] || []).map(label => {
+    const t = parseCustomToken(label);
+    return {en:label, kr:t.kr, value:label, _custom:true};
+  });
   const all = [...items, ...customItems];
 
   let html = all.map(item => {
@@ -1130,22 +1131,72 @@ document.getElementById('chip-modal').addEventListener('click', (e) => {
 // ═══════════════════════════════════════════════════════════════════
 //  프롬프트 생성 (기존 로직 그대로 보존)
 // ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
+//  커스텀 입력 슬래시 파서 (v11)
+//  - "왕관/crown" 또는 "crown/왕관" 패턴 자동 분리
+//  - 슬래시 없으면 기존 동작 유지 (en/kr 둘 다 입력값)
+// ═══════════════════════════════════════════════════════════════════
+function parseCustomToken(c){
+  const m = String(c).match(/^(.+?)\s*\/\s*(.+)$/);
+  if(m){
+    const a = m[1].trim();
+    const b = m[2].trim();
+    const aHasKr = /[가-힣]/.test(a);
+    const bHasKr = /[가-힣]/.test(b);
+    if(aHasKr && !bHasKr) return {kr:a, en:b};
+    if(!aHasKr && bHasKr) return {en:a, kr:b};
+  }
+  return {en:String(c), kr:String(c)};
+}
+
 function buildPrompts(){
-  const structObj = CIRCLE_STRUCTURES.find(s => s.en === state.structure) || {en:state.structure, kr:state.structure};
-  const multiObj = MULTI_LAYOUTS.find(m => m.en === state.multiLayout) || (state.multiLayout ? {en:state.multiLayout, kr:state.multiLayout} : null);
-  const centerObj = CENTER_SHAPES.find(c => c.en === state.centerShape) || {en:state.centerShape, kr:state.centerShape};
-  const runeObj = RUNE_TYPES.find(r => r.en === state.runeType) || {en:state.runeType, kr:state.runeType};
+  // ── single → multi 전환 (v11): 모든 칩 리스트 처리 ──
+  const resolveList = (list, lookup, key) => (list || []).map(s => {
+    const f = lookup ? lookup.find(x => x[key || 'en'] === s) : null;
+    return f ? {en:f.en, kr:f.kr} : parseCustomToken(s);
+  });
+  const joinEn = (resolved, fallback) => resolved.length ? joinWithAnd(resolved.map(o => o.en)) : fallback;
+  const joinKr = (resolved, fallback) => resolved.length ? resolved.map(o => o.kr).join(', ') : fallback;
+
+  const structureRes   = resolveList(state.structure,   CIRCLE_STRUCTURES);
+  const multiLayoutRes = resolveList(state.multiLayout, MULTI_LAYOUTS);
+  const centerShapeRes = resolveList(state.centerShape, CENTER_SHAPES);
+  const runeTypeRes    = resolveList(state.runeType,    RUNE_TYPES);
+  const elementRes     = resolveList(state.element,     ELEMENTS);
+  const purposeRes     = resolveList(state.purpose,     PURPOSES);
+  const visualStyleRes = resolveList(state.visualStyle, VISUAL_STYLES);
+  const backgroundRes  = resolveList(state.background,  BACKGROUNDS, 'value');
+
+  const structureEn   = joinEn(structureRes,   'a single circle');
+  const structureKr   = joinKr(structureRes,   '단일 원');
+  const centerShapeEn = joinEn(centerShapeRes, 'magical symbol');
+  const centerShapeKr = joinKr(centerShapeRes, '마법 기호');
+  const runeTypeEn    = joinEn(runeTypeRes,    'unreadable runic script');
+  const runeTypeKr    = joinKr(runeTypeRes,    '읽을 수 없는 룬');
+  const visualStyleEn = joinEn(visualStyleRes, 'clean linework');
+  const visualStyleKr = joinKr(visualStyleRes, '깔끔한 라인워크');
+  const backgroundEn  = joinEn(backgroundRes,  'pure black background');
+  const backgroundKr  = joinKr(backgroundRes,  '검은 배경');
+
+  // 옵션 파트 (비어있으면 결구에서 빠짐)
+  const multiLayoutEn = multiLayoutRes.length ? joinWithAnd(multiLayoutRes.map(o => o.en)) : '';
+  const multiLayoutKr = multiLayoutRes.length ? multiLayoutRes.map(o => o.kr).join(', ') : '';
+  const elementEn     = elementRes.length     ? joinWithAnd(elementRes.map(o => o.en))     : '';
+  const elementKr     = elementRes.length     ? elementRes.map(o => o.kr).join(', ')       : '';
+  const purposeEn     = purposeRes.length     ? joinWithAnd(purposeRes.map(o => o.en))     : '';
+  const purposeKr     = purposeRes.length     ? purposeRes.map(o => o.kr).join(', ')       : '';
+
+  // 장식 (multi 그대로)
   const decoFromChips = state.decorations || [];
-  const decoCustoms = (state.customDecoration || '').split(',').map(s => s.trim()).filter(Boolean);
-  const decoListEn = [...decoFromChips, ...decoCustoms];
-  const decoListKr = [
-    ...decoFromChips.map(d => (DECORATIONS.find(x => x.en === d) || {kr:d}).kr),
-    ...decoCustoms,
+  const decoCustoms = (state.customDecoration || '').split(',').map(s => s.trim()).filter(Boolean).map(parseCustomToken);
+  const decoListEn = [
+    ...decoFromChips.map(d => { const f = DECORATIONS.find(x => x.en === d); return f ? d : parseCustomToken(d).en; }),
+    ...decoCustoms.map(t => t.en),
   ];
-  const elemObj = ELEMENTS.find(e => e.en === state.element) || (state.element ? {en:state.element, kr:state.element} : null);
-  const purposeObj = PURPOSES.find(p => p.en === state.purpose) || (state.purpose ? {en:state.purpose, kr:state.purpose} : null);
-  const styleObj = VISUAL_STYLES.find(s => s.en === state.visualStyle) || {en:state.visualStyle, kr:state.visualStyle};
-  const bgObj = BACKGROUNDS.find(b => b.value === state.background) || {en:state.background, kr:state.background};
+  const decoListKr = [
+    ...decoFromChips.map(d => { const f = DECORATIONS.find(x => x.en === d); return f ? f.kr : parseCustomToken(d).kr; }),
+    ...decoCustoms.map(t => t.kr),
+  ];
   const moodList = state.moods || [];
 
   // 색상
@@ -1165,10 +1216,10 @@ function buildPrompts(){
   // 분위기
   const moodEn = moodList.length ? moodList.join(', ') : 'arcane';
   const moodKr = moodList.length
-    ? moodList.map(m => (MOODS.find(x => x.en === m) || {kr:m}).kr).join(', ')
+    ? moodList.map(m => (MOODS.find(x => x.en === m) || parseCustomToken(m)).kr).join(', ')
     : '신비로운';
 
-  // 장식
+  // 장식 텍스트
   const decoEn = decoListEn.length
     ? `surrounded by ${joinWithAnd(decoListEn)}`
     : 'with minimal additional decoration';
@@ -1176,24 +1227,25 @@ function buildPrompts(){
     ? `${decoListKr.join(', ')} 장식 포함`
     : '추가 장식 최소';
 
-  // 옵션 파트
-  const multiPartEn = multiObj ? `, ${multiObj.en}` : '';
-  const multiPartKr = multiObj ? `. ${multiObj.kr} 구성` : '';
-  const elemPartEn = elemObj ? `, ${elemObj.en}` : '';
-  const elemPartKr = elemObj ? `, ${elemObj.kr} 속성` : '';
-  const purposePartEn = purposeObj ? `, ${purposeObj.en}` : '';
-  const purposePartKr = purposeObj ? `, ${purposeObj.kr}용` : '';
+  // 옵션 파트 (결구 삽입용)
+  const multiPartEn   = multiLayoutEn ? `, ${multiLayoutEn}` : '';
+  const multiPartKr   = multiLayoutKr ? `. ${multiLayoutKr} 구성` : '';
+  const elemPartEn    = elementEn     ? `, ${elementEn}`     : '';
+  const elemPartKr    = elementKr     ? `, ${elementKr} 속성` : '';
+  const purposePartEn = purposeEn     ? `, ${purposeEn}`     : '';
+  const purposePartKr = purposeKr     ? `, ${purposeKr}용`   : '';
 
-  // 네거티브
-  const negEn = state.background === 'transparent'
+  // 네거티브 (transparent 배경 포함 여부로 분기)
+  const isTransparent = (state.background || []).includes('transparent');
+  const negEn = isTransparent
     ? 'no human characters, no people, no faces, no readable modern text, no real letters, no watermark, no broken circle, no thick clumsy lines, no 3d realistic object, no background scenery, no white backdrop, no shading'
     : 'no human characters, no people, no faces, no readable modern text, no real letters, no watermark, no broken circle, no thick clumsy lines, no 3d realistic object, no shading';
-  const negKr = state.background === 'transparent'
+  const negKr = isTransparent
     ? '인물 없음, 얼굴 없음, 현대 문자 없음, 진짜 글자 없음, 워터마크 없음, 끊긴 원 없음, 두꺼운 어수선한 선 없음, 3D 사실 오브젝트 없음, 배경 풍경 없음, 흰 배경 없음, 음영 없음'
     : '인물 없음, 얼굴 없음, 현대 문자 없음, 진짜 글자 없음, 워터마크 없음, 끊긴 원 없음, 두꺼운 어수선한 선 없음, 3D 사실 오브젝트 없음, 음영 없음';
 
-  const promptEn = `a ${moodEn} magic circle, intricate arcane ritual diagram${purposePartEn}, ${structObj.en}${multiPartEn}, central ${centerObj.en} ${decoEn}, inscribed with ${runeObj.en}${elemPartEn}, ${styleObj.en}, ${colorPhraseEn} line art on ${bgObj.en}, sacred geometry, perfectly symmetrical, fine intricate detail, ${negEn}`;
-  const promptKr = `${moodKr} 마법진. 정교한 아케인 의식 다이어그램${purposePartKr}. ${structObj.kr} 구조${multiPartKr}. 중앙에 ${centerObj.kr}, ${decoKr}. ${runeObj.kr} 새겨짐${elemPartKr}. ${styleObj.kr}, ${colorPhraseKr} 라인아트, ${bgObj.kr}. 신성 기하학, 완벽한 좌우대칭, 정교한 디테일. ${negKr}.`;
+  const promptEn = `a ${moodEn} magic circle, intricate arcane ritual diagram${purposePartEn}, ${structureEn}${multiPartEn}, central ${centerShapeEn} ${decoEn}, inscribed with ${runeTypeEn}${elemPartEn}, ${visualStyleEn}, ${colorPhraseEn} line art on ${backgroundEn}, sacred geometry, perfectly symmetrical, fine intricate detail, ${negEn}`;
+  const promptKr = `${moodKr} 마법진. 정교한 아케인 의식 다이어그램${purposePartKr}. ${structureKr} 구조${multiPartKr}. 중앙에 ${centerShapeKr}, ${decoKr}. ${runeTypeKr} 새겨짐${elemPartKr}. ${visualStyleKr}, ${colorPhraseKr} 라인아트, ${backgroundKr}. 신성 기하학, 완벽한 좌우대칭, 정교한 디테일. ${negKr}.`;
 
   return { en:promptEn, kr:promptKr };
 }
@@ -1272,6 +1324,12 @@ function loadAll(){
       const parsed = JSON.parse(c);
       customChips = {...customChips, ...parsed};
     }
+    // v11 single→multi 마이그레이션: 옛 단일값 데이터 자동 배열 래핑
+    ['structure','multiLayout','centerShape','runeType','element','purpose','visualStyle','background'].forEach(k => {
+      const v = state[k];
+      if(v == null) state[k] = [];
+      else if(!Array.isArray(v)) state[k] = [v];
+    });
   }catch(e){}
 }
 function resetAll(){
