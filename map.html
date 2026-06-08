@@ -9,9 +9,9 @@
   :root{
     --bg:#1a1520; --surface:#221b2a; --surface2:#2a2235; --surface3:#322840;
     --border:#3a2e48; --border-strong:#4a3a5a;
-    --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
+    --accent:#8888CC; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
-    --tool-color:#8889CD;
+    --tool-color:#8888CC;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{min-height:100vh;}
@@ -448,12 +448,12 @@
   }
   .mode-radio.active{
     background:rgba(136,137,205,0.18);
-    border-color:#8889CD;
+    border-color:#8888CC;
     box-shadow:0 0 0 1px rgba(136,137,205,0.4);
   }
   .mode-radio input[type="radio"]{
     flex-shrink:0;width:16px;height:16px;
-    accent-color:#8889CD;cursor:pointer;
+    accent-color:#8888CC;cursor:pointer;
   }
   .mode-radio-content{flex:1;}
   .mode-radio-title{
@@ -519,7 +519,7 @@
       </div>
       <div class="prompt-text" id="prompt-en"></div>
     </div>
-    <div class="prompt-box" style="--prompt-accent:#8889CD">
+    <div class="prompt-box" style="--prompt-accent:#8888CC">
       <div class="prompt-head">
         <span class="prompt-lang">KR · for Gemini / Imagen</span>
         <button class="prompt-copy-btn" id="copy-kr-btn" onclick="copyPrompt('kr',this)">📋 복사</button>
@@ -579,13 +579,13 @@
 //  COLOR_NAMES — HEX → 영문/한글 (기존 동일)
 // ═══════════════════════════════════════════════════════════════════
 const COLOR_NAMES = [
-  { hex:'#8889CD', en:'soft periwinkle indigo', kr:'은은한 인디고' },
+  { hex:'#8888CC', en:'soft periwinkle indigo', kr:'은은한 인디고' },
   { hex:'#DDAACC', en:'pastel mauve pink', kr:'파스텔 모브 핑크' },
   { hex:'#CCAA88', en:'warm beige tan', kr:'따뜻한 베이지 탠' },
   { hex:'#BB6688', en:'dusty wine rose', kr:'더스티 와인 로즈' },
   { hex:'#884499', en:'deep royal purple', kr:'딥 로열 퍼플' },
-  { hex:'#8889CD', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
-  { hex:'#8889CD', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
+  { hex:'#8888CC', en:'vivid crimson pink', kr:'비비드 크림슨 핑크' },
+  { hex:'#8888CC', en:'hot bubblegum pink', kr:'핫 버블검 핑크' },
   { hex:'#00BBDD', en:'bright cyan blue', kr:'밝은 시안 블루' },
   { hex:'#FF7722', en:'vivid tangerine orange', kr:'선명한 탠저린 오렌지' },
   { hex:'#00BBDD', en:'deep azure blue', kr:'딥 애저 블루' },
@@ -1051,7 +1051,7 @@ const DEFAULT_STATE = {
   mainLandmark: [],   // 06번 본질 — ← TAROT의 mainLandmark 자리
   livingElements: [], // 07번 본질 — ← TAROT의 livingElements 자리
   moods: ['mysterious'],
-  primaryColor: '#8889CD',
+  primaryColor: '#8888CC',
   secondaryColors: [],
   background: ['white'],
   extras: ['balanced composition'],
@@ -1082,7 +1082,7 @@ const SECTIONS = [
   // 00 모드 선택 — 별도 그룹화 렌더링 (라디오 UI, 3모드 A/C/D ⭐⭐)
   // 01 지도 타입 — 별도 그룹화 렌더링
   // 02 가문 모티프 — 별도 그룹화 렌더링
-  { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
+  { num:'03', key:'subMotifs', title:'보조 디테일', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 · 선택 사항`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8888CC' },
   { num:'04', key:'style', title:'양식', sub:'지도의 양식 결 (건축양식 흡수: gothic/elven/dwarven 등) · 단일 권장 · 복수 선택 가능 · 선택 사항', items:MAP_STYLES, mode:'multi', accent:'#DDAACC' },
   { num:'05', key:'terrain', title:'지형 (Terrain)', sub:'지도의 지형 결 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:TERRAINS, mode:'multi', accent:'#CCAA88' },
   { num:'06', key:'mainLandmark', title:'핵심 랜드마크', sub:'지도의 중심 랜드마크 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:MAIN_LANDMARKS, mode:'multi', accent:'#BB6688' },
@@ -1090,15 +1090,15 @@ const SECTIONS = [
   // 08 색상 별도 (지도 톤)
   { num:'09', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
   { num:'10', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정 · 모드 C/D는 미선택 가능', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
-  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C/D 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'11', key:'extras', title:'추가 옵션', sub:'복수 선택 가능 · flat silhouette icon은 모드 A 전용 (모드 C/D 선택 시 자동 제외)', items:EXTRAS, mode:'multi', accent:'#8888CC' },
   { num:'12', key:'element', title:'원소·속성', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:ELEMENTS, mode:'multi', accent:'#BB6688' },
   { num:'13', key:'rank', title:'지도 격 (Rank)', sub:'지도 등급에 따른 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:RANKS, mode:'multi', accent:'#CCAA88' },
   { num:'14', key:'purpose', title:'지도 유래·계보', sub:'지도의 쓰임과 계보 · 단일 권장 · 복수 선택 가능 · 선택 사항', items:PURPOSES, mode:'multi', accent:'#BB6688' },
-  { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8889CD' },
-  { num:'16', key:'themes', title:'테마 키워드', sub:'지도의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'15', key:'aura', title:'오라·광휘', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:AURAS, mode:'multi', accent:'#8888CC' },
+  { num:'16', key:'themes', title:'테마 키워드', sub:'지도의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8888CC' },
   { num:'17', key:'faction', title:'종족·진영', sub:'단일 권장 · 복수 선택 가능 · 선택 사항', items:FACTIONS, mode:'multi', accent:'#DDAACC' },
-  { num:'18', key:'viewpoint', title:'시점 (Viewpoint)', sub:'탑다운/아이소메트릭/양피지/페인터리 등 시점 결 · 단일 권장 · 복수 선택 가능 · 선택 사항 · MAP 전용', items:VIEWPOINTS, mode:'multi', accent:'#8889CD' },
-  { num:'19', key:'mapLayout', title:'지도 레이아웃 (Layout)', sub:'원형 부유섬/사각/육각/유기 대륙 등 형태 · 단일 권장 · 복수 선택 가능 · 선택 사항 · MAP 전용', items:MAP_LAYOUTS, mode:'multi', accent:'#8889CD' },
+  { num:'18', key:'viewpoint', title:'시점 (Viewpoint)', sub:'탑다운/아이소메트릭/양피지/페인터리 등 시점 결 · 단일 권장 · 복수 선택 가능 · 선택 사항 · MAP 전용', items:VIEWPOINTS, mode:'multi', accent:'#8888CC' },
+  { num:'19', key:'mapLayout', title:'지도 레이아웃 (Layout)', sub:'원형 부유섬/사각/육각/유기 대륙 등 형태 · 단일 권장 · 복수 선택 가능 · 선택 사항 · MAP 전용', items:MAP_LAYOUTS, mode:'multi', accent:'#8888CC' },
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1222,7 +1222,7 @@ function renderMapTypeHTML(){
         <div class="chip-group" data-section="mapType" data-mode="multi" style="margin-bottom:8px">
           ${group.items.map(item => {
             const active = (state.mapType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="mapType" data-value="${esc(item.en)}" style="--chip-accent:#8889CD">${esc(item.kr)}</div>`;
+            return `<div class="chip${active?' active':''}" data-section="mapType" data-value="${esc(item.en)}" style="--chip-accent:#8888CC">${esc(item.kr)}</div>`;
           }).join('')}
         </div>
       `).join('')}
@@ -1231,12 +1231,12 @@ function renderMapTypeHTML(){
         <div class="chip-group" data-section="mapType" data-mode="multi" style="margin-bottom:8px">
           ${customItems.map(item => {
             const active = (state.mapType||[]).includes(item.en);
-            return `<div class="chip${active?' active':''}" data-section="mapType" data-value="${esc(item.en)}" style="--chip-accent:#8889CD">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="mapType" data-value="${esc(item.en)}">×</span></div>`;
+            return `<div class="chip${active?' active':''}" data-section="mapType" data-value="${esc(item.en)}" style="--chip-accent:#8888CC">${esc(item.kr)}<span class="chip-custom-del" data-action="del-custom" data-section="mapType" data-value="${esc(item.en)}">×</span></div>`;
           }).join('')}
         </div>
       ` : ''}
       <div class="chip-group" data-section="mapType" data-mode="multi">
-        <div class="chip chip-add" data-action="add-chip" data-section="mapType" style="--chip-accent:#8889CD">＋</div>
+        <div class="chip chip-add" data-action="add-chip" data-section="mapType" style="--chip-accent:#8888CC">＋</div>
       </div>
     </div>
     <input type="text" class="text-input" id="custom-mapType" placeholder="직접 입력 (콤마로 여러 개, 예: lost realm map, 잊혀진 왕국 지도)" value="${esc(state.customMapType || '')}">

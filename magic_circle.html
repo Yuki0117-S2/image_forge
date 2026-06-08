@@ -9,9 +9,9 @@
   :root{
     --bg:#1a1520; --surface:#221b2a; --surface2:#2a2235; --surface3:#322840;
     --border:#3a2e48; --border-strong:#4a3a5a;
-    --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
+    --accent:#8888CC; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
-    --tool-color:#8889CD;
+    --tool-color:#8888CC;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html,body{min-height:100vh;}
@@ -455,7 +455,7 @@
     <div class="prompt-section-label">
       <span>Forged Circle</span>
     </div>
-    <div class="prompt-box" style="--prompt-accent:#8889CD">
+    <div class="prompt-box" style="--prompt-accent:#8888CC">
       <div class="prompt-head">
         <span class="prompt-lang">EN · for GPT / DALL·E</span>
         <button class="prompt-copy-btn" id="copy-en-btn" onclick="copyPrompt('en',this)">📋 복사</button>
@@ -526,7 +526,7 @@
 //  COLOR_NAMES — HEX → 영문/한글 이름 매칭 (기존 동일)
 // ═══════════════════════════════════════════════════════════════════
 const COLOR_NAMES = [
-  { hex:'#8889CD', en:'soft periwinkle indigo', kr:'은은한 인디고' },
+  { hex:'#8888CC', en:'soft periwinkle indigo', kr:'은은한 인디고' },
   { hex:'#DDAACC', en:'pastel mauve pink', kr:'파스텔 모브 핑크' },
   { hex:'#CCAA88', en:'warm beige tan', kr:'따뜻한 베이지 탠' },
   { hex:'#BB6688', en:'dusty wine rose', kr:'더스티 와인 로즈' },
@@ -742,12 +742,12 @@ let customChips = {
 //  섹션 정의 (UI 자동 생성용)
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
-  { num:'01', key:'structure', title:'원 구조', sub:'마법진의 뼈대 · 단일 권장 · 복수 선택 가능', items:CIRCLE_STRUCTURES, mode:'multi', accent:'#8889CD' },
+  { num:'01', key:'structure', title:'원 구조', sub:'마법진의 뼈대 · 단일 권장 · 복수 선택 가능', items:CIRCLE_STRUCTURES, mode:'multi', accent:'#8888CC' },
   { num:'02', key:'multiLayout', title:'다중 배치', sub:'여러 마법진 겹치기 · 단일 권장 · 복수 선택 가능 · 선택 사항 (해제 가능)', items:MULTI_LAYOUTS, mode:'multi', optional:true, accent:'#BB6688' },
   { num:'03', key:'centerShape', title:'중앙 도형', sub:'마법진 중앙에 그려질 도형 · 단일 권장 · 복수 선택 가능', items:CENTER_SHAPES, mode:'multi', accent:'#DDAACC' },
   { num:'04', key:'runeType', title:'룬·문자', sub:"새겨질 문자 종류 · 단일 권장 · 복수 선택 가능 (모델이 진짜 글자 망가지지 않게 'unreadable' 강제 적용)", items:RUNE_TYPES, mode:'multi', accent:'#CCAA88' },
   { num:'05', key:'decorations', title:'장식 요소', sub:'복수 선택 가능 · 직접 입력은 콤마로 자유 추가', items:DECORATIONS, mode:'multi', hasCustomInput:true, accent:'#BB6688' },
-  { num:'06', key:'element', title:'속성·원소', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:ELEMENTS, mode:'multi', optional:true, accent:'#8889CD' },
+  { num:'06', key:'element', title:'속성·원소', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:ELEMENTS, mode:'multi', optional:true, accent:'#8888CC' },
   { num:'07', key:'purpose', title:'용도', sub:'마법진의 목적 · 단일 권장 · 복수 선택 가능 · 선택 사항 (해제 가능)', items:PURPOSES, mode:'multi', optional:true, accent:'#CCAA88' },
   { num:'08', key:'visualStyle', title:'시각 스타일', sub:'조형 처리 · 단일 권장 · 복수 선택 가능', items:VISUAL_STYLES, mode:'multi', accent:'#DDAACC' },
   // 09 색상은 별도 처리

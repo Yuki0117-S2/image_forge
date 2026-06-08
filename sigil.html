@@ -9,7 +9,7 @@
   :root{
     --bg:#1a1520; --surface:#221b2a; --surface2:#2a2235; --surface3:#322840;
     --border:#3a2e48; --border-strong:#4a3a5a;
-    --accent:#8889CD; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
+    --accent:#8888CC; --accent2:#BB6688; --accent3:#DDAACC; --accent4:#CCAA88;
     --text:#f0eaf5; --text-dim:#c0b8d0; --muted:#7a6e8a; --muted2:#5a4e6a;
     --tool-color:#BB6688;
   }
@@ -469,7 +469,7 @@
       </div>
       <div class="prompt-text" id="prompt-en"></div>
     </div>
-    <div class="prompt-box" style="--prompt-accent:#8889CD">
+    <div class="prompt-box" style="--prompt-accent:#8888CC">
       <div class="prompt-head">
         <span class="prompt-lang">KR · for Gemini / Imagen</span>
         <button class="prompt-copy-btn" id="copy-kr-btn" onclick="copyPrompt('kr',this)">📋 복사</button>
@@ -529,7 +529,7 @@
 //  COLOR_NAMES — HEX → 영문/한글 (기존 동일)
 // ═══════════════════════════════════════════════════════════════════
 const COLOR_NAMES = [
-  { hex:'#8889CD', en:'soft periwinkle indigo', kr:'은은한 인디고' },
+  { hex:'#8888CC', en:'soft periwinkle indigo', kr:'은은한 인디고' },
   { hex:'#DDAACC', en:'pastel mauve pink', kr:'파스텔 모브 핑크' },
   { hex:'#CCAA88', en:'warm beige tan', kr:'따뜻한 베이지 탠' },
   { hex:'#BB6688', en:'dusty wine rose', kr:'더스티 와인 로즈' },
@@ -777,15 +777,15 @@ const SUB_MOTIF_MAX = 4;
 // ═══════════════════════════════════════════════════════════════════
 const SECTIONS = [
   // 01은 별도 (그룹화된 베이스 모티프)
-  { num:'02', key:'subMotifs', title:'보조 모티프', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 (무제한)`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8889CD' },
+  { num:'02', key:'subMotifs', title:'보조 모티프', sub:`칩 최대 ${SUB_MOTIF_MAX}개 · 직접 입력은 콤마로 자유 추가 (무제한)`, items:SUB_MOTIFS, mode:'multi', max:SUB_MOTIF_MAX, hasCustomInput:true, customField:'customSubMotif', accent:'#8888CC' },
   { num:'03', key:'style', title:'스타일', sub:'문양의 조형 언어 · 단일 권장 · 복수 선택 가능', items:STYLES, mode:'multi', accent:'#DDAACC' },
   // 04 색상 별도
   { num:'05', key:'moods', title:'분위기', sub:'1~2개 권장 (제한 없음)', items:MOODS, mode:'multi', accent:'#CCAA88' },
   { num:'06', key:'background', title:'배경', sub:'단일 권장 · 복수 선택 가능 · 투명 선택 시 네거티브 자동 조정', items:BACKGROUNDS, mode:'multi', accent:'#DDAACC', valueKey:'value' },
-  { num:'07', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8889CD' },
+  { num:'07', key:'extras', title:'추가 옵션', sub:'복수 선택 가능', items:EXTRAS, mode:'multi', accent:'#8888CC' },
   { num:'08', key:'element', title:'원소·속성', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:ELEMENTS, mode:'multi', optional:true, accent:'#BB6688' },
   { num:'09', key:'rank', title:'격 (Rank)', sub:'가문의 격에 따라 디테일 양 조절 · 단일 권장 · 복수 선택 가능 · 선택 사항 (해제 가능)', items:RANKS, mode:'multi', optional:true, accent:'#CCAA88' },
-  { num:'10', key:'themes', title:'테마 키워드', sub:'가문의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8889CD' },
+  { num:'10', key:'themes', title:'테마 키워드', sub:'가문의 서사 · 다중 선택', items:THEMES, mode:'multi', accent:'#8888CC' },
   { num:'11', key:'faction', title:'종족·진영', sub:'선택 사항 · 단일 권장 · 복수 선택 가능 (해제 가능)', items:FACTIONS, mode:'multi', optional:true, accent:'#DDAACC' },
 ];
 
@@ -1157,7 +1157,7 @@ function attachColorListeners(){
   if(addBtn){
     addBtn.addEventListener('click', () => {
       state.secondaryColors = state.secondaryColors || [];
-      state.secondaryColors.push('#8889CD');
+      state.secondaryColors.push('#8888CC');
       saveAll();
       renderSections();
       updatePreview();
